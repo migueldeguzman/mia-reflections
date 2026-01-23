@@ -12,6 +12,13 @@ Full UAE compliance suite for Vesla ERP including VAT, Corporate Tax, WPS, ESR, 
 
 **Dependencies:** None (foundation phase)
 
+**Plans:** 3 plans
+
+Plans:
+- [ ] 01-01-PLAN.md - Database schema (reference data + tenant compliance config)
+- [ ] 01-02-PLAN.md - Service and API layer (ComplianceConfigService, routes)
+- [ ] 01-03-PLAN.md - Permissions and integration tests
+
 **Requirements:**
 - TENANT-01: Per-company TRN configuration
 - TENANT-02: Free zone status configuration
@@ -220,7 +227,7 @@ Full UAE compliance suite for Vesla ERP including VAT, Corporate Tax, WPS, ESR, 
 
 | Phase | Name | Status | Requirements | Completion |
 |-------|------|--------|--------------|------------|
-| 1 | Multi-Tenant Compliance Foundation | Not Started | 5 | 0% |
+| 1 | Multi-Tenant Compliance Foundation | Planned | 5 | 0% |
 | 2 | Internal Controls and Audit Infrastructure | Not Started | 5 | 0% |
 | 3 | VAT Compliance Engine | Not Started | 10 | 0% |
 | 4 | Corporate Tax Compliance | Not Started | 9 | 0% |
@@ -253,3 +260,4 @@ E-invoicing (Phases 6-7) is the critical path for July 2026 pilot. Phases 4-5 ca
 | Date | Change | Author |
 |------|--------|--------|
 | 2026-01-23 | Initial roadmap creation | Claude |
+| 2026-01-23 | Phase 1 planned - 3 plans in 2 waves | Claude |
