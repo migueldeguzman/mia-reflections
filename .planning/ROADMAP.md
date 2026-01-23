@@ -1,0 +1,255 @@
+# ROADMAP: UAE ERP Compliance Framework
+
+## Overview
+
+Full UAE compliance suite for Vesla ERP including VAT, Corporate Tax, WPS, ESR, and e-invoicing (DCTCE/PEPPOL model). Target readiness: UAE pilot phase July 2026. Phases are derived from 59 requirements across 8 categories, structured to deliver compliance features in dependency order with e-invoicing as the critical path.
+
+---
+
+## Phase 1: Multi-Tenant Compliance Foundation
+
+**Goal:** Each tenant has isolated, configurable compliance settings that serve as the foundation for all UAE tax and regulatory features.
+
+**Dependencies:** None (foundation phase)
+
+**Requirements:**
+- TENANT-01: Per-company TRN configuration
+- TENANT-02: Free zone status configuration
+- TENANT-03: Industry-specific rules configuration
+- TENANT-04: Tax code mappings per tenant
+- TENANT-05: Complete data isolation between tenants
+
+**Success Criteria:**
+1. Administrator can configure TRN, free zone status, and industry rules per company in the multi-tenant setup
+2. Tax code mappings are isolated per tenant with no cross-contamination
+3. Compliance configuration changes in one tenant do not affect other tenants
+4. System validates TRN format according to FTA specifications before saving
+
+---
+
+## Phase 2: Internal Controls and Audit Infrastructure
+
+**Goal:** All user actions and data changes are tracked with tamper-proof audit trails that satisfy FTA compliance requirements.
+
+**Dependencies:** Phase 1 (tenant isolation required for scoped audit trails)
+
+**Requirements:**
+- CTRL-01: User action logging
+- CTRL-02: Change tracking (before/after values)
+- CTRL-03: Tamper-proof audit logs
+- CTRL-04: Approval workflows for sensitive operations
+- CTRL-05: Encrypted backup procedures
+
+**Success Criteria:**
+1. Every user action (create, update, delete) on compliance-related data is logged with timestamp, user, and tenant context
+2. Change tracking captures before/after values for all financial record modifications
+3. Audit logs cannot be modified or deleted by any user including administrators
+4. Sensitive operations (VAT submission, payroll approval) require configured approval workflows
+5. Backup files are encrypted at rest and can be restored with full audit trail intact
+
+---
+
+## Phase 3: VAT Compliance Engine
+
+**Goal:** Users can generate FTA-compliant invoices, manage VAT calculations, and prepare accurate VAT returns.
+
+**Dependencies:** Phase 1 (TRN config), Phase 2 (audit trails)
+
+**Requirements:**
+- VAT-01: FTA-compliant tax invoice generation
+- VAT-02: Bilingual invoice support (Arabic/English)
+- VAT-03: Credit note generation with original invoice reference
+- VAT-04: Debit note generation with original invoice reference
+- VAT-05: Reverse charge mechanism handling
+- VAT-06: VAT return preparation (Form 201)
+- VAT-07: VAT reconciliation with GL
+- VAT-08: Bad debt relief tracking
+- VAT-09: VAT audit trail (7-year retention)
+- VAT-10: VAT period management and locking
+
+**Success Criteria:**
+1. User can generate tax invoices that include all 13 FTA-mandated fields in both Arabic and English
+2. Credit/debit notes automatically reference original invoice and adjust VAT calculations accordingly
+3. Reverse charge transactions are correctly identified and VAT is self-accounted
+4. User can generate VAT Return Form 201 with all boxes auto-populated from transaction data
+5. VAT reconciliation report shows exact match between VAT ledger and filed returns with variance explanation
+
+---
+
+## Phase 4: Corporate Tax Compliance
+
+**Goal:** Users can track corporate tax obligations, prepare CT calculations, and maintain compliant financial statements.
+
+**Dependencies:** Phase 1 (tenant config), Phase 2 (audit trails), Phase 3 (VAT data feeds CT calculations)
+
+**Requirements:**
+- CT-01: 9% Corporate Tax calculation engine
+- CT-02: Non-deductible expense tracking and adjustment
+- CT-03: Exempt income identification and exclusion
+- CT-04: CT-specific chart of accounts mapping
+- CT-05: CT-adjusted Profit & Loss statement
+- CT-06: CT-adjusted Balance Sheet
+- CT-07: Transfer pricing documentation support
+- CT-08: 7-year record retention enforcement
+- CT-09: Group tax consolidation support
+
+**Success Criteria:**
+1. System calculates 9% CT on taxable income after correctly adjusting for non-deductible expenses and exempt income
+2. User can mark transactions as non-deductible or exempt with full audit trail
+3. CT-adjusted P&L and Balance Sheet reports can be generated showing all adjustments from standard financials
+4. Transfer pricing documentation can be attached to related-party transactions
+5. Group companies can be consolidated for CT purposes with proper elimination entries
+
+---
+
+## Phase 5: WPS Payroll Compliance
+
+**Goal:** Users can process payroll through WPS with compliant SIF file generation and full gratuity calculations.
+
+**Dependencies:** Phase 1 (tenant config), Phase 2 (audit trails)
+
+**Requirements:**
+- WPS-01: SIF (Salary Information File) generation
+- WPS-02: Bank routing code configuration
+- WPS-03: IBAN validation for UAE banks
+- WPS-04: Salary cycle management
+- WPS-05: WPS error tracking and resolution
+- WPS-06: Payroll audit trail
+- WPS-07: Gratuity calculation (UAE Labor Law)
+
+**Success Criteria:**
+1. User can generate SIF files that pass MOHRE validation without errors
+2. IBAN entries are validated against UAE bank format before payroll processing
+3. WPS errors are captured with specific error codes and resolution guidance
+4. Gratuity is calculated according to UAE Labor Law (21 days per year for first 5 years, 30 days thereafter)
+5. Complete payroll history is retained with audit trail for 7 years minimum
+
+---
+
+## Phase 6: E-Invoicing Engine Core
+
+**Goal:** System generates PEPPOL PINT-AE compliant e-invoices with UBL schema validation and QR code embedding.
+
+**Dependencies:** Phase 3 (VAT invoices are the source for e-invoices), Phase 2 (audit trails)
+
+**Requirements:**
+- EINV-01: PINT AE (PEPPOL) XML generation
+- EINV-02: UBL 2.1 schema compliance
+- EINV-03: QR code generation with TLV encoding
+- EINV-04: Schema validation before transmission
+- EINV-05: E-invoice archiving (7-year retention)
+- EINV-06: ASP (Accredited Service Provider) API integration
+
+**Success Criteria:**
+1. E-invoices are generated in PINT AE format that passes PEPPOL validation tools
+2. All generated XML validates against UBL 2.1 schema with zero errors
+3. QR codes contain TLV-encoded data readable by FTA-approved scanners
+4. Invalid invoices are blocked from transmission with specific validation error messages
+5. E-invoices are archived with tamper-proof storage meeting 7-year FTA requirement
+
+---
+
+## Phase 7: E-Invoicing Transmission and Processing
+
+**Goal:** Users can transmit e-invoices to DCTCE platform, receive real-time status updates, and export in required formats.
+
+**Dependencies:** Phase 6 (core e-invoice generation)
+
+**Requirements:**
+- EINV-07: TDD (Tax Data Dictionary) compliance builder
+- EINV-08: MLS (Multi-Language Support) handler for Arabic fields
+- EINV-09: Real-time transmission to DCTCE platform
+- EINV-10: XML/JSON export for external systems
+
+**Success Criteria:**
+1. TDD-compliant data structures are automatically built from invoice data
+2. Arabic field content is properly encoded and transmitted without corruption
+3. E-invoices are transmitted to DCTCE with real-time status acknowledgment displayed to user
+4. Transmission failures are logged with retry mechanism and user notification
+5. Users can export e-invoices in both XML and JSON formats for integration with external systems
+
+---
+
+## Phase 8: Compliance Verification Portal
+
+**Goal:** Users have a unified dashboard to verify compliance status across all UAE requirements with pre-submission validation.
+
+**Dependencies:** Phase 3-7 (verifies all compliance features)
+
+**Requirements:**
+- VERIFY-01: Unified compliance dashboard
+- VERIFY-02: VAT compliance checklist
+- VERIFY-03: Corporate Tax compliance checklist
+- VERIFY-04: WPS compliance checklist
+- VERIFY-05: E-Invoice compliance checklist
+- VERIFY-06: Sandbox testing environment
+- VERIFY-07: FTA submission preview
+- VERIFY-08: Compliance sign-off workflow
+- VERIFY-09: Approval history tracking
+
+**Success Criteria:**
+1. Dashboard shows real-time compliance status across VAT, CT, WPS, and E-Invoice with clear pass/fail indicators
+2. Each compliance checklist shows specific items with pass/warning/fail status and remediation guidance
+3. Users can run submissions through sandbox environment before production filing
+4. FTA preview shows exactly what will be submitted with opportunity to review and correct
+5. Sign-off workflow captures approver identity, timestamp, and creates immutable approval record
+
+---
+
+## Phase 9: Standalone Compliance Package
+
+**Goal:** Compliance engine is available as independent REST API package for integration with external systems.
+
+**Dependencies:** Phase 6-7 (stable e-invoicing engine), Phase 3-5 (stable compliance engines)
+
+**Requirements:**
+- STANDALONE-01: REST API for all compliance functions
+- STANDALONE-02: Standalone deployment option
+- STANDALONE-03: Self-service onboarding portal
+- STANDALONE-04: API documentation and SDK
+
+**Success Criteria:**
+1. All compliance functions (VAT, CT, WPS, E-Invoice) are accessible via documented REST endpoints
+2. Package can be deployed independently without full Vesla ERP installation
+3. External developers can onboard and generate API keys without manual intervention
+4. SDK is available with code samples demonstrating all major integration scenarios
+
+---
+
+## Progress
+
+| Phase | Name | Status | Requirements | Completion |
+|-------|------|--------|--------------|------------|
+| 1 | Multi-Tenant Compliance Foundation | Not Started | 5 | 0% |
+| 2 | Internal Controls and Audit Infrastructure | Not Started | 5 | 0% |
+| 3 | VAT Compliance Engine | Not Started | 10 | 0% |
+| 4 | Corporate Tax Compliance | Not Started | 9 | 0% |
+| 5 | WPS Payroll Compliance | Not Started | 7 | 0% |
+| 6 | E-Invoicing Engine Core | Not Started | 6 | 0% |
+| 7 | E-Invoicing Transmission and Processing | Not Started | 4 | 0% |
+| 8 | Compliance Verification Portal | Not Started | 9 | 0% |
+| 9 | Standalone Compliance Package | Not Started | 4 | 0% |
+
+**Total:** 59 requirements across 9 phases
+
+---
+
+## Critical Path
+
+E-Invoicing (July 2026 deadline):
+```
+Phase 1 --> Phase 2 --> Phase 3 --> Phase 6 --> Phase 7
+   |           |           |
+   v           v           v
+Phase 4     Phase 5     Phase 8 --> Phase 9
+```
+
+E-invoicing (Phases 6-7) is the critical path for July 2026 pilot. Phases 4-5 can run in parallel with Phase 3 after foundation is complete.
+
+---
+
+## Revision History
+
+| Date | Change | Author |
+|------|--------|--------|
+| 2026-01-23 | Initial roadmap creation | Claude |

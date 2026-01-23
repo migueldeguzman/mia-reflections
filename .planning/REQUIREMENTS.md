@@ -125,14 +125,15 @@
 
 | REQ-ID | Phase | Status |
 |--------|-------|--------|
-| VAT-01 to VAT-10 | TBD | Pending |
-| CT-01 to CT-09 | TBD | Pending |
-| WPS-01 to WPS-07 | TBD | Pending |
-| EINV-01 to EINV-10 | TBD | Pending |
-| CTRL-01 to CTRL-05 | TBD | Pending |
-| VERIFY-01 to VERIFY-09 | TBD | Pending |
-| TENANT-01 to TENANT-05 | TBD | Pending |
-| STANDALONE-01 to STANDALONE-04 | TBD | Pending |
+| TENANT-01 to TENANT-05 | Phase 1: Multi-Tenant Foundation | Pending |
+| CTRL-01 to CTRL-05 | Phase 2: Internal Controls | Pending |
+| VAT-01 to VAT-10 | Phase 3: VAT Compliance | Pending |
+| CT-01 to CT-09 | Phase 4: Corporate Tax | Pending |
+| WPS-01 to WPS-07 | Phase 5: WPS Payroll | Pending |
+| EINV-01 to EINV-06 | Phase 6: E-Invoice Core | Pending |
+| EINV-07 to EINV-10 | Phase 7: E-Invoice Transmission | Pending |
+| VERIFY-01 to VERIFY-09 | Phase 8: Verification Portal | Pending |
+| STANDALONE-01 to STANDALONE-04 | Phase 9: Standalone Package | Pending |
 
 ---
 
