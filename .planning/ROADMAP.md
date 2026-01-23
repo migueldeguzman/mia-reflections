@@ -42,6 +42,16 @@ Plans:
 
 **Dependencies:** Phase 1 (tenant isolation required for scoped audit trails)
 
+**Plans:** 4 plans
+
+Plans:
+- [ ] 02-01-PLAN.md - Schema changes (tamper-proof fields, sequence, immutability trigger)
+- [ ] 02-02-PLAN.md - ComplianceAuditService and AuditIntegrityService
+- [ ] 02-03-PLAN.md - FTA approval workflow seed configurations
+- [ ] 02-04-PLAN.md - Integration tests for tamper-proof audit system
+
+**Status:** Planned (2026-01-24)
+
 **Requirements:**
 - CTRL-01: User action logging
 - CTRL-02: Change tracking (before/after values)
@@ -230,7 +240,7 @@ Plans:
 | Phase | Name | Status | Requirements | Completion |
 |-------|------|--------|--------------|------------|
 | 1 | Multi-Tenant Compliance Foundation | Complete | 5 | 100% |
-| 2 | Internal Controls and Audit Infrastructure | Not Started | 5 | 0% |
+| 2 | Internal Controls and Audit Infrastructure | Planned | 5 | 0% |
 | 3 | VAT Compliance Engine | Not Started | 10 | 0% |
 | 4 | Corporate Tax Compliance | Not Started | 9 | 0% |
 | 5 | WPS Payroll Compliance | Not Started | 7 | 0% |
@@ -264,3 +274,4 @@ E-invoicing (Phases 6-7) is the critical path for July 2026 pilot. Phases 4-5 ca
 | 2026-01-23 | Initial roadmap creation | Claude |
 | 2026-01-23 | Phase 1 planned - 3 plans in 2 waves | Claude |
 | 2026-01-23 | Phase 1 complete - all 5 requirements delivered | Claude |
+| 2026-01-24 | Phase 2 planned - 4 plans in 2 waves | Claude |
