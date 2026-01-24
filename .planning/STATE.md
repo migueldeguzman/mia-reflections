@@ -11,9 +11,9 @@
 ## Current Position
 
 **Phase:** 6 of 10 (E-Invoice Engine Core) - IN PROGRESS
-**Plan:** 4 of 8 complete (06-01, 06-02, 06-03, 06-04)
+**Plan:** 5 of 8 complete (06-01, 06-02, 06-03, 06-04, 06-05)
 **Status:** In progress
-**Last activity:** 2026-01-24 - Completed 06-04-PLAN.md (UBL 2.1 Schema Validator)
+**Last activity:** 2026-01-24 - Completed 06-05-PLAN.md (E-Invoice Archive Service)
 
 **Progress:**
 ```
@@ -23,12 +23,12 @@ Phase 2.5  [████████████████] Accounting Foundat
 Phase 3    [████████████████] VAT Compliance             COMPLETE (10/10)
 Phase 4    [████████████████] Corporate Tax              COMPLETE (9/9)
 Phase 5    [████████████████] WPS Payroll                COMPLETE (7/7)
-Phase 6    [████████            ] E-Invoice Core         4/8 requirements
+Phase 6    [██████████          ] E-Invoice Core         5/8 requirements
 Phase 7    [                    ] E-Invoice Transmission 0/4 requirements
 Phase 8    [                    ] Verification Portal    0/9 requirements
 Phase 9    [                    ] Standalone Package     0/4 requirements
            |██████████████████████████████░░░░░░░░░░░░░|
-Overall: 52/71 requirements (~73%)
+Overall: 53/71 requirements (~75%)
 ```
 
 ---
@@ -37,8 +37,8 @@ Overall: 52/71 requirements (~73%)
 
 | Metric | Value | Notes |
 |--------|-------|-------|
-| Plans completed | 47+ | 01-01 to 02-04, 02.5-*, 03-01 to 03-10, 04-01 to 04-09, 05-01 to 05-07, 06-01, 06-02, 06-03, 06-04 |
-| Requirements delivered | 53/71 | TENANT-01-05, CTRL-01-04, ACCT-01-12, VAT-01-10, CT-01 to CT-09, WPS-01 to WPS-07, EINV-01 (partial), EINV-02, EINV-03, EINV-04, EINV-05 (partial) |
+| Plans completed | 48+ | 01-01 to 02-04, 02.5-*, 03-01 to 03-10, 04-01 to 04-09, 05-01 to 05-07, 06-01, 06-02, 06-03, 06-04, 06-05 |
+| Requirements delivered | 53/71 | TENANT-01-05, CTRL-01-04, ACCT-01-12, VAT-01-10, CT-01 to CT-09, WPS-01 to WPS-07, EINV-01 (partial), EINV-02, EINV-03, EINV-04, EINV-05 |
 | Phases completed | 6/10 | Phases 1, 2, 2.5, 3, 4, 5 complete; Phase 6 in progress |
 | Blockers encountered | 0 | - |
 | Decisions made | 40+ | See Key Decisions table |
@@ -141,6 +141,10 @@ Overall: 52/71 requirements (~73%)
 | WPS error code format XX-NNN | MOHRE-style error codes with 2-letter category + 3-digit number | 2026-01-24 |
 | isResolved computed from resolvedAt | Derive boolean from timestamp instead of separate column | 2026-01-24 |
 | 32 WPS error codes covering 9 categories | Comprehensive coverage of SIF submission failure scenarios | 2026-01-24 |
+| PostgreSQL sequence for archive numbering | Uses einvoice_archive_seq for atomic, gap-free sequence numbers | 2026-01-24 |
+| Archive hash chain reuses Phase 2 pattern | Same SHA-256 hash chain pattern as audit_logs for consistency | 2026-01-24 |
+| 7-year retention via constant | EINVOICE_RETENTION_YEARS=7 constant for FTA EINV-05 compliance | 2026-01-24 |
+| Database trigger for archive immutability | einvoice_archives_immutable_trigger blocks core field modifications | 2026-01-24 |
 
 ### Technical Notes
 
@@ -207,36 +211,35 @@ None currently.
 ### Last Session
 
 **Date:** 2026-01-24
-**Completed:** Phase 6 Plan 04 (UBL 2.1 Schema Validator)
+**Completed:** Phase 6 Plan 05 (E-Invoice Archive Service)
 **Activity:**
-- Executed Plan 06-04: UBL validator service
-- Created UblValidatorService with validateInvoice() method
-- Implemented 16 validation rules (12 PINT-AE + 4 UBL structure)
-- Schema loaded once at initialization (not per-request)
-- Validation errors include element paths and specific messages
-- All 54 unit tests passing
+- Executed Plan 06-05: E-invoice archive service
+- Created EInvoiceArchiveService with archiveEInvoice() method
+- SHA-256 hash chain linking records for tamper-proof storage
+- 7-year retention management with EINVOICE_RETENTION_YEARS constant
+- verifyIntegrity() for date range integrity checks
+- checkRetention() for expiring archive reports
+- All 29 unit tests passing
 
 ### Context for Next Session
 
-1. **Phase 6 IN PROGRESS** - 4/8 plans complete (06-01, 06-02, 06-03, 06-04)
-2. **Next Plan:** 06-05 (E-Invoice Archive Service)
-3. **Key Features Delivered (06-04):**
-   - UblValidatorService with complete validation pipeline
-   - 12 PINT-AE business rules (CustomizationID, ProfileID, TRN, etc.)
-   - 4 UBL structure rules (namespace, root element, monetary totals)
-   - Context-aware header extraction to distinguish invoice ID from line IDs
-   - XPath-like element paths in error messages
-   - Quick structural check via hasValidStructure()
-   - Batch validation support
-   - 54 unit tests covering all validation scenarios
+1. **Phase 6 IN PROGRESS** - 5/8 plans complete (06-01, 06-02, 06-03, 06-04, 06-05)
+2. **Next Plan:** 06-06 (E-Invoice Generation Orchestrator)
+3. **Key Features Delivered (06-05):**
+   - EInvoiceArchiveService with tamper-proof storage
+   - archiveEInvoice() within Prisma transaction for atomicity
+   - PostgreSQL sequence for atomic, gap-free numbering
+   - verifyIntegrity() detects chain breaks and hash tampering
+   - checkRetention() identifies active/expiring/expired archives
+   - getStatistics() for archive analytics
+   - 29 unit tests covering all archive operations
 
 ### Files Modified This Session
 
-**Created (Phase 6 Plan 04):**
-- `web-erp-app/backend/src/services/einvoice/ubl-validator.service.ts`
-- `web-erp-app/backend/src/services/einvoice/__tests__/ubl-validator.service.test.ts`
-- `web-erp-app/backend/src/schemas/ubl/README.md`
-- `.planning/phases/06-e-invoicing-engine-core/06-04-SUMMARY.md`
+**Created (Phase 6 Plan 05):**
+- `web-erp-app/backend/src/services/einvoice/einvoice-archive.service.ts`
+- `web-erp-app/backend/src/services/einvoice/__tests__/einvoice-archive.service.test.ts`
+- `.planning/phases/06-e-invoicing-engine-core/06-05-SUMMARY.md`
 
 **Modified:**
 - `web-erp-app/backend/src/services/einvoice/index.ts`
@@ -246,7 +249,7 @@ None currently.
 ## Quick Reference
 
 **Current Phase:** 6 - E-Invoice Core (IN PROGRESS)
-**Next Action:** Execute 06-05 (E-Invoice Archive Service)
+**Next Action:** Execute 06-06 (E-Invoice Generation Orchestrator)
 **Critical Deadline:** July 2026 (e-invoicing pilot)
 **Total Scope:** 71 requirements, 10 phases
 
@@ -276,7 +279,12 @@ None currently.
 | PINT AE XML Validation | 8 | PASS |
 | PINT AE Line Numbering | 2 | PASS |
 | PINT AE Item Classification | 2 | PASS |
-| **Total** | **91** | **ALL PASS** |
+| E-Invoice Archive Operations | 8 | PASS |
+| Archive Hash Chain | 5 | PASS |
+| Archive Integrity Verification | 5 | PASS |
+| Archive Retention Management | 4 | PASS |
+| Archive Listing & Stats | 7 | PASS |
+| **Total** | **120** | **ALL PASS** |
 
 ### Phase 2 Test Coverage
 
