@@ -4,16 +4,16 @@
 
 **Core Value:** Full UAE tax and regulatory compliance (VAT, CT, WPS, E-Invoicing) enabling Vesla ERP customers to meet FTA requirements and participate in UAE e-invoicing pilot by July 2026.
 
-**Current Focus:** Phase 3 - VAT Compliance Engine. Building centralized VAT calculation with Form 201 box assignments and reverse charge mechanism for UAE FTA compliance.
+**Current Focus:** Phase 4 - Corporate Tax Compliance. Building UAE CT (9% on profits > AED 375K) with tax loss tracking, transfer pricing, and tax group consolidation.
 
 ---
 
 ## Current Position
 
-**Phase:** 3 of 10 (VAT Compliance Engine) - COMPLETE
-**Plan:** 10 of 10 complete (03-01 to 03-10)
-**Status:** Phase complete
-**Last activity:** 2026-01-24 - Completed 03-10-PLAN.md (Integration Tests & Audit Trail)
+**Phase:** 4 of 10 (Corporate Tax Compliance) - IN PROGRESS
+**Plan:** 2 of 9 complete (04-01, 04-02)
+**Status:** In progress
+**Last activity:** 2026-01-24 - Completed 04-02-PLAN.md (CT Chart Mapping Service)
 
 **Progress:**
 ```
@@ -21,7 +21,7 @@ Phase 1    [████████████████] Multi-Tenant Found
 Phase 2    [████████████████] Internal Controls          COMPLETE (5/5 req)
 Phase 2.5  [████████████████] Accounting Foundation      COMPLETE (12/12 req)
 Phase 3    [████████████████] VAT Compliance             COMPLETE (10/10)
-Phase 4    [                ] Corporate Tax              0/9 requirements
+Phase 4    [████            ] Corporate Tax              2/9 requirements
 Phase 5    [                ] WPS Payroll                0/7 requirements
 Phase 6    [                ] E-Invoice Core             0/6 requirements
 Phase 7    [                ] E-Invoice Transmission     0/4 requirements
@@ -37,9 +37,9 @@ Overall: 32/71 requirements (~45%)
 
 | Metric | Value | Notes |
 |--------|-------|-------|
-| Plans completed | 17+ | 01-01 to 02-04, 02.5-*, 03-01 to 03-10 |
-| Requirements delivered | 32/71 | TENANT-01-05, CTRL-01-04, ACCT-01-12, VAT-01-10 |
-| Phases completed | 4/10 | Phases 1, 2, 2.5, 3 complete |
+| Plans completed | 19+ | 01-01 to 02-04, 02.5-*, 03-01 to 03-10, 04-01 to 04-02 |
+| Requirements delivered | 34/71 | TENANT-01-05, CTRL-01-04, ACCT-01-12, VAT-01-10, CT-01 to CT-02 |
+| Phases completed | 4/10 | Phases 1, 2, 2.5, 3 complete; Phase 4 in progress |
 | Blockers encountered | 0 | - |
 | Decisions made | 40+ | See Key Decisions table |
 
@@ -92,6 +92,9 @@ Overall: 32/71 requirements (~45%)
 | Use existing AuditAction enum | Map VAT actions to existing enum values to avoid schema migration | 2026-01-24 |
 | Role-based VAT permissions | 4 role bundles (Accountant, Finance Manager, CFO, Auditor) for separation of duties | 2026-01-24 |
 | 7-year audit retention check | FTA VAT-09 requires queryable audit logs for 7 years | 2026-01-24 |
+| Pattern-based CT mapping | Regex on account codes + name keywords for flexible auto-mapping | 2026-01-24 |
+| Two-pass matching algorithm | First pass: code+name (specific); second pass: code-only (fallback) | 2026-01-24 |
+| Deductibility percentages in service | FULLY_DEDUCTIBLE=100%, ENTERTAINMENT=50%, NON_DEDUCTIBLE=0% | 2026-01-24 |
 
 ### Technical Notes
 
