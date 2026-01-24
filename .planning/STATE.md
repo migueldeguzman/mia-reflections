@@ -11,24 +11,24 @@
 ## Current Position
 
 **Phase:** 3 of 10 (VAT Compliance Engine) - IN PROGRESS
-**Plan:** 3 of 10 complete (03-01, 03-02, 03-03)
+**Plan:** 4 of 10 complete (03-01, 03-02, 03-03, 03-04)
 **Status:** In progress
-**Last activity:** 2026-01-24 - Completed 03-03-PLAN.md (FTA-Compliant Tax Invoice Service)
+**Last activity:** 2026-01-24 - Completed 03-04-PLAN.md (Credit/Debit Note Services)
 
 **Progress:**
 ```
 Phase 1    [████████████████] Multi-Tenant Foundation    COMPLETE (5/5 req)
 Phase 2    [████████████████] Internal Controls          COMPLETE (5/5 req)
 Phase 2.5  [                ] Accounting Foundation      NOT STARTED (0/12 req)
-Phase 3    [███             ] VAT Compliance             3/10 requirements (03-01, 03-02, 03-03)
+Phase 3    [████            ] VAT Compliance             4/10 requirements (03-01, 03-02, 03-03, 03-04)
 Phase 4    [                ] Corporate Tax              0/9 requirements
 Phase 5    [                ] WPS Payroll                0/7 requirements
 Phase 6    [                ] E-Invoice Core             0/6 requirements
 Phase 7    [                ] E-Invoice Transmission     0/4 requirements
 Phase 8    [                ] Verification Portal        0/9 requirements
 Phase 9    [                ] Standalone Package         0/4 requirements
-           |██████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░|
-Overall: 13/71 requirements (~18%)
+           |███████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░|
+Overall: 14/71 requirements (~20%)
 ```
 
 ---
@@ -37,11 +37,11 @@ Overall: 13/71 requirements (~18%)
 
 | Metric | Value | Notes |
 |--------|-------|-------|
-| Plans completed | 10 | 01-01, 01-02, 01-03, 02-01, 02-02, 02-03, 02-04, 03-01, 03-02, 03-03 |
-| Requirements delivered | 13/71 | TENANT-01-05, CTRL-01-04, VAT-01 (schema), VAT-02 (calculation), VAT-03 (invoice) |
+| Plans completed | 11 | 01-01, 01-02, 01-03, 02-01, 02-02, 02-03, 02-04, 03-01, 03-02, 03-03, 03-04 |
+| Requirements delivered | 14/71 | TENANT-01-05, CTRL-01-04, VAT-01 (schema), VAT-02 (calc), VAT-03 (invoice), VAT-04 (credit/debit) |
 | Phases completed | 2/10 | Phase 2 complete, Phase 3 in progress |
 | Blockers encountered | 0 | - |
-| Decisions made | 28 | See Key Decisions table |
+| Decisions made | 30 | See Key Decisions table |
 
 ---
 
@@ -77,6 +77,8 @@ Overall: 13/71 requirements (~18%)
 | FOR UPDATE lock for invoice numbers | Prevents race conditions in concurrent invoice creation with retry logic | 2026-01-24 |
 | VatCalculationService via DI injection | Ensures consistent VAT calculation across all invoice types | 2026-01-24 |
 | Bilingual template with Noto Sans Arabic | FTA requires Arabic content; fallback fonts for reliable rendering | 2026-01-24 |
+| Credit note mandatory original reference | FTA Article 70 requires credit notes to reference original invoice | 2026-01-24 |
+| 14-day rule warning not error | Business may have valid reasons for late issuance; log for FTA audit | 2026-01-24 |
 
 ### Technical Notes
 
@@ -143,40 +145,40 @@ None currently.
 ### Last Session
 
 **Date:** 2026-01-24
-**Completed:** Plan 03-03 FTA-Compliant Tax Invoice Service
+**Completed:** Plan 03-04 Credit/Debit Note Services
 **Activity:**
-- Created VatInvoiceService for FTA Article 59 compliance (1085 lines)
-- Created bilingual Handlebars template for tax invoices (592 lines)
-- Implemented FOR UPDATE lock for sequential invoice numbering
-- Integrated VatCalculationService via DI injection
-- Added reverse charge statement generation
+- Created TaxCreditNoteService with FTA Article 70 compliance (746 lines)
+- Created TaxDebitNoteService for invoice value increases (642 lines)
+- Implemented mandatory original invoice reference validation
+- Added 14-day rule validation with warning logging
+- Registered both services in DI container
 
 ### Context for Next Session
 
-1. **Invoice Service Ready** - VatInvoiceService in DI container
-2. **All 13 FTA Fields** - Article 59 compliance complete
-3. **Sequential Numbering** - Race-condition protected via FOR UPDATE lock
-4. **Bilingual Support** - Template with Arabic labels and fonts
-5. **Next Plan** - 03-04 VAT Return Generation
+1. **Credit/Debit Services Ready** - TaxCreditNoteService and TaxDebitNoteService in DI container
+2. **Original Invoice Reference** - Mandatory per FTA Article 70
+3. **14-Day Rule** - Validated with warnings for late issuance
+4. **Sequential Numbering** - CN-YYYY-NNNNNN and DN-YYYY-NNNNNN formats
+5. **Next Plan** - 03-05 VAT Period Management
 
 ### Files Modified This Session
 
-**Created (Phase 3 Plan 03):**
-- `backend/src/services/vat/vat-invoice.service.ts` - Tax invoice generation (1085 lines)
-- `backend/src/templates/invoice/tax-invoice.hbs` - Bilingual template (592 lines)
-- `.planning/phases/03-vat-compliance-engine/03-03-SUMMARY.md` - Plan summary
+**Created (Phase 3 Plan 04):**
+- `backend/src/services/vat/tax-credit-note.service.ts` - Tax credit note service (746 lines)
+- `backend/src/services/vat/tax-debit-note.service.ts` - Tax debit note service (642 lines)
+- `.planning/phases/03-vat-compliance-engine/03-04-SUMMARY.md` - Plan summary
 
 **Modified:**
-- `backend/src/config/container.ts` - Added VatInvoiceService binding
-- `backend/src/config/types.ts` - Added VatInvoiceService type symbol
-- `backend/src/services/vat/index.ts` - Added VatInvoiceService exports
+- `backend/src/config/container.ts` - Added TaxCreditNoteService and TaxDebitNoteService bindings
+- `backend/src/config/types.ts` - Added service type symbols
+- `backend/src/services/vat/index.ts` - Added service exports
 
 ---
 
 ## Quick Reference
 
 **Current Phase:** 3 - VAT Compliance Engine (IN PROGRESS)
-**Next Action:** Execute 03-04 VAT Return Generation
+**Next Action:** Execute 03-05 VAT Period Management
 **Critical Deadline:** July 2026 (e-invoicing pilot)
 **Total Scope:** 71 requirements, 10 phases
 
