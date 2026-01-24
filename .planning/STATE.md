@@ -11,9 +11,9 @@
 ## Current Position
 
 **Phase:** 6 of 10 (E-Invoice Engine Core) - IN PROGRESS
-**Plan:** 2 of 8 complete (06-01, 06-02)
+**Plan:** 3 of 8 complete (06-01, 06-02, 06-03)
 **Status:** In progress
-**Last activity:** 2026-01-24 - Completed 06-01-PLAN.md (E-Invoice Archive Schema)
+**Last activity:** 2026-01-24 - Completed 06-03-PLAN.md (PINT AE XML Builder)
 
 **Progress:**
 ```
@@ -23,7 +23,7 @@ Phase 2.5  [████████████████] Accounting Foundat
 Phase 3    [████████████████] VAT Compliance             COMPLETE (10/10)
 Phase 4    [████████████████] Corporate Tax              COMPLETE (9/9)
 Phase 5    [████████████████] WPS Payroll                COMPLETE (7/7)
-Phase 6    [████                ] E-Invoice Core         2/8 requirements
+Phase 6    [██████              ] E-Invoice Core         3/8 requirements
 Phase 7    [                    ] E-Invoice Transmission 0/4 requirements
 Phase 8    [                    ] Verification Portal    0/9 requirements
 Phase 9    [                    ] Standalone Package     0/4 requirements
@@ -37,8 +37,8 @@ Overall: 51/71 requirements (~72%)
 
 | Metric | Value | Notes |
 |--------|-------|-------|
-| Plans completed | 45+ | 01-01 to 02-04, 02.5-*, 03-01 to 03-10, 04-01 to 04-09, 05-01 to 05-07, 06-01, 06-02 |
-| Requirements delivered | 52/71 | TENANT-01-05, CTRL-01-04, ACCT-01-12, VAT-01-10, CT-01 to CT-09, WPS-01 to WPS-07, EINV-03, EINV-05 (partial) |
+| Plans completed | 46+ | 01-01 to 02-04, 02.5-*, 03-01 to 03-10, 04-01 to 04-09, 05-01 to 05-07, 06-01, 06-02, 06-03 |
+| Requirements delivered | 52/71 | TENANT-01-05, CTRL-01-04, ACCT-01-12, VAT-01-10, CT-01 to CT-09, WPS-01 to WPS-07, EINV-01 (partial), EINV-03, EINV-05 (partial) |
 | Phases completed | 6/10 | Phases 1, 2, 2.5, 3, 4, 5 complete; Phase 6 in progress |
 | Blockers encountered | 0 | - |
 | Decisions made | 40+ | See Key Decisions table |
@@ -134,6 +134,7 @@ Overall: 51/71 requirements (~72%)
 | Manual CSV for SIF generation | Array.join() for fixed 10-field EDR/SCR; csv-stringify overhead not needed | 2026-01-24 |
 | Employer config as parameter | Accept molEstablishmentId via parameter; flexible for different config sources | 2026-01-24 |
 | Bank routing from IBAN extraction | Extract 3-digit bank code from IBAN positions 4-6, pad to 9 digits | 2026-01-24 |
+| fast-xml-parser XMLBuilder | Use XMLBuilder from fast-xml-parser for UBL 2.1 XML generation | 2026-01-24 |
 
 ### Technical Notes
 
@@ -200,44 +201,44 @@ None currently.
 ### Last Session
 
 **Date:** 2026-01-24
-**Completed:** Phase 6 Plan 01 (E-Invoice Archive Schema)
+**Completed:** Phase 6 Plan 03 (PINT AE XML Builder)
 **Activity:**
-- Executed Plan 06-01: E-invoice archive schema with tamper-proof hash chain
-- Verified EInvoiceStatus and EInvoiceFormat enums in schema
-- Verified EINVOICE_GENERATE, EINVOICE_SUBMIT, EINVOICE_CANCEL in AuditAction
-- Verified einvoice_archives model with hash chain fields
-- Verified einvoice.types.ts with all required TypeScript interfaces
-- All schema validations passing, all type exports verified
+- Executed Plan 06-03: PINT AE XML builder service
+- Created PintAeBuilderService with buildInvoiceXml() and buildCreditNoteXml()
+- Correct UBL 2.1 namespace handling (Invoice, CAC, CBC)
+- QR code embedding in cac:AdditionalDocumentReference
+- All 45 unit tests passing
 
 ### Context for Next Session
 
-1. **Phase 6 IN PROGRESS** - 2/8 plans complete (06-01, 06-02)
-2. **Next Plan:** 06-03 (UBL 2.1 XML Generator)
-3. **Key Features Delivered (06-01):**
-   - EInvoiceStatus enum (GENERATED, VALIDATED, SUBMITTED, ACCEPTED, REJECTED, CANCELLED, ARCHIVED)
-   - EInvoiceFormat enum (PINT_AE, UBL_21)
-   - einvoice_archives model with hash chain fields
-   - PostgreSQL immutability trigger for core fields
-   - TypeScript interfaces for e-invoice data structures
-   - PINT_AE_CONSTANTS with specification values
-   - TlvTag enum for QR code encoding
+1. **Phase 6 IN PROGRESS** - 3/8 plans complete (06-01, 06-02, 06-03)
+2. **Next Plan:** 06-04 (E-Invoice Archive Service)
+3. **Key Features Delivered (06-03):**
+   - PintAeBuilderService with complete UBL 2.1 XML generation
+   - PINT AE CustomizationID: urn:peppol:pint:billing-1@ae-1.0.1
+   - DocumentCurrencyCode always AED for UAE compliance
+   - Supplier TRN uses AEUAE-TRN scheme identifier
+   - QR code embedding per UBL 2.1 specification
+   - Support for standard invoice (380) and credit note (381)
+   - Tax categories: S (Standard), Z (Zero), AE (Reverse Charge)
+   - 45 unit tests for XML structure validation
 
 ### Files Modified This Session
 
-**Created (Phase 6 Plan 01):**
-- `.planning/phases/06-e-invoicing-engine-core/06-01-SUMMARY.md`
+**Created (Phase 6 Plan 03):**
+- `web-erp-app/backend/src/services/einvoice/pint-ae-builder.service.ts`
+- `web-erp-app/backend/src/services/einvoice/__tests__/pint-ae-builder.service.test.ts`
+- `.planning/phases/06-e-invoicing-engine-core/06-03-SUMMARY.md`
 
-**Verified from previous commits:**
-- `web-erp-app/backend/prisma/migrations/20260124191900_einvoice_archive_schema/migration.sql`
-- `web-erp-app/backend/src/types/einvoice.types.ts`
-- `web-erp-app/backend/prisma/schema.prisma` (EInvoice enums and model)
+**Modified:**
+- `web-erp-app/backend/src/services/einvoice/index.ts`
 
 ---
 
 ## Quick Reference
 
 **Current Phase:** 6 - E-Invoice Core (IN PROGRESS)
-**Next Action:** Execute 06-03 (UBL 2.1 XML Generator)
+**Next Action:** Execute 06-04 (E-Invoice Archive Service)
 **Critical Deadline:** July 2026 (e-invoicing pilot)
 **Total Scope:** 71 requirements, 10 phases
 
@@ -261,7 +262,13 @@ None currently.
 | Concurrent Generation | 1 | PASS |
 | Custom Options | 2 | PASS |
 | Arabic Preservation | 3 | PASS |
-| **Total** | **46** | **ALL PASS** |
+| PINT AE Invoice XML | 22 | PASS |
+| PINT AE QR Embedding | 6 | PASS |
+| PINT AE Credit Note | 5 | PASS |
+| PINT AE XML Validation | 8 | PASS |
+| PINT AE Line Numbering | 2 | PASS |
+| PINT AE Item Classification | 2 | PASS |
+| **Total** | **91** | **ALL PASS** |
 
 ### Phase 2 Test Coverage
 
