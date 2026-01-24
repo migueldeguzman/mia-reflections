@@ -11,9 +11,9 @@
 ## Current Position
 
 **Phase:** 4 of 10 (Corporate Tax Compliance) - IN PROGRESS
-**Plan:** 7 of 9 complete (04-01, 04-02, 04-03, 04-04, 04-05, 04-06, 04-08)
+**Plan:** 8 of 9 complete (04-01, 04-02, 04-03, 04-04, 04-05, 04-06, 04-07, 04-08)
 **Status:** In progress
-**Last activity:** 2026-01-24 - Completed 04-08-PLAN.md (CT Retention Service)
+**Last activity:** 2026-01-24 - Completed 04-07-PLAN.md (Tax Group Service)
 
 **Progress:**
 ```
@@ -21,7 +21,7 @@ Phase 1    [████████████████] Multi-Tenant Found
 Phase 2    [████████████████] Internal Controls          COMPLETE (5/5 req)
 Phase 2.5  [████████████████] Accounting Foundation      COMPLETE (12/12 req)
 Phase 3    [████████████████] VAT Compliance             COMPLETE (10/10)
-Phase 4    [███████████████ ] Corporate Tax              7/9 requirements
+Phase 4    [████████████████] Corporate Tax              8/9 requirements
 Phase 5    [                ] WPS Payroll                0/7 requirements
 Phase 6    [                ] E-Invoice Core             0/6 requirements
 Phase 7    [                ] E-Invoice Transmission     0/4 requirements
@@ -37,8 +37,8 @@ Overall: 33/71 requirements (~46%)
 
 | Metric | Value | Notes |
 |--------|-------|-------|
-| Plans completed | 20+ | 01-01 to 02-04, 02.5-*, 03-01 to 03-10, 04-01 to 04-06, 04-08 |
-| Requirements delivered | 39/71 | TENANT-01-05, CTRL-01-04, ACCT-01-12, VAT-01-10, CT-01 to CT-08 |
+| Plans completed | 21+ | 01-01 to 02-04, 02.5-*, 03-01 to 03-10, 04-01 to 04-08 |
+| Requirements delivered | 40/71 | TENANT-01-05, CTRL-01-04, ACCT-01-12, VAT-01-10, CT-01 to CT-09 |
 | Phases completed | 4/10 | Phases 1, 2, 2.5, 3 complete; Phase 4 in progress |
 | Blockers encountered | 0 | - |
 | Decisions made | 40+ | See Key Decisions table |
@@ -109,6 +109,9 @@ Overall: 33/71 requirements (~46%)
 | 7-year retention from period end | UAE Federal Decree-Law No. 47 Article 36 requires retention from period end | 2026-01-24 |
 | 6-month warning threshold | Adequate time for archival and backup before retention expires | 2026-01-24 |
 | 80% audit log completeness | Reasonable threshold allowing for gaps while ensuring audit trail | 2026-01-24 |
+| 95% ownership threshold from CT_CONSTANTS | UAE CT Law requires parent to own 95%+ of share capital, voting rights, profit entitlement for tax group | 2026-01-24 |
+| Audit logs for loss transfer history | tax_loss_transfers table doesn't exist; use audit logs with entity='TaxLossTransfer' | 2026-01-24 |
+| Simplified tax group eligibility checks | Default to IFRS, December year-end, UAE resident, not exempt/QFZP when tenant config unavailable | 2026-01-24 |
 
 ### Technical Notes
 
@@ -175,37 +178,37 @@ None currently.
 ### Last Session
 
 **Date:** 2026-01-24
-**Completed:** Phase 4 Plan 08 (CT Retention Service)
+**Completed:** Phase 4 Plan 07 (Tax Group Service)
 **Activity:**
-- Executed Plan 04-08: CtRetentionService (922 lines)
-- CT-08: 7-year record retention enforcement
-- Deletion prevention for records within retention period
-- 6-month expiry warning threshold
-- FTA audit report generation
+- Executed Plan 04-07: TaxGroupService (1624 lines)
+- CT-09: Tax group consolidation for 95%+ ownership
+- Consolidated CT return generation
+- Intercompany elimination calculations
+- Loss transfer between group members
 - DI container integration
 
 ### Context for Next Session
 
-1. **Phase 4 IN PROGRESS** - 7/9 plans complete (04-01 to 04-06, 04-08)
-2. **CT Retention Service Ready** - CT-08 compliance complete
-3. **Next Plans** - 04-07 (Tax Loss), 04-09 (CT Integration Tests)
-4. **Key Features Delivered (04-08):**
-   - checkRetentionCompliance(): Full 7-year compliance check
-   - enforceRetention(): Middleware hook for deletion prevention
-   - getExpiringRecords(): 6-month warning notifications
-   - generateAuditReport(): FTA-ready audit reports
-   - getFullRetentionHistory(): 7-year span queries
-   - RETENTION_YEARS=7, WARNING_MONTHS=6
+1. **Phase 4 IN PROGRESS** - 8/9 plans complete (04-01 to 04-08)
+2. **Tax Group Service Ready** - CT-09 compliance complete
+3. **Next Plans** - 04-09 (CT Integration Tests)
+4. **Key Features Delivered (04-07):**
+   - createTaxGroup(): Form groups with 95%+ ownership
+   - checkMemberEligibility(): 8 eligibility criteria checks
+   - generateConsolidatedReturn(): Aggregate member taxable incomes
+   - calculateIntercompanyEliminations(): Remove intra-group transactions
+   - transferLoss(): Loss offset between group members
+   - 9-month filing deadline calculation
 
 ### Files Modified This Session
 
-**Created (Phase 4 Plan 08):**
-- `web-erp-app/backend/src/services/corporate-tax/ct-retention.service.ts`
-- `.planning/phases/04-corporate-tax-compliance/04-08-SUMMARY.md`
+**Created (Phase 4 Plan 07):**
+- `web-erp-app/backend/src/services/corporate-tax/tax-group.service.ts`
+- `.planning/phases/04-corporate-tax-compliance/04-07-SUMMARY.md`
 
 **Modified:**
-- `web-erp-app/backend/src/config/types.ts` - Added CtRetentionService symbol
-- `web-erp-app/backend/src/config/container.ts` - Added CtRetentionService binding
+- `web-erp-app/backend/src/config/types.ts` - Added TaxGroupService symbol
+- `web-erp-app/backend/src/config/container.ts` - Added TaxGroupService binding
 - `web-erp-app/backend/src/services/corporate-tax/index.ts` - Added exports
 
 ---
