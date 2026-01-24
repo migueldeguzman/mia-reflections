@@ -11,9 +11,9 @@
 ## Current Position
 
 **Phase:** 6 of 10 (E-Invoice Engine Core) - IN PROGRESS
-**Plan:** 5 of 8 complete (06-01, 06-02, 06-03, 06-04, 06-05)
+**Plan:** 6 of 8 complete (06-01, 06-02, 06-03, 06-04, 06-05, 06-06)
 **Status:** In progress
-**Last activity:** 2026-01-24 - Completed 06-05-PLAN.md (E-Invoice Archive Service)
+**Last activity:** 2026-01-24 - Completed 06-06-PLAN.md (E-Invoice Orchestration Service)
 
 **Progress:**
 ```
@@ -23,12 +23,12 @@ Phase 2.5  [████████████████] Accounting Foundat
 Phase 3    [████████████████] VAT Compliance             COMPLETE (10/10)
 Phase 4    [████████████████] Corporate Tax              COMPLETE (9/9)
 Phase 5    [████████████████] WPS Payroll                COMPLETE (7/7)
-Phase 6    [██████████          ] E-Invoice Core         5/8 requirements
+Phase 6    [████████████        ] E-Invoice Core         6/8 requirements
 Phase 7    [                    ] E-Invoice Transmission 0/4 requirements
 Phase 8    [                    ] Verification Portal    0/9 requirements
 Phase 9    [                    ] Standalone Package     0/4 requirements
            |██████████████████████████████░░░░░░░░░░░░░|
-Overall: 53/71 requirements (~75%)
+Overall: 54/71 requirements (~76%)
 ```
 
 ---
@@ -37,8 +37,8 @@ Overall: 53/71 requirements (~75%)
 
 | Metric | Value | Notes |
 |--------|-------|-------|
-| Plans completed | 48+ | 01-01 to 02-04, 02.5-*, 03-01 to 03-10, 04-01 to 04-09, 05-01 to 05-07, 06-01, 06-02, 06-03, 06-04, 06-05 |
-| Requirements delivered | 53/71 | TENANT-01-05, CTRL-01-04, ACCT-01-12, VAT-01-10, CT-01 to CT-09, WPS-01 to WPS-07, EINV-01 (partial), EINV-02, EINV-03, EINV-04, EINV-05 |
+| Plans completed | 49+ | 01-01 to 02-04, 02.5-*, 03-01 to 03-10, 04-01 to 04-09, 05-01 to 05-07, 06-01, 06-02, 06-03, 06-04, 06-05, 06-06 |
+| Requirements delivered | 54/71 | TENANT-01-05, CTRL-01-04, ACCT-01-12, VAT-01-10, CT-01 to CT-09, WPS-01 to WPS-07, EINV-01, EINV-02, EINV-03, EINV-04, EINV-05, EINV-06 (partial - interface only) |
 | Phases completed | 6/10 | Phases 1, 2, 2.5, 3, 4, 5 complete; Phase 6 in progress |
 | Blockers encountered | 0 | - |
 | Decisions made | 40+ | See Key Decisions table |
@@ -145,6 +145,10 @@ Overall: 53/71 requirements (~75%)
 | Archive hash chain reuses Phase 2 pattern | Same SHA-256 hash chain pattern as audit_logs for consistency | 2026-01-24 |
 | 7-year retention via constant | EINVOICE_RETENTION_YEARS=7 constant for FTA EINV-05 compliance | 2026-01-24 |
 | Database trigger for archive immutability | einvoice_archives_immutable_trigger blocks core field modifications | 2026-01-24 |
+| QR code generated FIRST then embedded | QR needs XML hash, but hash changes if QR embedded - generate initial QR, embed, regenerate final QR | 2026-01-24 |
+| ASP interface + stub pattern | Interface now, stub until Phase 7, allows compile-time safety with runtime flexibility | 2026-01-24 |
+| EINVOICE_GENERATE audit action reuse | Use existing Phase 2 audit action, consistent with audit framework | 2026-01-24 |
+| Singleton scope for e-invoice services | Stateless services bound as singleton for memory efficiency | 2026-01-24 |
 
 ### Technical Notes
 
@@ -211,45 +215,46 @@ None currently.
 ### Last Session
 
 **Date:** 2026-01-24
-**Completed:** Phase 6 Plan 05 (E-Invoice Archive Service)
+**Completed:** Phase 6 Plan 06 (E-Invoice Orchestration Service)
 **Activity:**
-- Executed Plan 06-05: E-invoice archive service
-- Created EInvoiceArchiveService with archiveEInvoice() method
-- SHA-256 hash chain linking records for tamper-proof storage
-- 7-year retention management with EINVOICE_RETENTION_YEARS constant
-- verifyIntegrity() for date range integrity checks
-- checkRetention() for expiring archive reports
-- All 29 unit tests passing
+- Executed Plan 06-06: E-invoice orchestration service
+- Created EInvoiceService orchestrating all sub-services
+- generateEInvoice(): QR -> XML -> validate -> archive -> audit
+- generateCreditNote(): Credit note with original invoice reference
+- IAspClient interface and AspClientStub for Phase 7 ASP integration
+- DI container registration for all 6 e-invoice services
+- 3 commits: ASP interface, orchestration service, DI configuration
 
 ### Context for Next Session
 
-1. **Phase 6 IN PROGRESS** - 5/8 plans complete (06-01, 06-02, 06-03, 06-04, 06-05)
-2. **Next Plan:** 06-06 (E-Invoice Generation Orchestrator)
-3. **Key Features Delivered (06-05):**
-   - EInvoiceArchiveService with tamper-proof storage
-   - archiveEInvoice() within Prisma transaction for atomicity
-   - PostgreSQL sequence for atomic, gap-free numbering
-   - verifyIntegrity() detects chain breaks and hash tampering
-   - checkRetention() identifies active/expiring/expired archives
-   - getStatistics() for archive analytics
-   - 29 unit tests covering all archive operations
+1. **Phase 6 IN PROGRESS** - 6/8 plans complete (06-01 through 06-06)
+2. **Next Plan:** 06-07 (E-Invoice Controller and Routes)
+3. **Key Features Delivered (06-06):**
+   - EInvoiceService with generateEInvoice(), generateCreditNote()
+   - Orchestration: QR code -> XML build -> validate -> archive -> audit
+   - Validation failures block archiving with clear error messages
+   - IAspClient interface with submitEInvoice, checkStatus, cancelSubmission
+   - AspClientStub allows Phase 6 to compile without ASP
+   - DI symbols and bindings for all e-invoice services
 
 ### Files Modified This Session
 
-**Created (Phase 6 Plan 05):**
-- `web-erp-app/backend/src/services/einvoice/einvoice-archive.service.ts`
-- `web-erp-app/backend/src/services/einvoice/__tests__/einvoice-archive.service.test.ts`
-- `.planning/phases/06-e-invoicing-engine-core/06-05-SUMMARY.md`
+**Created (Phase 6 Plan 06):**
+- `web-erp-app/backend/src/services/einvoice/asp-client.interface.ts`
+- `web-erp-app/backend/src/services/einvoice/einvoice.service.ts`
+- `.planning/phases/06-e-invoicing-engine-core/06-06-SUMMARY.md`
 
 **Modified:**
 - `web-erp-app/backend/src/services/einvoice/index.ts`
+- `web-erp-app/backend/src/config/types.ts`
+- `web-erp-app/backend/src/config/container.ts`
 
 ---
 
 ## Quick Reference
 
 **Current Phase:** 6 - E-Invoice Core (IN PROGRESS)
-**Next Action:** Execute 06-06 (E-Invoice Generation Orchestrator)
+**Next Action:** Execute 06-07 (E-Invoice Controller and Routes)
 **Critical Deadline:** July 2026 (e-invoicing pilot)
 **Total Scope:** 71 requirements, 10 phases
 
