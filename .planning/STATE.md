@@ -11,24 +11,24 @@
 ## Current Position
 
 **Phase:** 3 of 10 (VAT Compliance Engine) - IN PROGRESS
-**Plan:** 2 of 10 complete (03-01, 03-02)
+**Plan:** 3 of 10 complete (03-01, 03-02, 03-03)
 **Status:** In progress
-**Last activity:** 2026-01-24 - Completed 03-01-PLAN.md (FTA Invoice Schema and VAT Types)
+**Last activity:** 2026-01-24 - Completed 03-03-PLAN.md (FTA-Compliant Tax Invoice Service)
 
 **Progress:**
 ```
 Phase 1    [████████████████] Multi-Tenant Foundation    COMPLETE (5/5 req)
 Phase 2    [████████████████] Internal Controls          COMPLETE (5/5 req)
 Phase 2.5  [                ] Accounting Foundation      NOT STARTED (0/12 req)
-Phase 3    [██              ] VAT Compliance             2/10 requirements (03-01, 03-02)
+Phase 3    [███             ] VAT Compliance             3/10 requirements (03-01, 03-02, 03-03)
 Phase 4    [                ] Corporate Tax              0/9 requirements
 Phase 5    [                ] WPS Payroll                0/7 requirements
 Phase 6    [                ] E-Invoice Core             0/6 requirements
 Phase 7    [                ] E-Invoice Transmission     0/4 requirements
 Phase 8    [                ] Verification Portal        0/9 requirements
 Phase 9    [                ] Standalone Package         0/4 requirements
-           |█████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░|
-Overall: 12/71 requirements (~17%)
+           |██████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░|
+Overall: 13/71 requirements (~18%)
 ```
 
 ---
@@ -37,11 +37,11 @@ Overall: 12/71 requirements (~17%)
 
 | Metric | Value | Notes |
 |--------|-------|-------|
-| Plans completed | 9 | 01-01, 01-02, 01-03, 02-01, 02-02, 02-03, 02-04, 03-01, 03-02 |
-| Requirements delivered | 12/71 | TENANT-01-05, CTRL-01-04, VAT-01 (schema), VAT-02 (calculation) |
+| Plans completed | 10 | 01-01, 01-02, 01-03, 02-01, 02-02, 02-03, 02-04, 03-01, 03-02, 03-03 |
+| Requirements delivered | 13/71 | TENANT-01-05, CTRL-01-04, VAT-01 (schema), VAT-02 (calculation), VAT-03 (invoice) |
 | Phases completed | 2/10 | Phase 2 complete, Phase 3 in progress |
 | Blockers encountered | 0 | - |
-| Decisions made | 25 | See Key Decisions table |
+| Decisions made | 28 | See Key Decisions table |
 
 ---
 
@@ -74,6 +74,9 @@ Overall: 12/71 requirements (~17%)
 | tax_configurations as compliance config | Existing table stores TRN/VAT registration; extend rather than new table | 2026-01-24 |
 | Stateless ReverseChargeService | RCM determination is pure calculation logic; no database access needed | 2026-01-24 |
 | Paired accounting for reverse charge | DR Input VAT / CR Output VAT per FTA self-accounting requirement | 2026-01-24 |
+| FOR UPDATE lock for invoice numbers | Prevents race conditions in concurrent invoice creation with retry logic | 2026-01-24 |
+| VatCalculationService via DI injection | Ensures consistent VAT calculation across all invoice types | 2026-01-24 |
+| Bilingual template with Noto Sans Arabic | FTA requires Arabic content; fallback fonts for reliable rendering | 2026-01-24 |
 
 ### Technical Notes
 
@@ -140,39 +143,40 @@ None currently.
 ### Last Session
 
 **Date:** 2026-01-24
-**Completed:** Plan 03-02 VAT Calculation Engine
+**Completed:** Plan 03-03 FTA-Compliant Tax Invoice Service
 **Activity:**
-- Created VatCalculationService for centralized VAT calculation
-- Created ReverseChargeService for RCM determination
-- Integrated services with DI container (InversifyJS)
-- Added Form 201 box assignments for all VAT treatments
+- Created VatInvoiceService for FTA Article 59 compliance (1085 lines)
+- Created bilingual Handlebars template for tax invoices (592 lines)
+- Implemented FOR UPDATE lock for sequential invoice numbering
+- Integrated VatCalculationService via DI injection
+- Added reverse charge statement generation
 
 ### Context for Next Session
 
-1. **VAT Services Ready** - VatCalculationService and ReverseChargeService in DI container
-2. **Form 201 Boxes** - All box assignments implemented (Box 1-10)
-3. **Reverse Charge** - Full RCM support for imports and designated zones
-4. **Decimal Precision** - Using roundCurrency() for FTA compliance
-5. **Next Plan** - 03-03 Invoice VAT Integration
+1. **Invoice Service Ready** - VatInvoiceService in DI container
+2. **All 13 FTA Fields** - Article 59 compliance complete
+3. **Sequential Numbering** - Race-condition protected via FOR UPDATE lock
+4. **Bilingual Support** - Template with Arabic labels and fonts
+5. **Next Plan** - 03-04 VAT Return Generation
 
 ### Files Modified This Session
 
-**Created (Phase 3 Plan 02):**
-- `backend/src/services/vat/vat-calculation.service.ts` - Centralized VAT calculation (778 lines)
-- `backend/src/services/vat/reverse-charge.service.ts` - RCM determination (566 lines)
-- `backend/src/services/vat/index.ts` - Module exports
-- `.planning/phases/03-vat-compliance-engine/03-02-SUMMARY.md` - Plan summary
+**Created (Phase 3 Plan 03):**
+- `backend/src/services/vat/vat-invoice.service.ts` - Tax invoice generation (1085 lines)
+- `backend/src/templates/invoice/tax-invoice.hbs` - Bilingual template (592 lines)
+- `.planning/phases/03-vat-compliance-engine/03-03-SUMMARY.md` - Plan summary
 
 **Modified:**
-- `backend/src/config/container.ts` - Added VAT service bindings
-- `backend/src/config/types.ts` - Added VAT service type symbols
+- `backend/src/config/container.ts` - Added VatInvoiceService binding
+- `backend/src/config/types.ts` - Added VatInvoiceService type symbol
+- `backend/src/services/vat/index.ts` - Added VatInvoiceService exports
 
 ---
 
 ## Quick Reference
 
 **Current Phase:** 3 - VAT Compliance Engine (IN PROGRESS)
-**Next Action:** Execute 03-03 Invoice VAT Integration
+**Next Action:** Execute 03-04 VAT Return Generation
 **Critical Deadline:** July 2026 (e-invoicing pilot)
 **Total Scope:** 71 requirements, 10 phases
 
