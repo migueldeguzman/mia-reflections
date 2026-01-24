@@ -92,10 +92,10 @@ Plans:
 - [x] Management reports - Asset/Liability analysis, profitability, cash flow
 - [x] API routes + permissions - All controllers, routes, permissions seeded
 - [x] Controller unit test - closing-procedures.controller.test.ts
-- [ ] Component depreciation - Enhancement to fixed assets (ACCT-12)
+- [x] Component depreciation - Enhancement to fixed assets (ACCT-12)
 - [ ] Full integration test suite
 
-**Status:** IN PROGRESS (11/12 requirements complete)
+**Status:** COMPLETE (verified 2026-01-24)
 
 **Requirements (Accounting Foundation - enables UAE compliance):**
 - ACCT-01: Cash Flow Statement generation (indirect method)
@@ -294,7 +294,7 @@ Plans:
 |-------|------|--------|--------------|------------|
 | 1 | Multi-Tenant Compliance Foundation | Complete | 5 | 100% |
 | 2 | Internal Controls and Audit Infrastructure | Complete | 5 | 100% |
-| 2.5 | Compliance-Native Accounting Foundation | Not Started | 12 | 0% |
+| 2.5 | Compliance-Native Accounting Foundation | Complete | 12 | 100% |
 | 3 | VAT Compliance Engine | Not Started | 10 | 0% |
 | 4 | Corporate Tax Compliance | Not Started | 9 | 0% |
 | 5 | WPS Payroll Compliance | Not Started | 7 | 0% |
@@ -338,3 +338,4 @@ E-invoicing (Phases 6-7) is the critical path for July 2026 pilot.
 | 2026-01-23 | Phase 1 complete - all 5 requirements delivered | Claude |
 | 2026-01-24 | Phase 2 planned - 4 plans in 2 waves | Claude |
 | 2026-01-24 | Phase 2 complete - all 5 CTRL requirements delivered | Claude |
+| 2026-01-24 | Phase 2.5 complete - all 12 ACCT requirements delivered | Claude |
