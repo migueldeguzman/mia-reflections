@@ -11,9 +11,9 @@
 ## Current Position
 
 **Phase:** 4 of 10 (Corporate Tax Compliance) - IN PROGRESS
-**Plan:** 2 of 9 complete (04-01, 04-02)
+**Plan:** 3 of 9 complete (04-01, 04-02, 04-03)
 **Status:** In progress
-**Last activity:** 2026-01-24 - Completed 04-02-PLAN.md (CT Chart Mapping Service)
+**Last activity:** 2026-01-24 - Completed 04-03-PLAN.md (CT Adjustment Service)
 
 **Progress:**
 ```
@@ -21,7 +21,7 @@ Phase 1    [████████████████] Multi-Tenant Found
 Phase 2    [████████████████] Internal Controls          COMPLETE (5/5 req)
 Phase 2.5  [████████████████] Accounting Foundation      COMPLETE (12/12 req)
 Phase 3    [████████████████] VAT Compliance             COMPLETE (10/10)
-Phase 4    [████            ] Corporate Tax              2/9 requirements
+Phase 4    [██████          ] Corporate Tax              3/9 requirements
 Phase 5    [                ] WPS Payroll                0/7 requirements
 Phase 6    [                ] E-Invoice Core             0/6 requirements
 Phase 7    [                ] E-Invoice Transmission     0/4 requirements
@@ -37,8 +37,8 @@ Overall: 32/71 requirements (~45%)
 
 | Metric | Value | Notes |
 |--------|-------|-------|
-| Plans completed | 19+ | 01-01 to 02-04, 02.5-*, 03-01 to 03-10, 04-01 to 04-02 |
-| Requirements delivered | 34/71 | TENANT-01-05, CTRL-01-04, ACCT-01-12, VAT-01-10, CT-01 to CT-02 |
+| Plans completed | 20+ | 01-01 to 02-04, 02.5-*, 03-01 to 03-10, 04-01 to 04-03 |
+| Requirements delivered | 35/71 | TENANT-01-05, CTRL-01-04, ACCT-01-12, VAT-01-10, CT-01 to CT-03 |
 | Phases completed | 4/10 | Phases 1, 2, 2.5, 3 complete; Phase 4 in progress |
 | Blockers encountered | 0 | - |
 | Decisions made | 40+ | See Key Decisions table |
@@ -95,6 +95,9 @@ Overall: 32/71 requirements (~45%)
 | Pattern-based CT mapping | Regex on account codes + name keywords for flexible auto-mapping | 2026-01-24 |
 | Two-pass matching algorithm | First pass: code+name (specific); second pass: code-only (fallback) | 2026-01-24 |
 | Deductibility percentages in service | FULLY_DEDUCTIBLE=100%, ENTERTAINMENT=50%, NON_DEDUCTIBLE=0% | 2026-01-24 |
+| Inline decimal helpers in CtAdjustmentService | No decimal-math utility exists; toDecimal/roundCurrency inline | 2026-01-24 |
+| Conservative capital gains exemption default | Capital gains require manual verification for participation exemption | 2026-01-24 |
+| Related party excess from TP table | Uses related_party_transactions.adjustmentAmount for arm's length failures | 2026-01-24 |
 
 ### Technical Notes
 
@@ -161,36 +164,37 @@ None currently.
 ### Last Session
 
 **Date:** 2026-01-24
-**Completed:** Phase 4 Plans 01-02 (Corporate Tax Schema & Chart Mapping)
+**Completed:** Phase 4 Plan 03 (CT Adjustment Service)
 **Activity:**
-- Executed Plan 04-01: Corporate Tax schema foundation (enums, models, types)
-- Executed Plan 04-02: CT Chart Mapping Service (889 lines)
-- Created ct-chart-mappings.ts seed script (554 lines)
-- Added 15+ default mapping rules for expense/income auto-classification
-- Registered CtChartMappingService in DI container
+- Executed Plan 04-03: CtAdjustmentService (1152 lines)
+- CT-02: Non-deductible expense aggregation with entertainment 50% disallowed
+- CT-03: Exempt income aggregation with participation exemption checks
+- Participation exemption: 5%/12-month/9% rules for dividends
+- Related party excess from transfer pricing adjustments
+- Registered CtAdjustmentService in DI container
 
 ### Context for Next Session
 
-1. **Phase 4 IN PROGRESS** - 2/9 plans complete (04-01, 04-02)
-2. **CT Chart Mapping Ready** - Auto-classification for expense/income accounts
-3. **Next Plans** - 04-03 to 04-09 for remaining CT requirements
-4. **Key Features Delivered:**
-   - Entertainment: 50% deductible per FTA Article 33(2)
-   - Fines/Penalties: 0% deductible per FTA Article 33
-   - Related party: Flagged for arm's length test
-   - Dividends: Flagged for participation exemption
+1. **Phase 4 IN PROGRESS** - 3/9 plans complete (04-01, 04-02, 04-03)
+2. **CT Adjustment Service Ready** - Non-deductible and exempt income aggregation
+3. **Next Plans** - 04-04 to 04-09 for remaining CT requirements
+4. **Key Features Delivered (04-03):**
+   - Entertainment: 50% disallowed calculation
+   - Fines/Penalties: 100% non-deductible
+   - Participation exemption: 5% ownership, 12 months, 9% foreign tax
+   - Related party excess: From arm's length adjustments
+   - QPBE donation deductibility check
 
 ### Files Modified This Session
 
-**Created (Phase 4 Plan 02):**
-- `web-erp-app/backend/src/services/corporate-tax/ct-chart-mapping.service.ts`
-- `web-erp-app/backend/src/services/corporate-tax/index.ts`
-- `web-erp-app/backend/prisma/seed/ct-chart-mappings.ts`
-- `.planning/phases/04-corporate-tax-compliance/04-02-SUMMARY.md`
+**Created (Phase 4 Plan 03):**
+- `web-erp-app/backend/src/services/corporate-tax/ct-adjustment.service.ts`
+- `.planning/phases/04-corporate-tax-compliance/04-03-SUMMARY.md`
 
 **Modified:**
-- `web-erp-app/backend/src/config/types.ts` - Added CtChartMappingService symbol
-- `web-erp-app/backend/src/config/container.ts` - Added CtChartMappingService binding
+- `web-erp-app/backend/src/config/types.ts` - Added CtAdjustmentService symbol
+- `web-erp-app/backend/src/config/container.ts` - Added CtAdjustmentService binding
+- `web-erp-app/backend/src/services/corporate-tax/index.ts` - Added barrel exports
 
 ---
 
