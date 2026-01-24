@@ -4,16 +4,16 @@
 
 **Core Value:** Full UAE tax and regulatory compliance (VAT, CT, WPS, E-Invoicing) enabling Vesla ERP customers to meet FTA requirements and participate in UAE e-invoicing pilot by July 2026.
 
-**Current Focus:** Phase 5 - WPS Payroll Compliance. Building UAE WPS (Wage Protection System) with SIF file generation, IBAN validation, and MOHRE compliance.
+**Current Focus:** Phase 6 - E-Invoice Engine Core. Building TLV encoding, QR code generation, UBL 2.1 XML, and PEPPOL PINT-AE compliance for FTA e-invoicing pilot (July 2026).
 
 ---
 
 ## Current Position
 
-**Phase:** 5 of 10 (WPS Payroll Compliance) - IN PROGRESS
-**Plan:** 2 of 7 complete (05-01 and 05-02)
+**Phase:** 6 of 10 (E-Invoice Engine Core) - IN PROGRESS
+**Plan:** 1 of 8 complete (06-02)
 **Status:** In progress
-**Last activity:** 2026-01-24 - Completed 05-01-PLAN.md (WPS Schema Foundation)
+**Last activity:** 2026-01-24 - Completed 06-02-PLAN.md (TLV Encoder and QR Code Service)
 
 **Progress:**
 ```
@@ -22,13 +22,13 @@ Phase 2    [████████████████] Internal Controls 
 Phase 2.5  [████████████████] Accounting Foundation      COMPLETE (12/12 req)
 Phase 3    [████████████████] VAT Compliance             COMPLETE (10/10)
 Phase 4    [████████████████] Corporate Tax              COMPLETE (9/9)
-Phase 5    [████                ] WPS Payroll            2/7 requirements
-Phase 6    [                ] E-Invoice Core             0/6 requirements
-Phase 7    [                ] E-Invoice Transmission     0/4 requirements
-Phase 8    [                ] Verification Portal        0/9 requirements
-Phase 9    [                ] Standalone Package         0/4 requirements
-           |███████████████████████████░░░░░░░░░░░░░░░░░|
-Overall: 43/71 requirements (~61%)
+Phase 5    [████████████████] WPS Payroll                COMPLETE (7/7)
+Phase 6    [██                  ] E-Invoice Core         1/8 requirements
+Phase 7    [                    ] E-Invoice Transmission 0/4 requirements
+Phase 8    [                    ] Verification Portal    0/9 requirements
+Phase 9    [                    ] Standalone Package     0/4 requirements
+           |█████████████████████████████░░░░░░░░░░░░░░|
+Overall: 51/71 requirements (~72%)
 ```
 
 ---
@@ -37,9 +37,9 @@ Overall: 43/71 requirements (~61%)
 
 | Metric | Value | Notes |
 |--------|-------|-------|
-| Plans completed | 35+ | 01-01 to 02-04, 02.5-*, 03-01 to 03-10, 04-01 to 04-09, 05-01 to 05-02 |
-| Requirements delivered | 43/71 | TENANT-01-05, CTRL-01-04, ACCT-01-12, VAT-01-10, CT-01 to CT-09, WPS-01 to WPS-02 |
-| Phases completed | 5/10 | Phases 1, 2, 2.5, 3, 4 complete; Phase 5 in progress |
+| Plans completed | 44+ | 01-01 to 02-04, 02.5-*, 03-01 to 03-10, 04-01 to 04-09, 05-01 to 05-07, 06-02 |
+| Requirements delivered | 51/71 | TENANT-01-05, CTRL-01-04, ACCT-01-12, VAT-01-10, CT-01 to CT-09, WPS-01 to WPS-07, EINV-03 |
+| Phases completed | 6/10 | Phases 1, 2, 2.5, 3, 4, 5 complete; Phase 6 in progress |
 | Blockers encountered | 0 | - |
 | Decisions made | 40+ | See Key Decisions table |
 
@@ -123,6 +123,9 @@ Overall: 43/71 requirements (~61%)
 | VARCHAR for personCode/IBAN | Fixed-length validation at application layer; DB stores as-is | 2026-01-24 |
 | employee_id references users (temp) | Staff table not migrated to database; use users until HR module complete | 2026-01-24 |
 | Cascade delete on cycle records | Deleting payroll cycle should remove all associated salary records | 2026-01-24 |
+| ZATCA-compatible TLV tags | UAE FTA hasn't published official tags; use ZATCA (1-8) as proven baseline | 2026-01-24 |
+| 200-byte seller truncation | Leave room for other fields within 255-byte TLV limit | 2026-01-24 |
+| Binary search UTF-8 truncation | Prevents cutting multibyte characters mid-sequence for Arabic names | 2026-01-24 |
 
 ### Technical Notes
 
@@ -189,45 +192,69 @@ None currently.
 ### Last Session
 
 **Date:** 2026-01-24
-**Completed:** Phase 5 Plan 01 (WPS Schema Foundation)
+**Completed:** Phase 6 Plan 02 (TLV Encoder and QR Code Service)
 **Activity:**
-- Executed Plan 05-01: WPS schema foundation with database migration
-- Created wps.types.ts with PayrollCycleStatus state machine, SIF constants
-- Added 5 Prisma models: payroll_cycles, employee_salary_records, wps_agents, wps_submissions, wps_errors
-- Applied migration 20260124150000_add_wps_payroll_schema to database
-- All verifications passing
+- Executed Plan 06-02: TLV encoding and QR code generation for e-invoices
+- Created tlv-encoder.util.ts with ZATCA-compatible TLV encoding (tags 1-8)
+- Created QrCodeService with 4 output formats (base64, buffer, dataUrl, svg)
+- Created einvoice service module structure
+- Added 46 unit tests for TLV encoder and QR code service
+- All verifications passing, all tests pass
 
 ### Context for Next Session
 
-1. **Phase 5 IN PROGRESS** - 2/7 plans complete (05-01, 05-02)
-2. **Next Plan:** 05-03 (SIF File Generation) - Uses schema and IBAN validation
-3. **Key Features Delivered (05-01):**
-   - PayrollCycleStatus enum with 8 states (DRAFT through COMPLETED)
-   - PAYROLL_CYCLE_TRANSITIONS state machine map
-   - SIF_CONSTANTS for UAE Central Bank field lengths
-   - EdrRecord/ScrRecord interfaces for SIF file format
-   - validatePersonCode(), validateUaeIban(), validateEmployerId() utilities
-   - 5 database tables with indexes and foreign keys
-   - Prisma client regenerated with new models
+1. **Phase 6 IN PROGRESS** - 1/8 plans complete (06-02)
+2. **Next Plan:** 06-01 or 06-03 (E-Invoice Types or UBL 2.1 XML Generator)
+3. **Key Features Delivered (06-02):**
+   - TlvTag enum with 8 tag types (SELLER_NAME through PUBLIC_KEY)
+   - encodeTlv()/decodeTlv() for TLV binary format
+   - truncateForTlv() for UTF-8 safe truncation of Arabic names
+   - QrCodeService with generateQrCode(), decodeQrCode()
+   - generateQrCodeForPdf(), generateQrCodeForXml() convenience methods
+   - TRN validation (15 digits starting with 100)
+   - 46 tests covering TLV encoding, QR generation, round-trip verification
 
 ### Files Modified This Session
 
-**Created (Phase 5 Plan 01):**
-- `web-erp-app/backend/src/types/payroll/wps.types.ts`
-- `web-erp-app/backend/prisma/migrations/20260124150000_add_wps_payroll_schema/migration.sql`
-- `.planning/phases/05-wps-payroll-compliance/05-01-SUMMARY.md`
+**Created (Phase 6 Plan 02):**
+- `web-erp-app/backend/src/utils/tlv-encoder.util.ts`
+- `web-erp-app/backend/src/services/einvoice/qr-code.service.ts`
+- `web-erp-app/backend/src/services/einvoice/index.ts`
+- `web-erp-app/backend/src/services/einvoice/__tests__/qr-code.service.test.ts`
+- `.planning/phases/06-e-invoicing-engine-core/06-02-SUMMARY.md`
 
-**Modified (Phase 5 Plan 01):**
-- `web-erp-app/backend/prisma/schema.prisma` (added WPS models and relations)
+**Modified:** None
 
 ---
 
 ## Quick Reference
 
-**Current Phase:** 5 - WPS Payroll (IN PROGRESS)
-**Next Action:** Execute 05-03 (SIF File Generation)
+**Current Phase:** 6 - E-Invoice Core (IN PROGRESS)
+**Next Action:** Execute 06-01 or 06-03 (Types or UBL XML Generator)
 **Critical Deadline:** July 2026 (e-invoicing pilot)
 **Total Scope:** 71 requirements, 10 phases
+
+### Phase 6 Test Coverage
+
+| Test Category | Tests | Status |
+|---------------|-------|--------|
+| TLV Encoder Binary Format | 2 | PASS |
+| TLV Encode/Decode | 5 | PASS |
+| TLV Base64 Decode | 2 | PASS |
+| TLV Validation | 2 | PASS |
+| TLV Truncation | 3 | PASS |
+| UTF-8/Arabic Handling | 3 | PASS |
+| QR Code Formats | 4 | PASS |
+| QR Input Validation | 3 | PASS |
+| QR Round-trip | 3 | PASS |
+| QR Performance | 2 | PASS |
+| QR Edge Cases | 5 | PASS |
+| PDF/XML Generation | 4 | PASS |
+| Error Correction Level | 2 | PASS |
+| Concurrent Generation | 1 | PASS |
+| Custom Options | 2 | PASS |
+| Arabic Preservation | 3 | PASS |
+| **Total** | **46** | **ALL PASS** |
 
 ### Phase 2 Test Coverage
 
