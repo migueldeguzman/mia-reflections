@@ -11,9 +11,9 @@
 ## Current Position
 
 **Phase:** 6 of 10 (E-Invoice Engine Core) - IN PROGRESS
-**Plan:** 3 of 8 complete (06-01, 06-02, 06-03)
+**Plan:** 4 of 8 complete (06-01, 06-02, 06-03, 06-04)
 **Status:** In progress
-**Last activity:** 2026-01-24 - Completed 06-03-PLAN.md (PINT AE XML Builder)
+**Last activity:** 2026-01-24 - Completed 06-04-PLAN.md (UBL 2.1 Schema Validator)
 
 **Progress:**
 ```
@@ -23,12 +23,12 @@ Phase 2.5  [████████████████] Accounting Foundat
 Phase 3    [████████████████] VAT Compliance             COMPLETE (10/10)
 Phase 4    [████████████████] Corporate Tax              COMPLETE (9/9)
 Phase 5    [████████████████] WPS Payroll                COMPLETE (7/7)
-Phase 6    [██████              ] E-Invoice Core         3/8 requirements
+Phase 6    [████████            ] E-Invoice Core         4/8 requirements
 Phase 7    [                    ] E-Invoice Transmission 0/4 requirements
 Phase 8    [                    ] Verification Portal    0/9 requirements
 Phase 9    [                    ] Standalone Package     0/4 requirements
-           |█████████████████████████████░░░░░░░░░░░░░░|
-Overall: 51/71 requirements (~72%)
+           |██████████████████████████████░░░░░░░░░░░░░|
+Overall: 52/71 requirements (~73%)
 ```
 
 ---
@@ -37,8 +37,8 @@ Overall: 51/71 requirements (~72%)
 
 | Metric | Value | Notes |
 |--------|-------|-------|
-| Plans completed | 46+ | 01-01 to 02-04, 02.5-*, 03-01 to 03-10, 04-01 to 04-09, 05-01 to 05-07, 06-01, 06-02, 06-03 |
-| Requirements delivered | 52/71 | TENANT-01-05, CTRL-01-04, ACCT-01-12, VAT-01-10, CT-01 to CT-09, WPS-01 to WPS-07, EINV-01 (partial), EINV-03, EINV-05 (partial) |
+| Plans completed | 47+ | 01-01 to 02-04, 02.5-*, 03-01 to 03-10, 04-01 to 04-09, 05-01 to 05-07, 06-01, 06-02, 06-03, 06-04 |
+| Requirements delivered | 53/71 | TENANT-01-05, CTRL-01-04, ACCT-01-12, VAT-01-10, CT-01 to CT-09, WPS-01 to WPS-07, EINV-01 (partial), EINV-02, EINV-03, EINV-04, EINV-05 (partial) |
 | Phases completed | 6/10 | Phases 1, 2, 2.5, 3, 4, 5 complete; Phase 6 in progress |
 | Blockers encountered | 0 | - |
 | Decisions made | 40+ | See Key Decisions table |
@@ -135,6 +135,9 @@ Overall: 51/71 requirements (~72%)
 | Employer config as parameter | Accept molEstablishmentId via parameter; flexible for different config sources | 2026-01-24 |
 | Bank routing from IBAN extraction | Extract 3-digit bank code from IBAN positions 4-6, pad to 9 digits | 2026-01-24 |
 | fast-xml-parser XMLBuilder | Use XMLBuilder from fast-xml-parser for UBL 2.1 XML generation | 2026-01-24 |
+| Regex-based UBL validation | Lightweight regex parsing for PINT-AE subset; avoids DOM parser overhead | 2026-01-24 |
+| Header section extraction | Extract invoice header separately to distinguish invoice ID from line IDs | 2026-01-24 |
+| 16 validation rules at init | Rules compiled once at service creation, not per-request | 2026-01-24 |
 
 ### Technical Notes
 
@@ -201,34 +204,36 @@ None currently.
 ### Last Session
 
 **Date:** 2026-01-24
-**Completed:** Phase 6 Plan 03 (PINT AE XML Builder)
+**Completed:** Phase 6 Plan 04 (UBL 2.1 Schema Validator)
 **Activity:**
-- Executed Plan 06-03: PINT AE XML builder service
-- Created PintAeBuilderService with buildInvoiceXml() and buildCreditNoteXml()
-- Correct UBL 2.1 namespace handling (Invoice, CAC, CBC)
-- QR code embedding in cac:AdditionalDocumentReference
-- All 45 unit tests passing
+- Executed Plan 06-04: UBL validator service
+- Created UblValidatorService with validateInvoice() method
+- Implemented 16 validation rules (12 PINT-AE + 4 UBL structure)
+- Schema loaded once at initialization (not per-request)
+- Validation errors include element paths and specific messages
+- All 54 unit tests passing
 
 ### Context for Next Session
 
-1. **Phase 6 IN PROGRESS** - 3/8 plans complete (06-01, 06-02, 06-03)
-2. **Next Plan:** 06-04 (E-Invoice Archive Service)
-3. **Key Features Delivered (06-03):**
-   - PintAeBuilderService with complete UBL 2.1 XML generation
-   - PINT AE CustomizationID: urn:peppol:pint:billing-1@ae-1.0.1
-   - DocumentCurrencyCode always AED for UAE compliance
-   - Supplier TRN uses AEUAE-TRN scheme identifier
-   - QR code embedding per UBL 2.1 specification
-   - Support for standard invoice (380) and credit note (381)
-   - Tax categories: S (Standard), Z (Zero), AE (Reverse Charge)
-   - 45 unit tests for XML structure validation
+1. **Phase 6 IN PROGRESS** - 4/8 plans complete (06-01, 06-02, 06-03, 06-04)
+2. **Next Plan:** 06-05 (E-Invoice Archive Service)
+3. **Key Features Delivered (06-04):**
+   - UblValidatorService with complete validation pipeline
+   - 12 PINT-AE business rules (CustomizationID, ProfileID, TRN, etc.)
+   - 4 UBL structure rules (namespace, root element, monetary totals)
+   - Context-aware header extraction to distinguish invoice ID from line IDs
+   - XPath-like element paths in error messages
+   - Quick structural check via hasValidStructure()
+   - Batch validation support
+   - 54 unit tests covering all validation scenarios
 
 ### Files Modified This Session
 
-**Created (Phase 6 Plan 03):**
-- `web-erp-app/backend/src/services/einvoice/pint-ae-builder.service.ts`
-- `web-erp-app/backend/src/services/einvoice/__tests__/pint-ae-builder.service.test.ts`
-- `.planning/phases/06-e-invoicing-engine-core/06-03-SUMMARY.md`
+**Created (Phase 6 Plan 04):**
+- `web-erp-app/backend/src/services/einvoice/ubl-validator.service.ts`
+- `web-erp-app/backend/src/services/einvoice/__tests__/ubl-validator.service.test.ts`
+- `web-erp-app/backend/src/schemas/ubl/README.md`
+- `.planning/phases/06-e-invoicing-engine-core/06-04-SUMMARY.md`
 
 **Modified:**
 - `web-erp-app/backend/src/services/einvoice/index.ts`
@@ -238,7 +243,7 @@ None currently.
 ## Quick Reference
 
 **Current Phase:** 6 - E-Invoice Core (IN PROGRESS)
-**Next Action:** Execute 06-04 (E-Invoice Archive Service)
+**Next Action:** Execute 06-05 (E-Invoice Archive Service)
 **Critical Deadline:** July 2026 (e-invoicing pilot)
 **Total Scope:** 71 requirements, 10 phases
 
