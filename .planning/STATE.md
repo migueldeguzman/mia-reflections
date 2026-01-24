@@ -161,46 +161,43 @@ None currently.
 ### Last Session
 
 **Date:** 2026-01-24
-**Completed:** Phase 3 Execution & Verification (All 10 plans executed, verified)
+**Completed:** Phase 4 Plans 01-02 (Corporate Tax Schema & Chart Mapping)
 **Activity:**
-- Executed all 10 VAT Compliance plans via mrm-executor agents
-- Wave 1: Schema foundation (03-01)
-- Wave 2: Core calculation services (03-02, 03-03, 03-04)
-- Wave 3: Period and return services (03-05, 03-06)
-- Wave 4: Reconciliation and bad debt (03-07, 03-08)
-- Wave 5: PDF generation and integration tests (03-09, 03-10)
-- Fixed VatPdfService Prisma model naming issues (commit 2fa3c8d)
-- Verified Phase 3 complete (10/10 must-haves)
+- Executed Plan 04-01: Corporate Tax schema foundation (enums, models, types)
+- Executed Plan 04-02: CT Chart Mapping Service (889 lines)
+- Created ct-chart-mappings.ts seed script (554 lines)
+- Added 15+ default mapping rules for expense/income auto-classification
+- Registered CtChartMappingService in DI container
 
 ### Context for Next Session
 
-1. **Phase 3 VERIFIED COMPLETE** - All 10 VAT requirements delivered and verified
-2. **8,323 Lines** - VAT service code + 1,538 lines of tests
-3. **Fix Applied** - VatPdfService corrected to use proper Prisma relations
-4. **Next Phase** - Phase 4 Corporate Tax or Phase 2.5 Accounting Foundation
-5. **Recommendation** - Phase 2.5 provides accounting infrastructure for CT and WPS
+1. **Phase 4 IN PROGRESS** - 2/9 plans complete (04-01, 04-02)
+2. **CT Chart Mapping Ready** - Auto-classification for expense/income accounts
+3. **Next Plans** - 04-03 to 04-09 for remaining CT requirements
+4. **Key Features Delivered:**
+   - Entertainment: 50% deductible per FTA Article 33(2)
+   - Fines/Penalties: 0% deductible per FTA Article 33
+   - Related party: Flagged for arm's length test
+   - Dividends: Flagged for participation exemption
 
 ### Files Modified This Session
 
-**Created (Phase 3 Plan 10):**
-- `backend/src/services/vat/__tests__/vat-integration.test.ts` - VAT invoice tests
-- `backend/src/services/vat/__tests__/form201-integration.test.ts` - Form 201 tests
-- `backend/src/types/permissions.ts` - VAT permission types
-- `backend/src/middleware/vat-permissions.middleware.ts` - Permission middleware
-- `backend/src/services/vat/vat-audit-trail.service.ts` - Audit trail service
-- `.planning/phases/03-vat-compliance-engine/03-10-SUMMARY.md` - Plan summary
+**Created (Phase 4 Plan 02):**
+- `web-erp-app/backend/src/services/corporate-tax/ct-chart-mapping.service.ts`
+- `web-erp-app/backend/src/services/corporate-tax/index.ts`
+- `web-erp-app/backend/prisma/seed/ct-chart-mappings.ts`
+- `.planning/phases/04-corporate-tax-compliance/04-02-SUMMARY.md`
 
 **Modified:**
-- `backend/src/config/types.ts` - Added VatAuditTrailService symbol
-- `backend/src/config/container.ts` - Added VatAuditTrailService binding
-- `backend/src/services/vat/index.ts` - Added VatAuditTrailService export
+- `web-erp-app/backend/src/config/types.ts` - Added CtChartMappingService symbol
+- `web-erp-app/backend/src/config/container.ts` - Added CtChartMappingService binding
 
 ---
 
 ## Quick Reference
 
-**Current Phase:** 3 - VAT Compliance Engine (COMPLETE)
-**Next Action:** Begin Phase 4 (Corporate Tax) or Phase 2.5 (Accounting Foundation)
+**Current Phase:** 4 - Corporate Tax Compliance (IN PROGRESS)
+**Next Action:** Continue Phase 4 (Plans 04-03 to 04-09)
 **Critical Deadline:** July 2026 (e-invoicing pilot)
 **Total Scope:** 71 requirements, 10 phases
 
