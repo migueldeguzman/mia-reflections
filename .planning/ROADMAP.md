@@ -127,6 +127,29 @@ Plans:
 
 **Dependencies:** Phase 1 (TRN config), Phase 2 (audit trails)
 
+**Plans:** 10 plans in 5 waves
+
+Plans:
+- [ ] 03-01-PLAN.md - Schema enhancements (FTA invoice fields, VatPeriod, BadDebtRelief models)
+- [ ] 03-02-PLAN.md - VatCalculationService and ReverseChargeService
+- [ ] 03-03-PLAN.md - VatInvoiceService with bilingual template
+- [ ] 03-04-PLAN.md - TaxCreditNoteService and TaxDebitNoteService
+- [ ] 03-05-PLAN.md - VatPeriodService with locking and 28-day deadline
+- [ ] 03-06-PLAN.md - VatReturnService for Form 201 preparation
+- [ ] 03-07-PLAN.md - VatReconciliationService for GL comparison
+- [ ] 03-08-PLAN.md - BadDebtReliefService with 6-month eligibility
+- [ ] 03-09-PLAN.md - Bilingual PDF generation with Puppeteer
+- [ ] 03-10-PLAN.md - Integration tests and permissions
+
+**Wave Structure:**
+- Wave 1: 03-01 (Schema), 03-02 (VAT Calculation) - parallel
+- Wave 2: 03-03 (Invoice), 03-04 (Credit/Debit Notes) - parallel, depends on Wave 1
+- Wave 3: 03-05 (Period Mgmt), 03-06 (Form 201) - parallel, depends on Wave 2
+- Wave 4: 03-07 (Reconciliation), 03-08 (Bad Debt) - parallel, depends on Wave 3
+- Wave 5: 03-09 (PDF), 03-10 (Tests) - parallel, depends on Wave 4
+
+**Status:** PLANNED (2026-01-24)
+
 **Requirements:**
 - VAT-01: FTA-compliant tax invoice generation
 - VAT-02: Bilingual invoice support (Arabic/English)
@@ -153,6 +176,28 @@ Plans:
 **Goal:** Users can track corporate tax obligations, prepare CT calculations, and maintain compliant financial statements.
 
 **Dependencies:** Phase 1 (tenant config), Phase 2 (audit trails), Phase 3 (VAT data feeds CT calculations)
+
+**Plans:** 9 plans in 5 waves
+
+Plans:
+- [ ] 04-01-PLAN.md - CT schema foundation (enums, TaxLoss, RelatedPartyTransaction, TaxGroup models)
+- [ ] 04-02-PLAN.md - CtChartMappingService for CT account classification
+- [ ] 04-03-PLAN.md - CtAdjustmentService for non-deductible/exempt income aggregation
+- [ ] 04-04-PLAN.md - CtCalculationService (9% rate, AED 375K threshold, 75% loss offset)
+- [ ] 04-05-PLAN.md - CtReportService for CT-adjusted P&L and Balance Sheet
+- [ ] 04-06-PLAN.md - TransferPricingService with arm's length documentation
+- [ ] 04-07-PLAN.md - TaxGroupService for 95%+ ownership consolidation
+- [ ] 04-08-PLAN.md - CtRetentionService for 7-year record enforcement
+- [ ] 04-09-PLAN.md - Integration tests and CT permissions
+
+**Wave Structure:**
+- Wave 1: 04-01 (Schema), 04-02 (Chart Mapping) - parallel
+- Wave 2: 04-03 (Adjustments), 04-04 (CT Calculation) - parallel, depends on Wave 1
+- Wave 3: 04-05 (CT Reports), 04-06 (Transfer Pricing) - parallel, depends on Wave 2
+- Wave 4: 04-07 (Tax Groups), 04-08 (Retention) - parallel, depends on Wave 3
+- Wave 5: 04-09 (Tests/Permissions) - depends on Wave 4
+
+**Status:** PLANNED (2026-01-24)
 
 **Requirements:**
 - CT-01: 9% Corporate Tax calculation engine
@@ -295,8 +340,8 @@ Plans:
 | 1 | Multi-Tenant Compliance Foundation | Complete | 5 | 100% |
 | 2 | Internal Controls and Audit Infrastructure | Complete | 5 | 100% |
 | 2.5 | Compliance-Native Accounting Foundation | Complete | 12 | 100% |
-| 3 | VAT Compliance Engine | Not Started | 10 | 0% |
-| 4 | Corporate Tax Compliance | Not Started | 9 | 0% |
+| 3 | VAT Compliance Engine | Planned | 10 | 0% |
+| 4 | Corporate Tax Compliance | Planned | 9 | 0% |
 | 5 | WPS Payroll Compliance | Not Started | 7 | 0% |
 | 6 | E-Invoicing Engine Core | Not Started | 6 | 0% |
 | 7 | E-Invoicing Transmission and Processing | Not Started | 4 | 0% |
@@ -339,3 +384,5 @@ E-invoicing (Phases 6-7) is the critical path for July 2026 pilot.
 | 2026-01-24 | Phase 2 planned - 4 plans in 2 waves | Claude |
 | 2026-01-24 | Phase 2 complete - all 5 CTRL requirements delivered | Claude |
 | 2026-01-24 | Phase 2.5 complete - all 12 ACCT requirements delivered | Claude |
+| 2026-01-24 | Phase 3 planned - 10 plans in 5 waves | Claude |
+| 2026-01-24 | Phase 4 planned - 9 plans in 5 waves | Claude |
