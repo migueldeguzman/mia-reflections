@@ -140,37 +140,39 @@ None currently.
 ### Last Session
 
 **Date:** 2026-01-24
-**Completed:** Phase 2.5 created - Compliance-Native Accounting Foundation
+**Completed:** Plan 03-02 VAT Calculation Engine
 **Activity:**
-- Created Phase 2.5 as bridge phase between Phase 2 and Phase 3
-- Integrated accounting enhancements with UAE compliance philosophy
-- Updated ROADMAP.md with new phase and requirements
-- Created PHASE.md with 17-plan structure across 5 waves
+- Created VatCalculationService for centralized VAT calculation
+- Created ReverseChargeService for RCM determination
+- Integrated services with DI container (InversifyJS)
+- Added Form 201 box assignments for all VAT treatments
 
 ### Context for Next Session
 
-1. **Phase 2.5 CREATED** - Ready for Wave 1 planning (02.5-01, 02.5-02)
-2. **Philosophy established** - Compliance-Native Accounting (all components designed for FTA compliance)
-3. **Integration mapped** - Accounting components → UAE requirements (CT-05/06, VAT-07/08, WPS-07)
-4. **17 plans structured** - Across 5 waves (Schema, Assets, Liabilities, Closing, Reports)
-5. **12 new requirements** - ACCT-01 through ACCT-12 (enables UAE compliance)
-6. **Total scope now** - 71 requirements across 10 phases
+1. **VAT Services Ready** - VatCalculationService and ReverseChargeService in DI container
+2. **Form 201 Boxes** - All box assignments implemented (Box 1-10)
+3. **Reverse Charge** - Full RCM support for imports and designated zones
+4. **Decimal Precision** - Using roundCurrency() for FTA compliance
+5. **Next Plan** - 03-03 Invoice VAT Integration
 
 ### Files Modified This Session
 
-**Created (Phase 2.5 Structure):**
-- `.planning/phases/02.5-accounting-foundation/PHASE.md` - Phase definition with 17-plan structure
+**Created (Phase 3 Plan 02):**
+- `backend/src/services/vat/vat-calculation.service.ts` - Centralized VAT calculation (778 lines)
+- `backend/src/services/vat/reverse-charge.service.ts` - RCM determination (566 lines)
+- `backend/src/services/vat/index.ts` - Module exports
+- `.planning/phases/03-vat-compliance-engine/03-02-SUMMARY.md` - Plan summary
 
 **Modified:**
-- `.planning/ROADMAP.md` - Added Phase 2.5, updated progress table, revised critical path
-- `.planning/STATE.md` - Updated to reflect Phase 2.5 as current focus
+- `backend/src/config/container.ts` - Added VAT service bindings
+- `backend/src/config/types.ts` - Added VAT service type symbols
 
 ---
 
 ## Quick Reference
 
-**Current Phase:** 2.5 - Compliance-Native Accounting Foundation (NOT STARTED)
-**Next Action:** Plan Wave 1 (02.5-01 Schema, 02.5-02 Decimal Utils)
+**Current Phase:** 3 - VAT Compliance Engine (IN PROGRESS)
+**Next Action:** Execute 03-03 Invoice VAT Integration
 **Critical Deadline:** July 2026 (e-invoicing pilot)
 **Total Scope:** 71 requirements, 10 phases
 
