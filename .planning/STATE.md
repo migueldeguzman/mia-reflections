@@ -11,9 +11,9 @@
 ## Current Position
 
 **Phase:** 5 of 10 (WPS Payroll Compliance) - IN PROGRESS
-**Plan:** 2 of 7 complete (05-01 through 05-02)
+**Plan:** 2 of 7 complete (05-01 and 05-02)
 **Status:** In progress
-**Last activity:** 2026-01-24 - Completed 05-02-PLAN.md (IBAN Validation Utility)
+**Last activity:** 2026-01-24 - Completed 05-01-PLAN.md (WPS Schema Foundation)
 
 **Progress:**
 ```
@@ -118,6 +118,11 @@ Overall: 43/71 requirements (~61%)
 | UAE-specific IBAN validation first | Enforce AE prefix and 23-char length before MOD-97 checksum | 2026-01-24 |
 | Comprehensive UAE bank code reference | Include 40+ UAE Central Bank registered codes for bank name lookup | 2026-01-24 |
 | Detailed IBAN error codes | Return both code and message for programmatic handling and display | 2026-01-24 |
+| State machine as enum + transitions map | Prisma doesn't support state machines natively; TypeScript enforces transitions | 2026-01-24 |
+| Cached totals on payroll_cycles | Avoid N+1 queries when summing salaries; recalculate on record changes | 2026-01-24 |
+| VARCHAR for personCode/IBAN | Fixed-length validation at application layer; DB stores as-is | 2026-01-24 |
+| employee_id references users (temp) | Staff table not migrated to database; use users until HR module complete | 2026-01-24 |
+| Cascade delete on cycle records | Deleting payroll cycle should remove all associated salary records | 2026-01-24 |
 
 ### Technical Notes
 
@@ -184,34 +189,36 @@ None currently.
 ### Last Session
 
 **Date:** 2026-01-24
-**Completed:** Phase 5 Plan 02 (IBAN Validation Utility)
+**Completed:** Phase 5 Plan 01 (WPS Schema Foundation)
 **Activity:**
-- Executed Plan 05-02: IBAN validation utility for WPS compliance
-- Installed ibantools@4.5.1 for MOD-97 checksum validation
-- Created iban-validation.util.ts (501 lines) - UAE IBAN validation
-- Validated with 5 test scenarios (valid, too short, wrong country, bad checksum, with spaces)
+- Executed Plan 05-01: WPS schema foundation with database migration
+- Created wps.types.ts with PayrollCycleStatus state machine, SIF constants
+- Added 5 Prisma models: payroll_cycles, employee_salary_records, wps_agents, wps_submissions, wps_errors
+- Applied migration 20260124150000_add_wps_payroll_schema to database
 - All verifications passing
 
 ### Context for Next Session
 
 1. **Phase 5 IN PROGRESS** - 2/7 plans complete (05-01, 05-02)
-2. **Next Plan:** 05-03 (SIF File Generation) - Uses IBAN validation
-3. **Key Features Delivered (05-02):**
-   - validateUaeIban() with MOD-97 checksum via ibantools
-   - UAE-specific validation (AE prefix, 23 characters) before generic
-   - extractBankCode() for 3-digit bank code (positions 4-6)
-   - 40+ UAE bank code reference with names
-   - formatIbanForDisplay() with space-separated format
-   - Batch validation via validateIbans()
+2. **Next Plan:** 05-03 (SIF File Generation) - Uses schema and IBAN validation
+3. **Key Features Delivered (05-01):**
+   - PayrollCycleStatus enum with 8 states (DRAFT through COMPLETED)
+   - PAYROLL_CYCLE_TRANSITIONS state machine map
+   - SIF_CONSTANTS for UAE Central Bank field lengths
+   - EdrRecord/ScrRecord interfaces for SIF file format
+   - validatePersonCode(), validateUaeIban(), validateEmployerId() utilities
+   - 5 database tables with indexes and foreign keys
+   - Prisma client regenerated with new models
 
 ### Files Modified This Session
 
-**Created (Phase 5 Plan 02):**
-- `web-erp-app/backend/src/utils/iban-validation.util.ts`
-- `.planning/phases/05-wps-payroll-compliance/05-02-SUMMARY.md`
+**Created (Phase 5 Plan 01):**
+- `web-erp-app/backend/src/types/payroll/wps.types.ts`
+- `web-erp-app/backend/prisma/migrations/20260124150000_add_wps_payroll_schema/migration.sql`
+- `.planning/phases/05-wps-payroll-compliance/05-01-SUMMARY.md`
 
-**Modified (Phase 5 Plan 02):**
-- `web-erp-app/backend/package.json` (added ibantools dependency)
+**Modified (Phase 5 Plan 01):**
+- `web-erp-app/backend/prisma/schema.prisma` (added WPS models and relations)
 
 ---
 
