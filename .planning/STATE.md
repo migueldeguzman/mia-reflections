@@ -131,6 +131,9 @@ Overall: 51/71 requirements (~72%)
 | E-invoice hash chain pattern reuse | Same implementation as Phase 2 audit_logs for consistency | 2026-01-24 |
 | E-invoice immutability trigger | Database-level enforcement prevents core field modifications | 2026-01-24 |
 | 7-year e-invoice retention | FTA EINV-05 compliance built into schema with retentionEndDate | 2026-01-24 |
+| Manual CSV for SIF generation | Array.join() for fixed 10-field EDR/SCR; csv-stringify overhead not needed | 2026-01-24 |
+| Employer config as parameter | Accept molEstablishmentId via parameter; flexible for different config sources | 2026-01-24 |
+| Bank routing from IBAN extraction | Extract 3-digit bank code from IBAN positions 4-6, pad to 9 digits | 2026-01-24 |
 
 ### Technical Notes
 
