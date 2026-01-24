@@ -114,6 +114,8 @@ Overall: 56/71 requirements (~79%)
 | Simplified tax group eligibility checks | Default to IFRS, December year-end, UAE resident, not exempt/QFZP when tenant config unavailable | 2026-01-24 |
 | Role-based CT permission bundles | TAX_ACCOUNTANT, TAX_MANAGER, CFO, AUDITOR for separation of duties per FTA | 2026-01-24 |
 | CFO-only CT filing authority | Only CFO role has ct:return:file permission for corporate governance | 2026-01-24 |
+| WPS permission naming payroll:resource:action | Consistent with CT permissions pattern | 2026-01-24 |
+| 5 WPS role bundles | HR_OFFICER, PAYROLL_MANAGER, FINANCE_MANAGER, CFO, AUDITOR for payroll | 2026-01-24 |
 | Mock-based CT unit tests | Isolates calculation logic from database for fast, reliable testing | 2026-01-24 |
 | UAE-specific IBAN validation first | Enforce AE prefix and 23-char length before MOD-97 checksum | 2026-01-24 |
 | Comprehensive UAE bank code reference | Include 40+ UAE Central Bank registered codes for bank name lookup | 2026-01-24 |
@@ -215,14 +217,16 @@ None currently.
 ### Last Session
 
 **Date:** 2026-01-24
-**Completed:** Phase 6 Plan 08 (E-Invoice Integration Tests) - PHASE 6 COMPLETE
+**Completed:** Phase 5 Plan 07 (WPS Integration Tests + Permissions)
 **Activity:**
-- Executed Plan 06-08: E-invoice integration tests
-- Created 46 comprehensive integration tests covering EINV-01 through EINV-05
-- Tests verify XML generation, UBL 2.1 validation, QR code with TLV, and archive hash chain
-- All 46 tests passing
-- 891 lines of integration test coverage
-- Phase 6 E-Invoice Engine Core now complete (8/8 plans)
+- Executed Plan 05-07: WPS integration tests and permissions
+- Created 19 WPS permissions with 5 role bundles (HR_OFFICER, PAYROLL_MANAGER, FINANCE_MANAGER, CFO, AUDITOR)
+- Implemented 3 permission middleware functions (requireWpsPermission, requireAnyWpsPermission, requireAllWpsPermissions)
+- Created WPS permissions seed script with idempotent seeding
+- Created 144 integration tests covering IBAN validation, SIF format, state machine, error codes, gratuity, audit trail
+- All 144 tests passing
+- 1,335 lines of integration test coverage
+- Phase 5 WPS Payroll Compliance verified (7/7 plans)
 
 ### Context for Next Session
 
