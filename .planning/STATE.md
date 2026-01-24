@@ -11,24 +11,24 @@
 ## Current Position
 
 **Phase:** 3 of 10 (VAT Compliance Engine) - IN PROGRESS
-**Plan:** 8 of 10 complete (03-01, 03-02, 03-03, 03-04, 03-05, 03-06, 03-07, 03-08)
+**Plan:** 9 of 10 complete (03-01 to 03-09)
 **Status:** In progress
-**Last activity:** 2026-01-24 - Completed 03-08-PLAN.md (Bad Debt Relief Service)
+**Last activity:** 2026-01-24 - Completed 03-09-PLAN.md (Bilingual PDF Generation)
 
 **Progress:**
 ```
 Phase 1    [████████████████] Multi-Tenant Foundation    COMPLETE (5/5 req)
 Phase 2    [████████████████] Internal Controls          COMPLETE (5/5 req)
 Phase 2.5  [                ] Accounting Foundation      NOT STARTED (0/12 req)
-Phase 3    [████████        ] VAT Compliance             8/10 requirements (03-01 to 03-08)
+Phase 3    [██████████████  ] VAT Compliance             9/10 requirements (03-01 to 03-09)
 Phase 4    [                ] Corporate Tax              0/9 requirements
 Phase 5    [                ] WPS Payroll                0/7 requirements
 Phase 6    [                ] E-Invoice Core             0/6 requirements
 Phase 7    [                ] E-Invoice Transmission     0/4 requirements
 Phase 8    [                ] Verification Portal        0/9 requirements
 Phase 9    [                ] Standalone Package         0/4 requirements
-           |█████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░|
-Overall: 18/71 requirements (~25%)
+           |██████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░|
+Overall: 19/71 requirements (~27%)
 ```
 
 ---
@@ -37,11 +37,11 @@ Overall: 18/71 requirements (~25%)
 
 | Metric | Value | Notes |
 |--------|-------|-------|
-| Plans completed | 15 | 01-01 to 02-04, 03-01 to 03-08 |
-| Requirements delivered | 18/71 | TENANT-01-05, CTRL-01-04, VAT-01 to VAT-08 |
+| Plans completed | 16 | 01-01 to 02-04, 03-01 to 03-09 |
+| Requirements delivered | 19/71 | TENANT-01-05, CTRL-01-04, VAT-01 to VAT-09 |
 | Phases completed | 2/10 | Phase 2 complete, Phase 3 in progress |
 | Blockers encountered | 0 | - |
-| Decisions made | 34 | See Key Decisions table |
+| Decisions made | 37 | See Key Decisions table |
 
 ---
 
@@ -86,6 +86,9 @@ Overall: 18/71 requirements (~25%)
 | 183 days for 6-month eligibility | FTA Article 64 bad debt relief uses 183 days (average 6 months) | 2026-01-24 |
 | Due date not invoice date | Bad debt relief eligibility counts from payment DUE DATE per FTA | 2026-01-24 |
 | Proportional relief calculation | VAT relief proportional to outstanding balance for partial payments | 2026-01-24 |
+| Puppeteer singleton browser | Prevents spawning multiple Chrome processes; memory efficient | 2026-01-24 |
+| Handlebars template caching | Compiling templates on every request is expensive; cache for performance | 2026-01-24 |
+| Color-coded credit/debit notes | Red for credit (reduction), green for debit (increase) for visual distinction | 2026-01-24 |
 
 ### Technical Notes
 
@@ -152,41 +155,45 @@ None currently.
 ### Last Session
 
 **Date:** 2026-01-24
-**Completed:** Plan 03-08 Bad Debt Relief Service
+**Completed:** Plan 03-09 Bilingual PDF Generation
 **Activity:**
-- Created BadDebtReliefService for FTA Article 64 VAT recovery (893 lines)
-- 6-month eligibility from payment DUE DATE (not invoice date)
-- ELIGIBILITY_DAYS = 183 (6 months average)
-- Write-off tracking (debtWrittenOff, writtenOffDate)
-- Customer notification tracking (customerNotified, notificationDate)
-- Relief claiming with VAT period integration (Box 1 adjustment)
-- Reversal handling when customer subsequently pays
-- Registered BadDebtReliefService in DI container
+- Created PdfGeneratorUtil with Puppeteer singleton browser pattern (279 lines)
+- Created VatPdfService with Handlebars.compile() template loading (535 lines)
+- Created credit-note.hbs template with red color scheme (345 lines)
+- Created debit-note.hbs template with green color scheme (345 lines)
+- Arabic RTL support with Noto Sans Arabic font injection
+- Template caching for performance optimization
+- Registered PdfGeneratorUtil and VatPdfService in DI container as singletons
 
 ### Context for Next Session
 
-1. **Bad Debt Relief Ready** - BadDebtReliefService tracks relief lifecycle
-2. **FTA Article 64 Compliance** - All five requirements implemented
-3. **VAT Return Integration** - Relief claimed/reversed in VAT periods
-4. **Proportional Calculation** - Relief based on outstanding balance ratio
-5. **Next Plan** - 03-09 Input VAT Recovery Service
+1. **PDF Generation Ready** - Tax invoices, credit notes, debit notes can be downloaded
+2. **Bilingual Support** - All documents have Arabic/English content
+3. **FTA Article 70** - Credit notes include original invoice reference
+4. **Singleton Browser** - PdfGeneratorUtil prevents multiple Chrome processes
+5. **Next Plan** - 03-10 Input VAT Recovery Service (final VAT plan)
 
 ### Files Modified This Session
 
-**Created (Phase 3 Plan 08):**
-- `backend/src/services/vat/bad-debt-relief.service.ts` - Bad debt relief service (893 lines)
-- `.planning/phases/03-vat-compliance-engine/03-08-SUMMARY.md` - Plan summary
+**Created (Phase 3 Plan 09):**
+- `backend/src/utils/pdf-generator.util.ts` - Puppeteer PDF generator (279 lines)
+- `backend/src/services/vat/vat-pdf.service.ts` - VAT PDF service (535 lines)
+- `backend/src/templates/invoice/credit-note.hbs` - Credit note template (345 lines)
+- `backend/src/templates/invoice/debit-note.hbs` - Debit note template (345 lines)
+- `.planning/phases/03-vat-compliance-engine/03-09-SUMMARY.md` - Plan summary
 
 **Modified:**
-- `backend/src/config/container.ts` - Added BadDebtReliefService binding
-- `backend/src/services/vat/index.ts` - Added BadDebtReliefService export
+- `backend/src/config/types.ts` - Added PdfGeneratorUtil, VatPdfService symbols
+- `backend/src/config/container.ts` - Added DI bindings (singletons)
+- `backend/src/services/vat/index.ts` - Added VatPdfService export
+- `backend/package.json` - Added handlebars dependency
 
 ---
 
 ## Quick Reference
 
 **Current Phase:** 3 - VAT Compliance Engine (IN PROGRESS)
-**Next Action:** Execute 03-09 Input VAT Recovery Service
+**Next Action:** Execute 03-10 Input VAT Recovery Service
 **Critical Deadline:** July 2026 (e-invoicing pilot)
 **Total Scope:** 71 requirements, 10 phases
 
