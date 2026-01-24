@@ -11,9 +11,9 @@
 ## Current Position
 
 **Phase:** 4 of 10 (Corporate Tax Compliance) - IN PROGRESS
-**Plan:** 4 of 9 complete (04-01, 04-02, 04-03, 04-04)
+**Plan:** 5 of 9 complete (04-01, 04-02, 04-03, 04-04, 04-05)
 **Status:** In progress
-**Last activity:** 2026-01-24 - Completed 04-04-PLAN.md (CT Calculation Service)
+**Last activity:** 2026-01-24 - Completed 04-05-PLAN.md (CT Report Service)
 
 **Progress:**
 ```
@@ -21,7 +21,7 @@ Phase 1    [████████████████] Multi-Tenant Found
 Phase 2    [████████████████] Internal Controls          COMPLETE (5/5 req)
 Phase 2.5  [████████████████] Accounting Foundation      COMPLETE (12/12 req)
 Phase 3    [████████████████] VAT Compliance             COMPLETE (10/10)
-Phase 4    [████████        ] Corporate Tax              4/9 requirements
+Phase 4    [████████████    ] Corporate Tax              5/9 requirements
 Phase 5    [                ] WPS Payroll                0/7 requirements
 Phase 6    [                ] E-Invoice Core             0/6 requirements
 Phase 7    [                ] E-Invoice Transmission     0/4 requirements
@@ -37,8 +37,8 @@ Overall: 32/71 requirements (~45%)
 
 | Metric | Value | Notes |
 |--------|-------|-------|
-| Plans completed | 20+ | 01-01 to 02-04, 02.5-*, 03-01 to 03-10, 04-01 to 04-04 |
-| Requirements delivered | 36/71 | TENANT-01-05, CTRL-01-04, ACCT-01-12, VAT-01-10, CT-01 to CT-04 |
+| Plans completed | 20+ | 01-01 to 02-04, 02.5-*, 03-01 to 03-10, 04-01 to 04-05 |
+| Requirements delivered | 37/71 | TENANT-01-05, CTRL-01-04, ACCT-01-12, VAT-01-10, CT-01 to CT-05/06 |
 | Phases completed | 4/10 | Phases 1, 2, 2.5, 3 complete; Phase 4 in progress |
 | Blockers encountered | 0 | - |
 | Decisions made | 40+ | See Key Decisions table |
@@ -101,6 +101,9 @@ Overall: 32/71 requirements (~45%)
 | Raw SQL for GL aggregation | Prisma aggregate with complex joins unreliable; raw SQL more predictable | 2026-01-24 |
 | Decoupled CT services | CtCalculationService uses fallback implementations until dependencies integrated | 2026-01-24 |
 | QFZP simplified to false | Schema doesn't have freeZoneStatus field; requires schema extension | 2026-01-24 |
+| Pattern-based CT classification | Use DEFAULT_CT_MAPPING_RULES for account classification in reports | 2026-01-24 |
+| Deferred tax simplified | DTA = losses * 9%, DTL = 0 (full timing difference tracking requires schema) | 2026-01-24 |
+| TRN retrieval fallback | Try tax_configurations first, fallback to companies.taxNumber | 2026-01-24 |
 
 ### Technical Notes
 
@@ -167,37 +170,38 @@ None currently.
 ### Last Session
 
 **Date:** 2026-01-24
-**Completed:** Phase 4 Plan 04 (CT Calculation Service)
+**Completed:** Phase 4 Plan 05 (CT Report Service)
 **Activity:**
-- Executed Plan 04-04: CtCalculationService (930 lines)
-- CT-01: Core CT calculation with 9% rate on > AED 375K threshold
-- 75% loss offset cap with FIFO loss application
-- Small Business Relief check for AED 3M revenue threshold
-- QFZP status check (simplified - returns false pending schema extension)
-- Taxable income schedule generation for CT return
-- Raw SQL for GL aggregation (accounting income fallback)
+- Executed Plan 04-05: CtReportService (873 lines)
+- CT-05: CT-adjusted P&L with accounting, adjustment, taxable columns
+- CT-06: CT-adjusted Balance Sheet with deferred tax and CT payable
+- Pattern-based CT classification using DEFAULT_CT_MAPPING_RULES
+- JSON export for PDF/Excel report generation
+- DI container integration with dependencies on CtAdjustmentService, CtCalculationService
 
 ### Context for Next Session
 
-1. **Phase 4 IN PROGRESS** - 4/9 plans complete (04-01, 04-02, 04-03, 04-04)
-2. **CT Calculation Service Ready** - Core CT-01 calculation engine
-3. **Next Plans** - 04-05 to 04-09 for remaining CT requirements
-4. **Key Features Delivered (04-04):**
-   - calculateCorporateTax(): Full CT computation workflow
-   - 9% rate on taxable income exceeding AED 375,000
-   - 75% loss offset cap with FIFO application
-   - Small Business Relief eligibility check
-   - Taxable income schedule for CT return
-   - Loss carry-forward recording
+1. **Phase 4 IN PROGRESS** - 5/9 plans complete (04-01 to 04-05)
+2. **CT Report Service Ready** - CT-05/CT-06 financial statement generation
+3. **Next Plans** - 04-06 to 04-09 for remaining CT requirements
+4. **Key Features Delivered (04-05):**
+   - generateCtAdjustedPnL(): CT-adjusted P&L with adjustment columns
+   - generateCtAdjustedBalanceSheet(): Balance sheet with tax items
+   - getCtReportSummary(): Quick overview for dashboards
+   - exportCtAdjustedPnL()/exportCtAdjustedBalanceSheet(): JSON export
+   - Pattern-based account classification (no schema CT fields)
+   - Deferred tax asset from loss carry-forwards
 
 ### Files Modified This Session
 
-**Created (Phase 4 Plan 04):**
-- `web-erp-app/backend/src/services/corporate-tax/ct-calculation.service.ts`
-- `.planning/phases/04-corporate-tax-compliance/04-04-SUMMARY.md`
+**Created (Phase 4 Plan 05):**
+- `web-erp-app/backend/src/services/corporate-tax/ct-report.service.ts`
+- `.planning/phases/04-corporate-tax-compliance/04-05-SUMMARY.md`
 
 **Modified:**
-- None (DI container and types already had CtCalculationService registered)
+- `web-erp-app/backend/src/config/types.ts` - Added CtReportService symbol
+- `web-erp-app/backend/src/config/container.ts` - Added CtReportService binding
+- `web-erp-app/backend/src/services/corporate-tax/index.ts` - Added exports
 
 ---
 
