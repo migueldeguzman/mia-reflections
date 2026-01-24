@@ -11,9 +11,9 @@
 ## Current Position
 
 **Phase:** 4 of 10 (Corporate Tax Compliance) - IN PROGRESS
-**Plan:** 6 of 9 complete (04-01, 04-02, 04-03, 04-04, 04-05, 04-06)
+**Plan:** 7 of 9 complete (04-01, 04-02, 04-03, 04-04, 04-05, 04-06, 04-08)
 **Status:** In progress
-**Last activity:** 2026-01-24 - Completed 04-06-PLAN.md (Transfer Pricing Service)
+**Last activity:** 2026-01-24 - Completed 04-08-PLAN.md (CT Retention Service)
 
 **Progress:**
 ```
@@ -21,7 +21,7 @@ Phase 1    [████████████████] Multi-Tenant Found
 Phase 2    [████████████████] Internal Controls          COMPLETE (5/5 req)
 Phase 2.5  [████████████████] Accounting Foundation      COMPLETE (12/12 req)
 Phase 3    [████████████████] VAT Compliance             COMPLETE (10/10)
-Phase 4    [██████████████  ] Corporate Tax              6/9 requirements
+Phase 4    [███████████████ ] Corporate Tax              7/9 requirements
 Phase 5    [                ] WPS Payroll                0/7 requirements
 Phase 6    [                ] E-Invoice Core             0/6 requirements
 Phase 7    [                ] E-Invoice Transmission     0/4 requirements
@@ -37,8 +37,8 @@ Overall: 33/71 requirements (~46%)
 
 | Metric | Value | Notes |
 |--------|-------|-------|
-| Plans completed | 20+ | 01-01 to 02-04, 02.5-*, 03-01 to 03-10, 04-01 to 04-06 |
-| Requirements delivered | 38/71 | TENANT-01-05, CTRL-01-04, ACCT-01-12, VAT-01-10, CT-01 to CT-07 |
+| Plans completed | 20+ | 01-01 to 02-04, 02.5-*, 03-01 to 03-10, 04-01 to 04-06, 04-08 |
+| Requirements delivered | 39/71 | TENANT-01-05, CTRL-01-04, ACCT-01-12, VAT-01-10, CT-01 to CT-08 |
 | Phases completed | 4/10 | Phases 1, 2, 2.5, 3 complete; Phase 4 in progress |
 | Blockers encountered | 0 | - |
 | Decisions made | 40+ | See Key Decisions table |
@@ -106,6 +106,9 @@ Overall: 33/71 requirements (~46%)
 | TRN retrieval fallback | Try tax_configurations first, fallback to companies.taxNumber | 2026-01-24 |
 | 5% arm's length tolerance | Standard international transfer pricing tolerance per OECD guidelines | 2026-01-24 |
 | Raw SQL for group revenue | Consistent with CtCalculationService pattern for tax group member aggregation | 2026-01-24 |
+| 7-year retention from period end | UAE Federal Decree-Law No. 47 Article 36 requires retention from period end | 2026-01-24 |
+| 6-month warning threshold | Adequate time for archival and backup before retention expires | 2026-01-24 |
+| 80% audit log completeness | Reasonable threshold allowing for gaps while ensuring audit trail | 2026-01-24 |
 
 ### Technical Notes
 
@@ -172,37 +175,37 @@ None currently.
 ### Last Session
 
 **Date:** 2026-01-24
-**Completed:** Phase 4 Plan 06 (Transfer Pricing Service)
+**Completed:** Phase 4 Plan 08 (CT Retention Service)
 **Activity:**
-- Executed Plan 04-06: TransferPricingService (1,202 lines)
-- CT-07: Transfer pricing documentation and compliance
-- Related party transaction recording with arm's length testing
-- TP disclosure thresholds (AED 40M total, AED 4M per category)
-- Master File/Local File documentation tracking
+- Executed Plan 04-08: CtRetentionService (922 lines)
+- CT-08: 7-year record retention enforcement
+- Deletion prevention for records within retention period
+- 6-month expiry warning threshold
+- FTA audit report generation
 - DI container integration
 
 ### Context for Next Session
 
-1. **Phase 4 IN PROGRESS** - 6/9 plans complete (04-01 to 04-06)
-2. **Transfer Pricing Service Ready** - CT-07 compliance complete
-3. **Next Plans** - 04-07 to 04-09 for remaining CT requirements (Tax Loss, Tax Group, Tests)
-4. **Key Features Delivered (04-06):**
-   - recordTransaction(): RP transaction with auto arm's length test
-   - performArmLengthTest(): 5% tolerance threshold comparison
-   - calculateThresholds(): AED 40M/4M/500K disclosure checks
-   - getComplianceStatus(): Required actions list with documentation status
-   - updateDocumentationStatus(): Master File/Local File tracking
-   - Raw SQL group revenue aggregation for tax groups
+1. **Phase 4 IN PROGRESS** - 7/9 plans complete (04-01 to 04-06, 04-08)
+2. **CT Retention Service Ready** - CT-08 compliance complete
+3. **Next Plans** - 04-07 (Tax Loss), 04-09 (CT Integration Tests)
+4. **Key Features Delivered (04-08):**
+   - checkRetentionCompliance(): Full 7-year compliance check
+   - enforceRetention(): Middleware hook for deletion prevention
+   - getExpiringRecords(): 6-month warning notifications
+   - generateAuditReport(): FTA-ready audit reports
+   - getFullRetentionHistory(): 7-year span queries
+   - RETENTION_YEARS=7, WARNING_MONTHS=6
 
 ### Files Modified This Session
 
-**Created (Phase 4 Plan 06):**
-- `web-erp-app/backend/src/services/corporate-tax/transfer-pricing.service.ts`
-- `.planning/phases/04-corporate-tax-compliance/04-06-SUMMARY.md`
+**Created (Phase 4 Plan 08):**
+- `web-erp-app/backend/src/services/corporate-tax/ct-retention.service.ts`
+- `.planning/phases/04-corporate-tax-compliance/04-08-SUMMARY.md`
 
 **Modified:**
-- `web-erp-app/backend/src/config/types.ts` - Added TransferPricingService symbol
-- `web-erp-app/backend/src/config/container.ts` - Added TransferPricingService binding
+- `web-erp-app/backend/src/config/types.ts` - Added CtRetentionService symbol
+- `web-erp-app/backend/src/config/container.ts` - Added CtRetentionService binding
 - `web-erp-app/backend/src/services/corporate-tax/index.ts` - Added exports
 
 ---
