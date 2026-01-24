@@ -11,24 +11,24 @@
 ## Current Position
 
 **Phase:** 3 of 10 (VAT Compliance Engine) - IN PROGRESS
-**Plan:** 7 of 10 complete (03-01, 03-02, 03-03, 03-04, 03-05, 03-06, 03-07)
+**Plan:** 8 of 10 complete (03-01, 03-02, 03-03, 03-04, 03-05, 03-06, 03-07, 03-08)
 **Status:** In progress
-**Last activity:** 2026-01-24 - Completed 03-07-PLAN.md (VAT Reconciliation Service)
+**Last activity:** 2026-01-24 - Completed 03-08-PLAN.md (Bad Debt Relief Service)
 
 **Progress:**
 ```
 Phase 1    [████████████████] Multi-Tenant Foundation    COMPLETE (5/5 req)
 Phase 2    [████████████████] Internal Controls          COMPLETE (5/5 req)
 Phase 2.5  [                ] Accounting Foundation      NOT STARTED (0/12 req)
-Phase 3    [███████         ] VAT Compliance             7/10 requirements (03-01 to 03-07)
+Phase 3    [████████        ] VAT Compliance             8/10 requirements (03-01 to 03-08)
 Phase 4    [                ] Corporate Tax              0/9 requirements
 Phase 5    [                ] WPS Payroll                0/7 requirements
 Phase 6    [                ] E-Invoice Core             0/6 requirements
 Phase 7    [                ] E-Invoice Transmission     0/4 requirements
 Phase 8    [                ] Verification Portal        0/9 requirements
 Phase 9    [                ] Standalone Package         0/4 requirements
-           |████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░|
-Overall: 17/71 requirements (~24%)
+           |█████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░|
+Overall: 18/71 requirements (~25%)
 ```
 
 ---
@@ -37,11 +37,11 @@ Overall: 17/71 requirements (~24%)
 
 | Metric | Value | Notes |
 |--------|-------|-------|
-| Plans completed | 14 | 01-01 to 02-04, 03-01 to 03-07 |
-| Requirements delivered | 17/71 | TENANT-01-05, CTRL-01-04, VAT-01 to VAT-07 |
+| Plans completed | 15 | 01-01 to 02-04, 03-01 to 03-08 |
+| Requirements delivered | 18/71 | TENANT-01-05, CTRL-01-04, VAT-01 to VAT-08 |
 | Phases completed | 2/10 | Phase 2 complete, Phase 3 in progress |
 | Blockers encountered | 0 | - |
-| Decisions made | 31 | See Key Decisions table |
+| Decisions made | 34 | See Key Decisions table |
 
 ---
 
@@ -83,6 +83,9 @@ Overall: 17/71 requirements (~24%)
 | Credit notes as adjustments | Credit notes reduce Box 1 via adjustmentAmount field | 2026-01-24 |
 | Missing emirate defaults Dubai | Common business scenario; logged as warning for review | 2026-01-24 |
 | 0.10 AED variance threshold | Reconciliation tolerance for rounding; 1.00 AED for investigation | 2026-01-24 |
+| 183 days for 6-month eligibility | FTA Article 64 bad debt relief uses 183 days (average 6 months) | 2026-01-24 |
+| Due date not invoice date | Bad debt relief eligibility counts from payment DUE DATE per FTA | 2026-01-24 |
+| Proportional relief calculation | VAT relief proportional to outstanding balance for partial payments | 2026-01-24 |
 
 ### Technical Notes
 
@@ -149,41 +152,41 @@ None currently.
 ### Last Session
 
 **Date:** 2026-01-24
-**Completed:** Plan 03-07 VAT Reconciliation Service
+**Completed:** Plan 03-08 Bad Debt Relief Service
 **Activity:**
-- Created VatReconciliationService for GL to Form 201 comparison (550 lines)
-- reconcile() compares Form 201 output/input VAT with GL account balances
-- isReconciled() for quick variance check within threshold
-- generateReconciliationReport() produces audit-ready JSON for FTA
-- Variance explanations with investigation flags for significant differences
-- 0.10 AED tolerance threshold, 1.00 AED investigation threshold
-- Registered VatReconciliationService in DI container
+- Created BadDebtReliefService for FTA Article 64 VAT recovery (893 lines)
+- 6-month eligibility from payment DUE DATE (not invoice date)
+- ELIGIBILITY_DAYS = 183 (6 months average)
+- Write-off tracking (debtWrittenOff, writtenOffDate)
+- Customer notification tracking (customerNotified, notificationDate)
+- Relief claiming with VAT period integration (Box 1 adjustment)
+- Reversal handling when customer subsequently pays
+- Registered BadDebtReliefService in DI container
 
 ### Context for Next Session
 
-1. **Reconciliation Ready** - VatReconciliationService compares Form 201 with GL
-2. **Variance Detection** - Automatic explanation generation by type and direction
-3. **Audit Reports** - JSON format suitable for FTA audit purposes
-4. **Threshold-Based** - 0.10 AED tolerance, 1.00 AED investigation
-5. **Next Plan** - 03-08 Bad Debt Relief Service
+1. **Bad Debt Relief Ready** - BadDebtReliefService tracks relief lifecycle
+2. **FTA Article 64 Compliance** - All five requirements implemented
+3. **VAT Return Integration** - Relief claimed/reversed in VAT periods
+4. **Proportional Calculation** - Relief based on outstanding balance ratio
+5. **Next Plan** - 03-09 Input VAT Recovery Service
 
 ### Files Modified This Session
 
-**Created (Phase 3 Plan 07):**
-- `backend/src/services/vat/vat-reconciliation.service.ts` - GL to Form 201 reconciliation (550 lines)
-- `.planning/phases/03-vat-compliance-engine/03-07-SUMMARY.md` - Plan summary
+**Created (Phase 3 Plan 08):**
+- `backend/src/services/vat/bad-debt-relief.service.ts` - Bad debt relief service (893 lines)
+- `.planning/phases/03-vat-compliance-engine/03-08-SUMMARY.md` - Plan summary
 
 **Modified:**
-- `backend/src/config/container.ts` - Added VatReconciliationService binding
-- `backend/src/config/types.ts` - Added VatReconciliationService symbol
-- `backend/src/services/vat/index.ts` - Added VatReconciliationService export
+- `backend/src/config/container.ts` - Added BadDebtReliefService binding
+- `backend/src/services/vat/index.ts` - Added BadDebtReliefService export
 
 ---
 
 ## Quick Reference
 
 **Current Phase:** 3 - VAT Compliance Engine (IN PROGRESS)
-**Next Action:** Execute 03-08 Bad Debt Relief Service
+**Next Action:** Execute 03-09 Input VAT Recovery Service
 **Critical Deadline:** July 2026 (e-invoicing pilot)
 **Total Scope:** 71 requirements, 10 phases
 
