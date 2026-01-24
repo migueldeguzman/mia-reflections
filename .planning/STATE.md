@@ -10,10 +10,10 @@
 
 ## Current Position
 
-**Phase:** 4 of 10 (Corporate Tax Compliance) - IN PROGRESS
-**Plan:** 8 of 9 complete (04-01, 04-02, 04-03, 04-04, 04-05, 04-06, 04-07, 04-08)
-**Status:** In progress
-**Last activity:** 2026-01-24 - Completed 04-07-PLAN.md (Tax Group Service)
+**Phase:** 4 of 10 (Corporate Tax Compliance) - COMPLETE
+**Plan:** 9 of 9 complete (04-01 through 04-09)
+**Status:** Phase complete
+**Last activity:** 2026-01-24 - Completed 04-09-PLAN.md (CT Integration Tests and Permissions)
 
 **Progress:**
 ```
@@ -21,14 +21,14 @@ Phase 1    [████████████████] Multi-Tenant Found
 Phase 2    [████████████████] Internal Controls          COMPLETE (5/5 req)
 Phase 2.5  [████████████████] Accounting Foundation      COMPLETE (12/12 req)
 Phase 3    [████████████████] VAT Compliance             COMPLETE (10/10)
-Phase 4    [████████████████] Corporate Tax              8/9 requirements
+Phase 4    [████████████████] Corporate Tax              COMPLETE (9/9)
 Phase 5    [                ] WPS Payroll                0/7 requirements
 Phase 6    [                ] E-Invoice Core             0/6 requirements
 Phase 7    [                ] E-Invoice Transmission     0/4 requirements
 Phase 8    [                ] Verification Portal        0/9 requirements
 Phase 9    [                ] Standalone Package         0/4 requirements
-           |██████████████████████░░░░░░░░░░░░░░░░░░░░░░|
-Overall: 33/71 requirements (~46%)
+           |██████████████████████████░░░░░░░░░░░░░░░░░░|
+Overall: 41/71 requirements (~58%)
 ```
 
 ---
@@ -37,9 +37,9 @@ Overall: 33/71 requirements (~46%)
 
 | Metric | Value | Notes |
 |--------|-------|-------|
-| Plans completed | 21+ | 01-01 to 02-04, 02.5-*, 03-01 to 03-10, 04-01 to 04-08 |
-| Requirements delivered | 40/71 | TENANT-01-05, CTRL-01-04, ACCT-01-12, VAT-01-10, CT-01 to CT-09 |
-| Phases completed | 4/10 | Phases 1, 2, 2.5, 3 complete; Phase 4 in progress |
+| Plans completed | 33+ | 01-01 to 02-04, 02.5-*, 03-01 to 03-10, 04-01 to 04-09 |
+| Requirements delivered | 41/71 | TENANT-01-05, CTRL-01-04, ACCT-01-12, VAT-01-10, CT-01 to CT-09 |
+| Phases completed | 5/10 | Phases 1, 2, 2.5, 3, 4 complete |
 | Blockers encountered | 0 | - |
 | Decisions made | 40+ | See Key Decisions table |
 
@@ -112,6 +112,9 @@ Overall: 33/71 requirements (~46%)
 | 95% ownership threshold from CT_CONSTANTS | UAE CT Law requires parent to own 95%+ of share capital, voting rights, profit entitlement for tax group | 2026-01-24 |
 | Audit logs for loss transfer history | tax_loss_transfers table doesn't exist; use audit logs with entity='TaxLossTransfer' | 2026-01-24 |
 | Simplified tax group eligibility checks | Default to IFRS, December year-end, UAE resident, not exempt/QFZP when tenant config unavailable | 2026-01-24 |
+| Role-based CT permission bundles | TAX_ACCOUNTANT, TAX_MANAGER, CFO, AUDITOR for separation of duties per FTA | 2026-01-24 |
+| CFO-only CT filing authority | Only CFO role has ct:return:file permission for corporate governance | 2026-01-24 |
+| Mock-based CT unit tests | Isolates calculation logic from database for fast, reliable testing | 2026-01-24 |
 
 ### Technical Notes
 
@@ -178,45 +181,42 @@ None currently.
 ### Last Session
 
 **Date:** 2026-01-24
-**Completed:** Phase 4 Plan 07 (Tax Group Service)
+**Completed:** Phase 4 Plan 09 (CT Integration Tests and Permissions)
 **Activity:**
-- Executed Plan 04-07: TaxGroupService (1624 lines)
-- CT-09: Tax group consolidation for 95%+ ownership
-- Consolidated CT return generation
-- Intercompany elimination calculations
-- Loss transfer between group members
-- DI container integration
+- Executed Plan 04-09: CT tests and permissions middleware
+- Created ct-calculation.test.ts (871 lines) - Unit tests for CT calculation
+- Created ct-integration.test.ts (774 lines) - Integration tests for full CT lifecycle
+- Created ct-permissions.ts (316 lines) - Permission constants and role bundles
+- Created ct-permissions.middleware.ts (591 lines) - Permission middleware
+- Phase 4 COMPLETE - All 9/9 plans delivered
 
 ### Context for Next Session
 
-1. **Phase 4 IN PROGRESS** - 8/9 plans complete (04-01 to 04-08)
-2. **Tax Group Service Ready** - CT-09 compliance complete
-3. **Next Plans** - 04-09 (CT Integration Tests)
-4. **Key Features Delivered (04-07):**
-   - createTaxGroup(): Form groups with 95%+ ownership
-   - checkMemberEligibility(): 8 eligibility criteria checks
-   - generateConsolidatedReturn(): Aggregate member taxable incomes
-   - calculateIntercompanyEliminations(): Remove intra-group transactions
-   - transferLoss(): Loss offset between group members
-   - 9-month filing deadline calculation
+1. **Phase 4 COMPLETE** - All CT compliance components implemented
+2. **Phase 5 Ready** - WPS Payroll next in sequence
+3. **Key Features Delivered (04-09):**
+   - 76 test cases covering CT calculation and lifecycle
+   - CT_PERMISSIONS constant with 24 permission codes
+   - 4 role bundles (TAX_ACCOUNTANT, TAX_MANAGER, CFO, AUDITOR)
+   - requireCtPermission(), requireAnyCtPermission(), requireAllCtPermissions()
+   - Multi-tenant company access validation
+   - Audit logging for denied access
 
 ### Files Modified This Session
 
-**Created (Phase 4 Plan 07):**
-- `web-erp-app/backend/src/services/corporate-tax/tax-group.service.ts`
-- `.planning/phases/04-corporate-tax-compliance/04-07-SUMMARY.md`
-
-**Modified:**
-- `web-erp-app/backend/src/config/types.ts` - Added TaxGroupService symbol
-- `web-erp-app/backend/src/config/container.ts` - Added TaxGroupService binding
-- `web-erp-app/backend/src/services/corporate-tax/index.ts` - Added exports
+**Created (Phase 4 Plan 09):**
+- `web-erp-app/backend/src/services/corporate-tax/__tests__/ct-calculation.test.ts`
+- `web-erp-app/backend/src/services/corporate-tax/__tests__/ct-integration.test.ts`
+- `web-erp-app/backend/src/middleware/ct-permissions.middleware.ts`
+- `web-erp-app/backend/src/types/ct-permissions.ts`
+- `.planning/phases/04-corporate-tax-compliance/04-09-SUMMARY.md`
 
 ---
 
 ## Quick Reference
 
-**Current Phase:** 4 - Corporate Tax Compliance (IN PROGRESS)
-**Next Action:** Continue Phase 4 (Plans 04-03 to 04-09)
+**Current Phase:** 5 - WPS Payroll (NEXT)
+**Next Action:** Begin Phase 5 planning (WPS-01 to WPS-07)
 **Critical Deadline:** July 2026 (e-invoicing pilot)
 **Total Scope:** 71 requirements, 10 phases
 
