@@ -11,16 +11,16 @@
 ## Current Position
 
 **Phase:** 3 of 10 (VAT Compliance Engine) - IN PROGRESS
-**Plan:** 4 of 10 complete (03-01, 03-02, 03-03, 03-04)
+**Plan:** 6 of 10 complete (03-01, 03-02, 03-03, 03-04, 03-05, 03-06)
 **Status:** In progress
-**Last activity:** 2026-01-24 - Completed 03-04-PLAN.md (Credit/Debit Note Services)
+**Last activity:** 2026-01-24 - Completed 03-06-PLAN.md (VAT Return Form 201 Service)
 
 **Progress:**
 ```
 Phase 1    [████████████████] Multi-Tenant Foundation    COMPLETE (5/5 req)
 Phase 2    [████████████████] Internal Controls          COMPLETE (5/5 req)
 Phase 2.5  [                ] Accounting Foundation      NOT STARTED (0/12 req)
-Phase 3    [████            ] VAT Compliance             4/10 requirements (03-01, 03-02, 03-03, 03-04)
+Phase 3    [██████          ] VAT Compliance             6/10 requirements (03-01 to 03-06)
 Phase 4    [                ] Corporate Tax              0/9 requirements
 Phase 5    [                ] WPS Payroll                0/7 requirements
 Phase 6    [                ] E-Invoice Core             0/6 requirements
@@ -28,7 +28,7 @@ Phase 7    [                ] E-Invoice Transmission     0/4 requirements
 Phase 8    [                ] Verification Portal        0/9 requirements
 Phase 9    [                ] Standalone Package         0/4 requirements
            |███████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░|
-Overall: 14/71 requirements (~20%)
+Overall: 16/71 requirements (~23%)
 ```
 
 ---
@@ -37,8 +37,8 @@ Overall: 14/71 requirements (~20%)
 
 | Metric | Value | Notes |
 |--------|-------|-------|
-| Plans completed | 11 | 01-01, 01-02, 01-03, 02-01, 02-02, 02-03, 02-04, 03-01, 03-02, 03-03, 03-04 |
-| Requirements delivered | 14/71 | TENANT-01-05, CTRL-01-04, VAT-01 (schema), VAT-02 (calc), VAT-03 (invoice), VAT-04 (credit/debit) |
+| Plans completed | 13 | 01-01 to 02-04, 03-01 to 03-06 |
+| Requirements delivered | 16/71 | TENANT-01-05, CTRL-01-04, VAT-01 to VAT-06 |
 | Phases completed | 2/10 | Phase 2 complete, Phase 3 in progress |
 | Blockers encountered | 0 | - |
 | Decisions made | 30 | See Key Decisions table |
@@ -79,6 +79,9 @@ Overall: 14/71 requirements (~20%)
 | Bilingual template with Noto Sans Arabic | FTA requires Arabic content; fallback fonts for reliable rendering | 2026-01-24 |
 | Credit note mandatory original reference | FTA Article 70 requires credit notes to reference original invoice | 2026-01-24 |
 | 14-day rule warning not error | Business may have valid reasons for late issuance; log for FTA audit | 2026-01-24 |
+| Box 10 mirrors Box 3+6 | Reverse charge input VAT equals output VAT for net-zero effect | 2026-01-24 |
+| Credit notes as adjustments | Credit notes reduce Box 1 via adjustmentAmount field | 2026-01-24 |
+| Missing emirate defaults Dubai | Common business scenario; logged as warning for review | 2026-01-24 |
 
 ### Technical Notes
 
@@ -145,40 +148,42 @@ None currently.
 ### Last Session
 
 **Date:** 2026-01-24
-**Completed:** Plan 03-04 Credit/Debit Note Services
+**Completed:** Plan 03-06 VAT Return Form 201 Service
 **Activity:**
-- Created TaxCreditNoteService with FTA Article 70 compliance (746 lines)
-- Created TaxDebitNoteService for invoice value increases (642 lines)
-- Implemented mandatory original invoice reference validation
-- Added 14-day rule validation with warning logging
-- Registered both services in DI container
+- Created VatReturnService for FTA Form 201 preparation (800 lines)
+- Implemented all 14 Form 201 boxes with proper calculations
+- Box 1 includes Emirate breakdown (7 UAE emirates)
+- Credit notes from 03-04 reduce Box 1 as adjustments
+- Reverse charge appears in both Box 3/6 (output) and Box 10 (input)
+- JSON export for FTA submission
+- Validation for completeness (TRN, emirate codes, credit note refs)
+- Registered VatReturnService in DI container
 
 ### Context for Next Session
 
-1. **Credit/Debit Services Ready** - TaxCreditNoteService and TaxDebitNoteService in DI container
-2. **Original Invoice Reference** - Mandatory per FTA Article 70
-3. **14-Day Rule** - Validated with warnings for late issuance
-4. **Sequential Numbering** - CN-YYYY-NNNNNN and DN-YYYY-NNNNNN formats
-5. **Next Plan** - 03-05 VAT Period Management
+1. **Form 201 Ready** - VatReturnService prepares complete FTA Form 201
+2. **Emirate Breakdown** - Box 1 includes all 7 UAE emirates
+3. **Reverse Charge Symmetry** - Box 10 mirrors Box 3+6 for net-zero VAT
+4. **Credit Note Adjustments** - Applied via adjustmentAmount field
+5. **Next Plan** - 03-07 Bad Debt Relief Service
 
 ### Files Modified This Session
 
-**Created (Phase 3 Plan 04):**
-- `backend/src/services/vat/tax-credit-note.service.ts` - Tax credit note service (746 lines)
-- `backend/src/services/vat/tax-debit-note.service.ts` - Tax debit note service (642 lines)
-- `.planning/phases/03-vat-compliance-engine/03-04-SUMMARY.md` - Plan summary
+**Created (Phase 3 Plan 06):**
+- `backend/src/services/vat/vat-return.service.ts` - Form 201 VAT return service (800 lines)
+- `.planning/phases/03-vat-compliance-engine/03-06-SUMMARY.md` - Plan summary
 
 **Modified:**
-- `backend/src/config/container.ts` - Added TaxCreditNoteService and TaxDebitNoteService bindings
-- `backend/src/config/types.ts` - Added service type symbols
-- `backend/src/services/vat/index.ts` - Added service exports
+- `backend/src/config/container.ts` - Added VatReturnService binding
+- `backend/src/config/types.ts` - Added VatReturnService symbol
+- `backend/src/services/vat/index.ts` - Added VatReturnService export
 
 ---
 
 ## Quick Reference
 
 **Current Phase:** 3 - VAT Compliance Engine (IN PROGRESS)
-**Next Action:** Execute 03-05 VAT Period Management
+**Next Action:** Execute 03-07 Bad Debt Relief Service
 **Critical Deadline:** July 2026 (e-invoicing pilot)
 **Total Scope:** 71 requirements, 10 phases
 
