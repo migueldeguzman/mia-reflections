@@ -228,13 +228,13 @@ Plans:
 **Plans:** 7 plans in 4 waves
 
 Plans:
-- [ ] 05-01-PLAN.md - WPS schema and types (PayrollCycle, EmployeeSalaryRecord, WpsAgent, WpsSubmission, WpsError)
-- [ ] 05-02-PLAN.md - IBAN validation utility using ibantools
-- [ ] 05-03-PLAN.md - Bank routing code service and WPS agents seed
-- [ ] 05-04-PLAN.md - WpsSifService for SIF file generation (EDR/SCR records)
-- [ ] 05-05-PLAN.md - PayrollCycleService with state machine and API routes
-- [ ] 05-06-PLAN.md - WpsErrorService with error codes and resolution guidance
-- [ ] 05-07-PLAN.md - Integration tests and WPS permissions
+- [x] 05-01-PLAN.md - WPS schema and types (PayrollCycle, EmployeeSalaryRecord, WpsAgent, WpsSubmission, WpsError)
+- [x] 05-02-PLAN.md - IBAN validation utility using ibantools
+- [x] 05-03-PLAN.md - Bank routing code service and WPS agents seed
+- [x] 05-04-PLAN.md - WpsSifService for SIF file generation (EDR/SCR records)
+- [x] 05-05-PLAN.md - PayrollCycleService with state machine and API routes
+- [x] 05-06-PLAN.md - WpsErrorService with error codes and resolution guidance
+- [x] 05-07-PLAN.md - Integration tests and WPS permissions
 
 **Wave Structure:**
 - Wave 1: 05-01 (Schema), 05-02 (IBAN Util) - parallel, foundation
@@ -242,7 +242,7 @@ Plans:
 - Wave 3: 05-05 (Cycle Service), 05-06 (Error Service) - parallel, depends on Wave 2
 - Wave 4: 05-07 (Tests/Permissions) - depends on Wave 3
 
-**Status:** PLANNED (2026-01-24)
+**Status:** COMPLETE (verified 2026-01-24)
 
 **Requirements:**
 - WPS-01: SIF (Salary Information File) generation
