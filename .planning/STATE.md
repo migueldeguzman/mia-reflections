@@ -11,9 +11,9 @@
 ## Current Position
 
 **Phase:** 6 of 10 (E-Invoice Engine Core) - IN PROGRESS
-**Plan:** 1 of 8 complete (06-02)
+**Plan:** 2 of 8 complete (06-01, 06-02)
 **Status:** In progress
-**Last activity:** 2026-01-24 - Completed 06-02-PLAN.md (TLV Encoder and QR Code Service)
+**Last activity:** 2026-01-24 - Completed 06-01-PLAN.md (E-Invoice Archive Schema)
 
 **Progress:**
 ```
@@ -23,7 +23,7 @@ Phase 2.5  [████████████████] Accounting Foundat
 Phase 3    [████████████████] VAT Compliance             COMPLETE (10/10)
 Phase 4    [████████████████] Corporate Tax              COMPLETE (9/9)
 Phase 5    [████████████████] WPS Payroll                COMPLETE (7/7)
-Phase 6    [██                  ] E-Invoice Core         1/8 requirements
+Phase 6    [████                ] E-Invoice Core         2/8 requirements
 Phase 7    [                    ] E-Invoice Transmission 0/4 requirements
 Phase 8    [                    ] Verification Portal    0/9 requirements
 Phase 9    [                    ] Standalone Package     0/4 requirements
@@ -37,8 +37,8 @@ Overall: 51/71 requirements (~72%)
 
 | Metric | Value | Notes |
 |--------|-------|-------|
-| Plans completed | 44+ | 01-01 to 02-04, 02.5-*, 03-01 to 03-10, 04-01 to 04-09, 05-01 to 05-07, 06-02 |
-| Requirements delivered | 51/71 | TENANT-01-05, CTRL-01-04, ACCT-01-12, VAT-01-10, CT-01 to CT-09, WPS-01 to WPS-07, EINV-03 |
+| Plans completed | 45+ | 01-01 to 02-04, 02.5-*, 03-01 to 03-10, 04-01 to 04-09, 05-01 to 05-07, 06-01, 06-02 |
+| Requirements delivered | 52/71 | TENANT-01-05, CTRL-01-04, ACCT-01-12, VAT-01-10, CT-01 to CT-09, WPS-01 to WPS-07, EINV-03, EINV-05 (partial) |
 | Phases completed | 6/10 | Phases 1, 2, 2.5, 3, 4, 5 complete; Phase 6 in progress |
 | Blockers encountered | 0 | - |
 | Decisions made | 40+ | See Key Decisions table |
@@ -126,6 +126,9 @@ Overall: 51/71 requirements (~72%)
 | ZATCA-compatible TLV tags | UAE FTA hasn't published official tags; use ZATCA (1-8) as proven baseline | 2026-01-24 |
 | 200-byte seller truncation | Leave room for other fields within 255-byte TLV limit | 2026-01-24 |
 | Binary search UTF-8 truncation | Prevents cutting multibyte characters mid-sequence for Arabic names | 2026-01-24 |
+| E-invoice hash chain pattern reuse | Same implementation as Phase 2 audit_logs for consistency | 2026-01-24 |
+| E-invoice immutability trigger | Database-level enforcement prevents core field modifications | 2026-01-24 |
+| 7-year e-invoice retention | FTA EINV-05 compliance built into schema with retentionEndDate | 2026-01-24 |
 
 ### Technical Notes
 
@@ -192,45 +195,44 @@ None currently.
 ### Last Session
 
 **Date:** 2026-01-24
-**Completed:** Phase 6 Plan 02 (TLV Encoder and QR Code Service)
+**Completed:** Phase 6 Plan 01 (E-Invoice Archive Schema)
 **Activity:**
-- Executed Plan 06-02: TLV encoding and QR code generation for e-invoices
-- Created tlv-encoder.util.ts with ZATCA-compatible TLV encoding (tags 1-8)
-- Created QrCodeService with 4 output formats (base64, buffer, dataUrl, svg)
-- Created einvoice service module structure
-- Added 46 unit tests for TLV encoder and QR code service
-- All verifications passing, all tests pass
+- Executed Plan 06-01: E-invoice archive schema with tamper-proof hash chain
+- Verified EInvoiceStatus and EInvoiceFormat enums in schema
+- Verified EINVOICE_GENERATE, EINVOICE_SUBMIT, EINVOICE_CANCEL in AuditAction
+- Verified einvoice_archives model with hash chain fields
+- Verified einvoice.types.ts with all required TypeScript interfaces
+- All schema validations passing, all type exports verified
 
 ### Context for Next Session
 
-1. **Phase 6 IN PROGRESS** - 1/8 plans complete (06-02)
-2. **Next Plan:** 06-01 or 06-03 (E-Invoice Types or UBL 2.1 XML Generator)
-3. **Key Features Delivered (06-02):**
-   - TlvTag enum with 8 tag types (SELLER_NAME through PUBLIC_KEY)
-   - encodeTlv()/decodeTlv() for TLV binary format
-   - truncateForTlv() for UTF-8 safe truncation of Arabic names
-   - QrCodeService with generateQrCode(), decodeQrCode()
-   - generateQrCodeForPdf(), generateQrCodeForXml() convenience methods
-   - TRN validation (15 digits starting with 100)
-   - 46 tests covering TLV encoding, QR generation, round-trip verification
+1. **Phase 6 IN PROGRESS** - 2/8 plans complete (06-01, 06-02)
+2. **Next Plan:** 06-03 (UBL 2.1 XML Generator)
+3. **Key Features Delivered (06-01):**
+   - EInvoiceStatus enum (GENERATED, VALIDATED, SUBMITTED, ACCEPTED, REJECTED, CANCELLED, ARCHIVED)
+   - EInvoiceFormat enum (PINT_AE, UBL_21)
+   - einvoice_archives model with hash chain fields
+   - PostgreSQL immutability trigger for core fields
+   - TypeScript interfaces for e-invoice data structures
+   - PINT_AE_CONSTANTS with specification values
+   - TlvTag enum for QR code encoding
 
 ### Files Modified This Session
 
-**Created (Phase 6 Plan 02):**
-- `web-erp-app/backend/src/utils/tlv-encoder.util.ts`
-- `web-erp-app/backend/src/services/einvoice/qr-code.service.ts`
-- `web-erp-app/backend/src/services/einvoice/index.ts`
-- `web-erp-app/backend/src/services/einvoice/__tests__/qr-code.service.test.ts`
-- `.planning/phases/06-e-invoicing-engine-core/06-02-SUMMARY.md`
+**Created (Phase 6 Plan 01):**
+- `.planning/phases/06-e-invoicing-engine-core/06-01-SUMMARY.md`
 
-**Modified:** None
+**Verified from previous commits:**
+- `web-erp-app/backend/prisma/migrations/20260124191900_einvoice_archive_schema/migration.sql`
+- `web-erp-app/backend/src/types/einvoice.types.ts`
+- `web-erp-app/backend/prisma/schema.prisma` (EInvoice enums and model)
 
 ---
 
 ## Quick Reference
 
 **Current Phase:** 6 - E-Invoice Core (IN PROGRESS)
-**Next Action:** Execute 06-01 or 06-03 (Types or UBL XML Generator)
+**Next Action:** Execute 06-03 (UBL 2.1 XML Generator)
 **Critical Deadline:** July 2026 (e-invoicing pilot)
 **Total Scope:** 71 requirements, 10 phases
 
