@@ -11,9 +11,9 @@
 ## Current Position
 
 **Phase:** 4 of 10 (Corporate Tax Compliance) - IN PROGRESS
-**Plan:** 5 of 9 complete (04-01, 04-02, 04-03, 04-04, 04-05)
+**Plan:** 6 of 9 complete (04-01, 04-02, 04-03, 04-04, 04-05, 04-06)
 **Status:** In progress
-**Last activity:** 2026-01-24 - Completed 04-05-PLAN.md (CT Report Service)
+**Last activity:** 2026-01-24 - Completed 04-06-PLAN.md (Transfer Pricing Service)
 
 **Progress:**
 ```
@@ -21,14 +21,14 @@ Phase 1    [████████████████] Multi-Tenant Found
 Phase 2    [████████████████] Internal Controls          COMPLETE (5/5 req)
 Phase 2.5  [████████████████] Accounting Foundation      COMPLETE (12/12 req)
 Phase 3    [████████████████] VAT Compliance             COMPLETE (10/10)
-Phase 4    [████████████    ] Corporate Tax              5/9 requirements
+Phase 4    [██████████████  ] Corporate Tax              6/9 requirements
 Phase 5    [                ] WPS Payroll                0/7 requirements
 Phase 6    [                ] E-Invoice Core             0/6 requirements
 Phase 7    [                ] E-Invoice Transmission     0/4 requirements
 Phase 8    [                ] Verification Portal        0/9 requirements
 Phase 9    [                ] Standalone Package         0/4 requirements
            |██████████████████████░░░░░░░░░░░░░░░░░░░░░░|
-Overall: 32/71 requirements (~45%)
+Overall: 33/71 requirements (~46%)
 ```
 
 ---
@@ -37,8 +37,8 @@ Overall: 32/71 requirements (~45%)
 
 | Metric | Value | Notes |
 |--------|-------|-------|
-| Plans completed | 20+ | 01-01 to 02-04, 02.5-*, 03-01 to 03-10, 04-01 to 04-05 |
-| Requirements delivered | 37/71 | TENANT-01-05, CTRL-01-04, ACCT-01-12, VAT-01-10, CT-01 to CT-05/06 |
+| Plans completed | 20+ | 01-01 to 02-04, 02.5-*, 03-01 to 03-10, 04-01 to 04-06 |
+| Requirements delivered | 38/71 | TENANT-01-05, CTRL-01-04, ACCT-01-12, VAT-01-10, CT-01 to CT-07 |
 | Phases completed | 4/10 | Phases 1, 2, 2.5, 3 complete; Phase 4 in progress |
 | Blockers encountered | 0 | - |
 | Decisions made | 40+ | See Key Decisions table |
@@ -104,6 +104,8 @@ Overall: 32/71 requirements (~45%)
 | Pattern-based CT classification | Use DEFAULT_CT_MAPPING_RULES for account classification in reports | 2026-01-24 |
 | Deferred tax simplified | DTA = losses * 9%, DTL = 0 (full timing difference tracking requires schema) | 2026-01-24 |
 | TRN retrieval fallback | Try tax_configurations first, fallback to companies.taxNumber | 2026-01-24 |
+| 5% arm's length tolerance | Standard international transfer pricing tolerance per OECD guidelines | 2026-01-24 |
+| Raw SQL for group revenue | Consistent with CtCalculationService pattern for tax group member aggregation | 2026-01-24 |
 
 ### Technical Notes
 
@@ -170,37 +172,37 @@ None currently.
 ### Last Session
 
 **Date:** 2026-01-24
-**Completed:** Phase 4 Plan 05 (CT Report Service)
+**Completed:** Phase 4 Plan 06 (Transfer Pricing Service)
 **Activity:**
-- Executed Plan 04-05: CtReportService (873 lines)
-- CT-05: CT-adjusted P&L with accounting, adjustment, taxable columns
-- CT-06: CT-adjusted Balance Sheet with deferred tax and CT payable
-- Pattern-based CT classification using DEFAULT_CT_MAPPING_RULES
-- JSON export for PDF/Excel report generation
-- DI container integration with dependencies on CtAdjustmentService, CtCalculationService
+- Executed Plan 04-06: TransferPricingService (1,202 lines)
+- CT-07: Transfer pricing documentation and compliance
+- Related party transaction recording with arm's length testing
+- TP disclosure thresholds (AED 40M total, AED 4M per category)
+- Master File/Local File documentation tracking
+- DI container integration
 
 ### Context for Next Session
 
-1. **Phase 4 IN PROGRESS** - 5/9 plans complete (04-01 to 04-05)
-2. **CT Report Service Ready** - CT-05/CT-06 financial statement generation
-3. **Next Plans** - 04-06 to 04-09 for remaining CT requirements
-4. **Key Features Delivered (04-05):**
-   - generateCtAdjustedPnL(): CT-adjusted P&L with adjustment columns
-   - generateCtAdjustedBalanceSheet(): Balance sheet with tax items
-   - getCtReportSummary(): Quick overview for dashboards
-   - exportCtAdjustedPnL()/exportCtAdjustedBalanceSheet(): JSON export
-   - Pattern-based account classification (no schema CT fields)
-   - Deferred tax asset from loss carry-forwards
+1. **Phase 4 IN PROGRESS** - 6/9 plans complete (04-01 to 04-06)
+2. **Transfer Pricing Service Ready** - CT-07 compliance complete
+3. **Next Plans** - 04-07 to 04-09 for remaining CT requirements (Tax Loss, Tax Group, Tests)
+4. **Key Features Delivered (04-06):**
+   - recordTransaction(): RP transaction with auto arm's length test
+   - performArmLengthTest(): 5% tolerance threshold comparison
+   - calculateThresholds(): AED 40M/4M/500K disclosure checks
+   - getComplianceStatus(): Required actions list with documentation status
+   - updateDocumentationStatus(): Master File/Local File tracking
+   - Raw SQL group revenue aggregation for tax groups
 
 ### Files Modified This Session
 
-**Created (Phase 4 Plan 05):**
-- `web-erp-app/backend/src/services/corporate-tax/ct-report.service.ts`
-- `.planning/phases/04-corporate-tax-compliance/04-05-SUMMARY.md`
+**Created (Phase 4 Plan 06):**
+- `web-erp-app/backend/src/services/corporate-tax/transfer-pricing.service.ts`
+- `.planning/phases/04-corporate-tax-compliance/04-06-SUMMARY.md`
 
 **Modified:**
-- `web-erp-app/backend/src/config/types.ts` - Added CtReportService symbol
-- `web-erp-app/backend/src/config/container.ts` - Added CtReportService binding
+- `web-erp-app/backend/src/config/types.ts` - Added TransferPricingService symbol
+- `web-erp-app/backend/src/config/container.ts` - Added TransferPricingService binding
 - `web-erp-app/backend/src/services/corporate-tax/index.ts` - Added exports
 
 ---
