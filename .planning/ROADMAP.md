@@ -45,12 +45,12 @@ Plans:
 **Plans:** 4 plans
 
 Plans:
-- [ ] 02-01-PLAN.md - Schema changes (tamper-proof fields, sequence, immutability trigger)
-- [ ] 02-02-PLAN.md - ComplianceAuditService and AuditIntegrityService
-- [ ] 02-03-PLAN.md - FTA approval workflow seed configurations
-- [ ] 02-04-PLAN.md - Integration tests for tamper-proof audit system
+- [x] 02-01-PLAN.md - Schema changes (tamper-proof fields, sequence, immutability trigger)
+- [x] 02-02-PLAN.md - ComplianceAuditService and AuditIntegrityService
+- [x] 02-03-PLAN.md - FTA approval workflow seed configurations
+- [x] 02-04-PLAN.md - Integration tests for tamper-proof audit system
 
-**Status:** Planned (2026-01-24)
+**Status:** COMPLETE (verified 2026-01-24)
 
 **Requirements:**
 - CTRL-01: User action logging
@@ -65,6 +65,59 @@ Plans:
 3. Audit logs cannot be modified or deleted by any user including administrators
 4. Sensitive operations (VAT submission, payroll approval) require configured approval workflows
 5. Backup files are encrypted at rest and can be restored with full audit trail intact
+
+---
+
+## Phase 2.5: Compliance-Native Accounting Foundation
+
+**Goal:** Build accounting infrastructure that natively supports UAE compliance requirements, enabling accurate VAT returns, Corporate Tax calculations, and FTA-ready financial reports.
+
+**Dependencies:** Phase 1 (tenant config), Phase 2 (audit trails)
+
+**Implementation Progress:** Implemented without formal plans (direct coding)
+
+**Commits (feature/phase-2.5-accounting-foundation branch):**
+- [x] Schema foundation - 13+ new models, 20+ enums (migrations applied)
+- [x] Decimal math utilities - `decimal-math.util.ts`
+- [x] Inventory service - FIFO/LIFO/Weighted Average valuation
+- [x] Prepaid asset service - Amortization scheduling
+- [x] Investment service - Mark-to-market valuation
+- [x] Intangible asset service - Amortization with impairment
+- [x] Interest engine - Strategy pattern (Amortized, Interest-Only, IFRS16)
+- [x] Liability service - Installment schedules, payments, recalculation
+- [x] Gratuity calculator - UAE Labor Law compliant
+- [x] Monthly closing workflow - 9-step checklist
+- [x] Year-end closing entries - Revenue/Expense/Retained Earnings
+- [x] Cash Flow Statement - Indirect method with reconciliation
+- [x] Management reports - Asset/Liability analysis, profitability, cash flow
+- [x] API routes + permissions - All controllers, routes, permissions seeded
+- [x] Controller unit test - closing-procedures.controller.test.ts
+- [ ] Component depreciation - Enhancement to fixed assets (ACCT-12)
+- [ ] Full integration test suite
+
+**Status:** IN PROGRESS (11/12 requirements complete)
+
+**Requirements (Accounting Foundation - enables UAE compliance):**
+- ACCT-01: Cash Flow Statement generation (indirect method)
+- ACCT-02: Monthly closing procedure with checklist
+- ACCT-03: Year-end closing with journal entries
+- ACCT-04: Inventory valuation (FIFO/LIFO/Weighted Avg)
+- ACCT-05: Prepaid expense amortization
+- ACCT-06: Investment mark-to-market valuation
+- ACCT-07: Intangible asset amortization
+- ACCT-08: Liability installment scheduling
+- ACCT-09: UAE gratuity calculation
+- ACCT-10: Bank reconciliation workflow
+- ACCT-11: Management reports suite
+- ACCT-12: Component depreciation for fixed assets
+
+**Success Criteria:**
+1. Cash Flow Statement generates correctly using indirect method with reconciled ending cash
+2. Monthly closing locks period after 9-step checklist completion
+3. Year-end closing creates proper closing entries (Revenue → Expense → Retained Earnings)
+4. Assets module supports all 6 asset types with proper GL integration
+5. Liabilities engine calculates interest accurately for Amortized, Interest-Only, and Lease IFRS 16 methods
+6. Gratuity calculation follows UAE Labor Law (21 days/year first 5 years, 30 days thereafter)
 
 ---
 
@@ -240,7 +293,8 @@ Plans:
 | Phase | Name | Status | Requirements | Completion |
 |-------|------|--------|--------------|------------|
 | 1 | Multi-Tenant Compliance Foundation | Complete | 5 | 100% |
-| 2 | Internal Controls and Audit Infrastructure | Planned | 5 | 0% |
+| 2 | Internal Controls and Audit Infrastructure | Complete | 5 | 100% |
+| 2.5 | Compliance-Native Accounting Foundation | Not Started | 12 | 0% |
 | 3 | VAT Compliance Engine | Not Started | 10 | 0% |
 | 4 | Corporate Tax Compliance | Not Started | 9 | 0% |
 | 5 | WPS Payroll Compliance | Not Started | 7 | 0% |
@@ -249,7 +303,7 @@ Plans:
 | 8 | Compliance Verification Portal | Not Started | 9 | 0% |
 | 9 | Standalone Compliance Package | Not Started | 4 | 0% |
 
-**Total:** 59 requirements across 9 phases
+**Total:** 71 requirements across 10 phases (59 original + 12 accounting foundation)
 
 ---
 
@@ -257,13 +311,21 @@ Plans:
 
 E-Invoicing (July 2026 deadline):
 ```
-Phase 1 --> Phase 2 --> Phase 3 --> Phase 6 --> Phase 7
-   |           |           |
-   v           v           v
-Phase 4     Phase 5     Phase 8 --> Phase 9
+Phase 1 --> Phase 2 --> Phase 2.5 --> Phase 3 --> Phase 6 --> Phase 7
+                           |             |
+                           v             v
+                        Phase 4       Phase 8 --> Phase 9
+                           |
+                           v
+                        Phase 5
 ```
 
-E-invoicing (Phases 6-7) is the critical path for July 2026 pilot. Phases 4-5 can run in parallel with Phase 3 after foundation is complete.
+Phase 2.5 (Accounting Foundation) is now on the critical path as it enables:
+- CT-05/CT-06 (CT-adjusted P&L and Balance Sheet) → Phase 4
+- VAT-07/VAT-08 (VAT reconciliation) → Phase 3
+- WPS-07 (Gratuity calculation) → Phase 5
+
+E-invoicing (Phases 6-7) is the critical path for July 2026 pilot.
 
 ---
 
@@ -275,3 +337,4 @@ E-invoicing (Phases 6-7) is the critical path for July 2026 pilot. Phases 4-5 ca
 | 2026-01-23 | Phase 1 planned - 3 plans in 2 waves | Claude |
 | 2026-01-23 | Phase 1 complete - all 5 requirements delivered | Claude |
 | 2026-01-24 | Phase 2 planned - 4 plans in 2 waves | Claude |
+| 2026-01-24 | Phase 2 complete - all 5 CTRL requirements delivered | Claude |
