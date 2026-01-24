@@ -138,6 +138,9 @@ Overall: 52/71 requirements (~73%)
 | Regex-based UBL validation | Lightweight regex parsing for PINT-AE subset; avoids DOM parser overhead | 2026-01-24 |
 | Header section extraction | Extract invoice header separately to distinguish invoice ID from line IDs | 2026-01-24 |
 | 16 validation rules at init | Rules compiled once at service creation, not per-request | 2026-01-24 |
+| WPS error code format XX-NNN | MOHRE-style error codes with 2-letter category + 3-digit number | 2026-01-24 |
+| isResolved computed from resolvedAt | Derive boolean from timestamp instead of separate column | 2026-01-24 |
+| 32 WPS error codes covering 9 categories | Comprehensive coverage of SIF submission failure scenarios | 2026-01-24 |
 
 ### Technical Notes
 
