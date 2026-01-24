@@ -4,30 +4,31 @@
 
 **Core Value:** Full UAE tax and regulatory compliance (VAT, CT, WPS, E-Invoicing) enabling Vesla ERP customers to meet FTA requirements and participate in UAE e-invoicing pilot by July 2026.
 
-**Current Focus:** Phase 2 - Internal Controls and Audit Infrastructure. All plans complete (02-01, 02-02, 02-03, 02-04). Phase 2 COMPLETE.
+**Current Focus:** Phase 3 - VAT Compliance Engine. Building centralized VAT calculation with Form 201 box assignments and reverse charge mechanism for UAE FTA compliance.
 
 ---
 
 ## Current Position
 
-**Phase:** 2 of 9 (Internal Controls and Audit Infrastructure) - COMPLETE
-**Plan:** 4 of 4 complete
-**Status:** Phase complete
-**Last activity:** 2026-01-24 - Completed 02-03-PLAN.md (FTA Approval Workflow Seeds)
+**Phase:** 3 of 10 (VAT Compliance Engine) - IN PROGRESS
+**Plan:** 2 of 10 complete (03-01, 03-02)
+**Status:** In progress
+**Last activity:** 2026-01-24 - Completed 03-01-PLAN.md (FTA Invoice Schema and VAT Types)
 
 **Progress:**
 ```
-Phase 1  [████████] Multi-Tenant Foundation    COMPLETE (3/3 plans)
-Phase 2  [████████] Internal Controls          COMPLETE (4/4 plans)
-Phase 3  [        ] VAT Compliance             0/10 requirements
-Phase 4  [        ] Corporate Tax              0/9 requirements
-Phase 5  [        ] WPS Payroll                0/7 requirements
-Phase 6  [        ] E-Invoice Core             0/6 requirements
-Phase 7  [        ] E-Invoice Transmission     0/4 requirements
-Phase 8  [        ] Verification Portal        0/9 requirements
-Phase 9  [        ] Standalone Package         0/4 requirements
-         |████████------------------------------|
-Overall: 9/59 requirements (~15%)
+Phase 1    [████████████████] Multi-Tenant Foundation    COMPLETE (5/5 req)
+Phase 2    [████████████████] Internal Controls          COMPLETE (5/5 req)
+Phase 2.5  [                ] Accounting Foundation      NOT STARTED (0/12 req)
+Phase 3    [██              ] VAT Compliance             2/10 requirements (03-01, 03-02)
+Phase 4    [                ] Corporate Tax              0/9 requirements
+Phase 5    [                ] WPS Payroll                0/7 requirements
+Phase 6    [                ] E-Invoice Core             0/6 requirements
+Phase 7    [                ] E-Invoice Transmission     0/4 requirements
+Phase 8    [                ] Verification Portal        0/9 requirements
+Phase 9    [                ] Standalone Package         0/4 requirements
+           |█████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░|
+Overall: 12/71 requirements (~17%)
 ```
 
 ---
@@ -36,11 +37,11 @@ Overall: 9/59 requirements (~15%)
 
 | Metric | Value | Notes |
 |--------|-------|-------|
-| Plans completed | 7 | 01-01, 01-02, 01-03, 02-01, 02-02, 02-03, 02-04 |
-| Requirements delivered | 9/59 | TENANT-01-05, CTRL-01, CTRL-02, CTRL-03, CTRL-04 |
-| Phases completed | 2/9 | Phase 2 complete |
+| Plans completed | 9 | 01-01, 01-02, 01-03, 02-01, 02-02, 02-03, 02-04, 03-01, 03-02 |
+| Requirements delivered | 12/71 | TENANT-01-05, CTRL-01-04, VAT-01 (schema), VAT-02 (calculation) |
+| Phases completed | 2/10 | Phase 2 complete, Phase 3 in progress |
 | Blockers encountered | 0 | - |
-| Decisions made | 19 | See Key Decisions table |
+| Decisions made | 25 | See Key Decisions table |
 
 ---
 
@@ -69,6 +70,10 @@ Overall: 9/59 requirements (~15%)
 | Unified ApprovalDocumentType | Standard financial + FTA types in one enum for unified workflow system | 2026-01-24 |
 | Role placeholders in seed | Role IDs vary per tenant; placeholders allow workflow creation before roles | 2026-01-24 |
 | Idempotent workflow seeding | findFirst check before create; safe to run multiple times | 2026-01-24 |
+| Phase 2.5 bridge phase | Accounting infrastructure enables CT-05/06, VAT-07/08, WPS-07 | 2026-01-24 |
+| tax_configurations as compliance config | Existing table stores TRN/VAT registration; extend rather than new table | 2026-01-24 |
+| Stateless ReverseChargeService | RCM determination is pure calculation logic; no database access needed | 2026-01-24 |
+| Paired accounting for reverse charge | DR Input VAT / CR Output VAT per FTA self-accounting requirement | 2026-01-24 |
 
 ### Technical Notes
 
@@ -135,41 +140,39 @@ None currently.
 ### Last Session
 
 **Date:** 2026-01-24
-**Completed:** Plan 02-03 - FTA Approval Workflow Seeds
-**Commits:**
-- `aae809f`: feat(02-03): add FTA approval workflow schema (enums and models)
-- `0f8f0f4`: feat(02-03): create FTA approval workflow seed script with 5 templates
-- `a057e11`: feat(02-03): add seed script to package.json and create index export
+**Completed:** Phase 2.5 created - Compliance-Native Accounting Foundation
+**Activity:**
+- Created Phase 2.5 as bridge phase between Phase 2 and Phase 3
+- Integrated accounting enhancements with UAE compliance philosophy
+- Updated ROADMAP.md with new phase and requirements
+- Created PHASE.md with 17-plan structure across 5 waves
 
 ### Context for Next Session
 
-1. **Phase 2 COMPLETE** - All 4 plans delivered
-2. **Approval workflows ready** - 5 templates for VAT, CT, PAYROLL, COMPLIANCE_CONFIG, EINVOICE_BATCH
-3. **Seed command available** - `npm run seed:fta-workflows`
-4. **Next phase:** Phase 3 - VAT Compliance Module
-5. **Database migrations pending** - Phase 1 + Phase 2 migrations need to run
-6. **E-invoicing critical path** - Phases 1->2->3->6->7 for July 2026 deadline
+1. **Phase 2.5 CREATED** - Ready for Wave 1 planning (02.5-01, 02.5-02)
+2. **Philosophy established** - Compliance-Native Accounting (all components designed for FTA compliance)
+3. **Integration mapped** - Accounting components → UAE requirements (CT-05/06, VAT-07/08, WPS-07)
+4. **17 plans structured** - Across 5 waves (Schema, Assets, Liabilities, Closing, Reports)
+5. **12 new requirements** - ACCT-01 through ACCT-12 (enables UAE compliance)
+6. **Total scope now** - 71 requirements across 10 phases
 
 ### Files Modified This Session
 
-**Created (Phase 2 Plan 03):**
-- `web-erp-app/backend/prisma/seeds/workflows/fta-approval-workflows.seed.ts`
-- `web-erp-app/backend/prisma/seeds/workflows/index.ts`
-- `.planning/phases/02-internal-controls-audit/02-03-SUMMARY.md`
+**Created (Phase 2.5 Structure):**
+- `.planning/phases/02.5-accounting-foundation/PHASE.md` - Phase definition with 17-plan structure
 
 **Modified:**
-- `web-erp-app/backend/prisma/tenant-schema.prisma` (ApprovalDocumentType, ApproverType, workflow models)
-- `web-erp-app/backend/package.json` (seed:fta-workflows script)
-- `.planning/STATE.md`
+- `.planning/ROADMAP.md` - Added Phase 2.5, updated progress table, revised critical path
+- `.planning/STATE.md` - Updated to reflect Phase 2.5 as current focus
 
 ---
 
 ## Quick Reference
 
-**Current Phase:** 2 - Internal Controls and Audit Infrastructure (COMPLETE)
-**Next Phase:** 3 - VAT Compliance Module
+**Current Phase:** 2.5 - Compliance-Native Accounting Foundation (NOT STARTED)
+**Next Action:** Plan Wave 1 (02.5-01 Schema, 02.5-02 Decimal Utils)
 **Critical Deadline:** July 2026 (e-invoicing pilot)
-**Total Scope:** 59 requirements, 9 phases
+**Total Scope:** 71 requirements, 10 phases
 
 ### Phase 2 Test Coverage
 
