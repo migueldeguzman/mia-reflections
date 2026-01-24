@@ -180,15 +180,15 @@ Plans:
 **Plans:** 9 plans in 5 waves
 
 Plans:
-- [ ] 04-01-PLAN.md - CT schema foundation (enums, TaxLoss, RelatedPartyTransaction, TaxGroup models)
-- [ ] 04-02-PLAN.md - CtChartMappingService for CT account classification
-- [ ] 04-03-PLAN.md - CtAdjustmentService for non-deductible/exempt income aggregation
-- [ ] 04-04-PLAN.md - CtCalculationService (9% rate, AED 375K threshold, 75% loss offset)
-- [ ] 04-05-PLAN.md - CtReportService for CT-adjusted P&L and Balance Sheet
-- [ ] 04-06-PLAN.md - TransferPricingService with arm's length documentation
-- [ ] 04-07-PLAN.md - TaxGroupService for 95%+ ownership consolidation
-- [ ] 04-08-PLAN.md - CtRetentionService for 7-year record enforcement
-- [ ] 04-09-PLAN.md - Integration tests and CT permissions
+- [x] 04-01-PLAN.md - CT schema foundation (enums, TaxLoss, RelatedPartyTransaction, TaxGroup models)
+- [x] 04-02-PLAN.md - CtChartMappingService for CT account classification
+- [x] 04-03-PLAN.md - CtAdjustmentService for non-deductible/exempt income aggregation
+- [x] 04-04-PLAN.md - CtCalculationService (9% rate, AED 375K threshold, 75% loss offset)
+- [x] 04-05-PLAN.md - CtReportService for CT-adjusted P&L and Balance Sheet
+- [x] 04-06-PLAN.md - TransferPricingService with arm's length documentation
+- [x] 04-07-PLAN.md - TaxGroupService for 95%+ ownership consolidation
+- [x] 04-08-PLAN.md - CtRetentionService for 7-year record enforcement
+- [x] 04-09-PLAN.md - Integration tests and CT permissions
 
 **Wave Structure:**
 - Wave 1: 04-01 (Schema), 04-02 (Chart Mapping) - parallel
@@ -197,7 +197,7 @@ Plans:
 - Wave 4: 04-07 (Tax Groups), 04-08 (Retention) - parallel, depends on Wave 3
 - Wave 5: 04-09 (Tests/Permissions) - depends on Wave 4
 
-**Status:** PLANNED (2026-01-24)
+**Status:** COMPLETE (verified 2026-01-24)
 
 **Requirements:**
 - CT-01: 9% Corporate Tax calculation engine
@@ -340,8 +340,8 @@ Plans:
 | 1 | Multi-Tenant Compliance Foundation | Complete | 5 | 100% |
 | 2 | Internal Controls and Audit Infrastructure | Complete | 5 | 100% |
 | 2.5 | Compliance-Native Accounting Foundation | Complete | 12 | 100% |
-| 3 | VAT Compliance Engine | Planned | 10 | 0% |
-| 4 | Corporate Tax Compliance | Planned | 9 | 0% |
+| 3 | VAT Compliance Engine | Complete | 10 | 100% |
+| 4 | Corporate Tax Compliance | Complete | 9 | 100% |
 | 5 | WPS Payroll Compliance | Not Started | 7 | 0% |
 | 6 | E-Invoicing Engine Core | Not Started | 6 | 0% |
 | 7 | E-Invoicing Transmission and Processing | Not Started | 4 | 0% |
@@ -385,4 +385,6 @@ E-invoicing (Phases 6-7) is the critical path for July 2026 pilot.
 | 2026-01-24 | Phase 2 complete - all 5 CTRL requirements delivered | Claude |
 | 2026-01-24 | Phase 2.5 complete - all 12 ACCT requirements delivered | Claude |
 | 2026-01-24 | Phase 3 planned - 10 plans in 5 waves | Claude |
+| 2026-01-24 | Phase 3 complete - all 10 VAT requirements delivered | Claude |
 | 2026-01-24 | Phase 4 planned - 9 plans in 5 waves | Claude |
+| 2026-01-24 | Phase 4 complete - all 9 CT requirements delivered | Claude |
