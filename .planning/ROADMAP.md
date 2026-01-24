@@ -268,6 +268,25 @@ Plans:
 
 **Dependencies:** Phase 3 (VAT invoices are the source for e-invoices), Phase 2 (audit trails)
 
+**Plans:** 7 plans in 4 waves
+
+Plans:
+- [ ] 06-01-PLAN.md - E-invoice schema and types (einvoice_archives, EInvoiceStatus, EInvoiceFormat enums)
+- [ ] 06-02-PLAN.md - TLV encoder utility and QrCodeService
+- [ ] 06-03-PLAN.md - PintAeBuilderService for PINT AE XML generation
+- [ ] 06-04-PLAN.md - UblValidatorService for UBL 2.1 and PINT AE validation
+- [ ] 06-05-PLAN.md - EInvoiceArchiveService with tamper-proof storage
+- [ ] 06-06-PLAN.md - EInvoiceService orchestration and DI configuration
+- [ ] 06-07-PLAN.md - Integration tests and e-invoice permissions
+
+**Wave Structure:**
+- Wave 1: 06-01 (Schema), 06-02 (QR Code) - parallel, foundation
+- Wave 2: 06-03 (PINT AE Builder), 06-04 (UBL Validator) - parallel, depends on Wave 1
+- Wave 3: 06-05 (Archive Service) - depends on Wave 1 and Wave 2
+- Wave 4: 06-06 (Orchestration), 06-07 (Tests/Permissions) - parallel, depends on Wave 3
+
+**Status:** PLANNED (2026-01-24)
+
 **Requirements:**
 - EINV-01: PINT AE (PEPPOL) XML generation
 - EINV-02: UBL 2.1 schema compliance
@@ -362,7 +381,7 @@ Plans:
 | 3 | VAT Compliance Engine | Complete | 10 | 100% |
 | 4 | Corporate Tax Compliance | Complete | 9 | 100% |
 | 5 | WPS Payroll Compliance | Planned | 7 | 0% |
-| 6 | E-Invoicing Engine Core | Not Started | 6 | 0% |
+| 6 | E-Invoicing Engine Core | Planned | 6 | 0% |
 | 7 | E-Invoicing Transmission and Processing | Not Started | 4 | 0% |
 | 8 | Compliance Verification Portal | Not Started | 9 | 0% |
 | 9 | Standalone Compliance Package | Not Started | 4 | 0% |
@@ -408,3 +427,4 @@ E-invoicing (Phases 6-7) is the critical path for July 2026 pilot.
 | 2026-01-24 | Phase 4 planned - 9 plans in 5 waves | Claude |
 | 2026-01-24 | Phase 4 complete - all 9 CT requirements delivered | Claude |
 | 2026-01-24 | Phase 5 planned - 7 plans in 4 waves | Claude |
+| 2026-01-24 | Phase 6 planned - 7 plans in 4 waves | Claude |
