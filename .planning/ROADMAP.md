@@ -114,7 +114,7 @@ Plans:
 **Success Criteria:**
 1. Cash Flow Statement generates correctly using indirect method with reconciled ending cash
 2. Monthly closing locks period after 9-step checklist completion
-3. Year-end closing creates proper closing entries (Revenue → Expense → Retained Earnings)
+3. Year-end closing creates proper closing entries (Revenue -> Expense -> Retained Earnings)
 4. Assets module supports all 6 asset types with proper GL integration
 5. Liabilities engine calculates interest accurately for Amortized, Interest-Only, and Lease IFRS 16 methods
 6. Gratuity calculation follows UAE Labor Law (21 days/year first 5 years, 30 days thereafter)
@@ -225,6 +225,25 @@ Plans:
 
 **Dependencies:** Phase 1 (tenant config), Phase 2 (audit trails)
 
+**Plans:** 7 plans in 4 waves
+
+Plans:
+- [ ] 05-01-PLAN.md - WPS schema and types (PayrollCycle, EmployeeSalaryRecord, WpsAgent, WpsSubmission, WpsError)
+- [ ] 05-02-PLAN.md - IBAN validation utility using ibantools
+- [ ] 05-03-PLAN.md - Bank routing code service and WPS agents seed
+- [ ] 05-04-PLAN.md - WpsSifService for SIF file generation (EDR/SCR records)
+- [ ] 05-05-PLAN.md - PayrollCycleService with state machine and API routes
+- [ ] 05-06-PLAN.md - WpsErrorService with error codes and resolution guidance
+- [ ] 05-07-PLAN.md - Integration tests and WPS permissions
+
+**Wave Structure:**
+- Wave 1: 05-01 (Schema), 05-02 (IBAN Util) - parallel, foundation
+- Wave 2: 05-03 (Bank Routing), 05-04 (SIF Service) - parallel, depends on Wave 1
+- Wave 3: 05-05 (Cycle Service), 05-06 (Error Service) - parallel, depends on Wave 2
+- Wave 4: 05-07 (Tests/Permissions) - depends on Wave 3
+
+**Status:** PLANNED (2026-01-24)
+
 **Requirements:**
 - WPS-01: SIF (Salary Information File) generation
 - WPS-02: Bank routing code configuration
@@ -232,7 +251,7 @@ Plans:
 - WPS-04: Salary cycle management
 - WPS-05: WPS error tracking and resolution
 - WPS-06: Payroll audit trail
-- WPS-07: Gratuity calculation (UAE Labor Law)
+- WPS-07: Gratuity calculation (UAE Labor Law) - EXISTING from Phase 2.5
 
 **Success Criteria:**
 1. User can generate SIF files that pass MOHRE validation without errors
@@ -342,7 +361,7 @@ Plans:
 | 2.5 | Compliance-Native Accounting Foundation | Complete | 12 | 100% |
 | 3 | VAT Compliance Engine | Complete | 10 | 100% |
 | 4 | Corporate Tax Compliance | Complete | 9 | 100% |
-| 5 | WPS Payroll Compliance | Not Started | 7 | 0% |
+| 5 | WPS Payroll Compliance | Planned | 7 | 0% |
 | 6 | E-Invoicing Engine Core | Not Started | 6 | 0% |
 | 7 | E-Invoicing Transmission and Processing | Not Started | 4 | 0% |
 | 8 | Compliance Verification Portal | Not Started | 9 | 0% |
@@ -366,9 +385,9 @@ Phase 1 --> Phase 2 --> Phase 2.5 --> Phase 3 --> Phase 6 --> Phase 7
 ```
 
 Phase 2.5 (Accounting Foundation) is now on the critical path as it enables:
-- CT-05/CT-06 (CT-adjusted P&L and Balance Sheet) → Phase 4
-- VAT-07/VAT-08 (VAT reconciliation) → Phase 3
-- WPS-07 (Gratuity calculation) → Phase 5
+- CT-05/CT-06 (CT-adjusted P&L and Balance Sheet) -> Phase 4
+- VAT-07/VAT-08 (VAT reconciliation) -> Phase 3
+- WPS-07 (Gratuity calculation) -> Phase 5
 
 E-invoicing (Phases 6-7) is the critical path for July 2026 pilot.
 
@@ -388,3 +407,4 @@ E-invoicing (Phases 6-7) is the critical path for July 2026 pilot.
 | 2026-01-24 | Phase 3 complete - all 10 VAT requirements delivered | Claude |
 | 2026-01-24 | Phase 4 planned - 9 plans in 5 waves | Claude |
 | 2026-01-24 | Phase 4 complete - all 9 CT requirements delivered | Claude |
+| 2026-01-24 | Phase 5 planned - 7 plans in 4 waves | Claude |
