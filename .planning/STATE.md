@@ -4,16 +4,16 @@
 
 **Core Value:** Full UAE tax and regulatory compliance (VAT, CT, WPS, E-Invoicing) enabling Vesla ERP customers to meet FTA requirements and participate in UAE e-invoicing pilot by July 2026.
 
-**Current Focus:** Phase 4 - Corporate Tax Compliance. Building UAE CT (9% on profits > AED 375K) with tax loss tracking, transfer pricing, and tax group consolidation.
+**Current Focus:** Phase 5 - WPS Payroll Compliance. Building UAE WPS (Wage Protection System) with SIF file generation, IBAN validation, and MOHRE compliance.
 
 ---
 
 ## Current Position
 
-**Phase:** 4 of 10 (Corporate Tax Compliance) - COMPLETE
-**Plan:** 9 of 9 complete (04-01 through 04-09)
-**Status:** Phase complete
-**Last activity:** 2026-01-24 - Completed 04-09-PLAN.md (CT Integration Tests and Permissions)
+**Phase:** 5 of 10 (WPS Payroll Compliance) - IN PROGRESS
+**Plan:** 2 of 7 complete (05-01 through 05-02)
+**Status:** In progress
+**Last activity:** 2026-01-24 - Completed 05-02-PLAN.md (IBAN Validation Utility)
 
 **Progress:**
 ```
@@ -22,13 +22,13 @@ Phase 2    [████████████████] Internal Controls 
 Phase 2.5  [████████████████] Accounting Foundation      COMPLETE (12/12 req)
 Phase 3    [████████████████] VAT Compliance             COMPLETE (10/10)
 Phase 4    [████████████████] Corporate Tax              COMPLETE (9/9)
-Phase 5    [                ] WPS Payroll                0/7 requirements
+Phase 5    [████                ] WPS Payroll            2/7 requirements
 Phase 6    [                ] E-Invoice Core             0/6 requirements
 Phase 7    [                ] E-Invoice Transmission     0/4 requirements
 Phase 8    [                ] Verification Portal        0/9 requirements
 Phase 9    [                ] Standalone Package         0/4 requirements
-           |██████████████████████████░░░░░░░░░░░░░░░░░░|
-Overall: 41/71 requirements (~58%)
+           |███████████████████████████░░░░░░░░░░░░░░░░░|
+Overall: 43/71 requirements (~61%)
 ```
 
 ---
@@ -37,9 +37,9 @@ Overall: 41/71 requirements (~58%)
 
 | Metric | Value | Notes |
 |--------|-------|-------|
-| Plans completed | 33+ | 01-01 to 02-04, 02.5-*, 03-01 to 03-10, 04-01 to 04-09 |
-| Requirements delivered | 41/71 | TENANT-01-05, CTRL-01-04, ACCT-01-12, VAT-01-10, CT-01 to CT-09 |
-| Phases completed | 5/10 | Phases 1, 2, 2.5, 3, 4 complete |
+| Plans completed | 35+ | 01-01 to 02-04, 02.5-*, 03-01 to 03-10, 04-01 to 04-09, 05-01 to 05-02 |
+| Requirements delivered | 43/71 | TENANT-01-05, CTRL-01-04, ACCT-01-12, VAT-01-10, CT-01 to CT-09, WPS-01 to WPS-02 |
+| Phases completed | 5/10 | Phases 1, 2, 2.5, 3, 4 complete; Phase 5 in progress |
 | Blockers encountered | 0 | - |
 | Decisions made | 40+ | See Key Decisions table |
 
@@ -115,6 +115,9 @@ Overall: 41/71 requirements (~58%)
 | Role-based CT permission bundles | TAX_ACCOUNTANT, TAX_MANAGER, CFO, AUDITOR for separation of duties per FTA | 2026-01-24 |
 | CFO-only CT filing authority | Only CFO role has ct:return:file permission for corporate governance | 2026-01-24 |
 | Mock-based CT unit tests | Isolates calculation logic from database for fast, reliable testing | 2026-01-24 |
+| UAE-specific IBAN validation first | Enforce AE prefix and 23-char length before MOD-97 checksum | 2026-01-24 |
+| Comprehensive UAE bank code reference | Include 40+ UAE Central Bank registered codes for bank name lookup | 2026-01-24 |
+| Detailed IBAN error codes | Return both code and message for programmatic handling and display | 2026-01-24 |
 
 ### Technical Notes
 
@@ -181,42 +184,41 @@ None currently.
 ### Last Session
 
 **Date:** 2026-01-24
-**Completed:** Phase 4 Plan 09 (CT Integration Tests and Permissions)
+**Completed:** Phase 5 Plan 02 (IBAN Validation Utility)
 **Activity:**
-- Executed Plan 04-09: CT tests and permissions middleware
-- Created ct-calculation.test.ts (871 lines) - Unit tests for CT calculation
-- Created ct-integration.test.ts (774 lines) - Integration tests for full CT lifecycle
-- Created ct-permissions.ts (316 lines) - Permission constants and role bundles
-- Created ct-permissions.middleware.ts (591 lines) - Permission middleware
-- Phase 4 COMPLETE - All 9/9 plans delivered
+- Executed Plan 05-02: IBAN validation utility for WPS compliance
+- Installed ibantools@4.5.1 for MOD-97 checksum validation
+- Created iban-validation.util.ts (501 lines) - UAE IBAN validation
+- Validated with 5 test scenarios (valid, too short, wrong country, bad checksum, with spaces)
+- All verifications passing
 
 ### Context for Next Session
 
-1. **Phase 4 COMPLETE** - All CT compliance components implemented
-2. **Phase 5 Ready** - WPS Payroll next in sequence
-3. **Key Features Delivered (04-09):**
-   - 76 test cases covering CT calculation and lifecycle
-   - CT_PERMISSIONS constant with 24 permission codes
-   - 4 role bundles (TAX_ACCOUNTANT, TAX_MANAGER, CFO, AUDITOR)
-   - requireCtPermission(), requireAnyCtPermission(), requireAllCtPermissions()
-   - Multi-tenant company access validation
-   - Audit logging for denied access
+1. **Phase 5 IN PROGRESS** - 2/7 plans complete (05-01, 05-02)
+2. **Next Plan:** 05-03 (SIF File Generation) - Uses IBAN validation
+3. **Key Features Delivered (05-02):**
+   - validateUaeIban() with MOD-97 checksum via ibantools
+   - UAE-specific validation (AE prefix, 23 characters) before generic
+   - extractBankCode() for 3-digit bank code (positions 4-6)
+   - 40+ UAE bank code reference with names
+   - formatIbanForDisplay() with space-separated format
+   - Batch validation via validateIbans()
 
 ### Files Modified This Session
 
-**Created (Phase 4 Plan 09):**
-- `web-erp-app/backend/src/services/corporate-tax/__tests__/ct-calculation.test.ts`
-- `web-erp-app/backend/src/services/corporate-tax/__tests__/ct-integration.test.ts`
-- `web-erp-app/backend/src/middleware/ct-permissions.middleware.ts`
-- `web-erp-app/backend/src/types/ct-permissions.ts`
-- `.planning/phases/04-corporate-tax-compliance/04-09-SUMMARY.md`
+**Created (Phase 5 Plan 02):**
+- `web-erp-app/backend/src/utils/iban-validation.util.ts`
+- `.planning/phases/05-wps-payroll-compliance/05-02-SUMMARY.md`
+
+**Modified (Phase 5 Plan 02):**
+- `web-erp-app/backend/package.json` (added ibantools dependency)
 
 ---
 
 ## Quick Reference
 
-**Current Phase:** 5 - WPS Payroll (NEXT)
-**Next Action:** Begin Phase 5 planning (WPS-01 to WPS-07)
+**Current Phase:** 5 - WPS Payroll (IN PROGRESS)
+**Next Action:** Execute 05-03 (SIF File Generation)
 **Critical Deadline:** July 2026 (e-invoicing pilot)
 **Total Scope:** 71 requirements, 10 phases
 
