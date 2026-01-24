@@ -123,6 +123,8 @@ Overall: 51/71 requirements (~72%)
 | VARCHAR for personCode/IBAN | Fixed-length validation at application layer; DB stores as-is | 2026-01-24 |
 | employee_id references users (temp) | Staff table not migrated to database; use users until HR module complete | 2026-01-24 |
 | Cascade delete on cycle records | Deleting payroll cycle should remove all associated salary records | 2026-01-24 |
+| Company-scoped WPS agents | Multi-tenant support; each company configures own bank routing codes | 2026-01-24 |
+| Batch IBAN-to-routing lookup | Single DB query for multiple IBANs for efficient payroll processing | 2026-01-24 |
 | ZATCA-compatible TLV tags | UAE FTA hasn't published official tags; use ZATCA (1-8) as proven baseline | 2026-01-24 |
 | 200-byte seller truncation | Leave room for other fields within 255-byte TLV limit | 2026-01-24 |
 | Binary search UTF-8 truncation | Prevents cutting multibyte characters mid-sequence for Arabic names | 2026-01-24 |
