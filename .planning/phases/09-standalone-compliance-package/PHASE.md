@@ -9,8 +9,8 @@ Compliance engine is available as independent REST API package for integration w
 |----|-------------|--------|
 | STANDALONE-01 | REST API for all compliance functions | ✅ Complete |
 | STANDALONE-02 | Standalone deployment option | ✅ Complete |
-| STANDALONE-03 | Self-service onboarding portal | ⬜ Not Started |
-| STANDALONE-04 | API documentation and SDK | ⬜ Not Started |
+| STANDALONE-03 | Self-service onboarding portal | ✅ Complete |
+| STANDALONE-04 | API documentation and SDK | ✅ Complete |
 
 ## Plans
 
@@ -18,8 +18,8 @@ Compliance engine is available as independent REST API package for integration w
 |------|-------------|--------|
 | 09-01-PLAN.md | REST API audit and gaps | ✅ Complete |
 | 09-02-PLAN.md | Standalone server entry point | ✅ Complete |
-| 09-03-PLAN.md | API key management and onboarding | ⬜ |
-| 09-04-PLAN.md | OpenAPI documentation and SDK | ⬜ |
+| 09-03-PLAN.md | Onboarding guide | ✅ Complete |
+| 09-04-PLAN.md | OpenAPI documentation | ✅ Complete |
 
 ## Success Criteria
 
