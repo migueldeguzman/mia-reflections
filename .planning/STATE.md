@@ -11,9 +11,9 @@
 ## Current Position
 
 **Phase:** 7 of 10 (E-Invoice Transmission) - IN PROGRESS
-**Plan:** 6 of 10 complete (07-01, 07-02, 07-03, 07-04, 07-05, 07-06)
+**Plan:** 7 of 10 complete (07-01, 07-02, 07-03, 07-04, 07-05, 07-06, 07-07)
 **Status:** In progress
-**Last activity:** 2026-01-25 - Completed 07-05-PLAN.md (Transmission Providers)
+**Last activity:** 2026-01-25 - Completed 07-07-PLAN.md (Transmission Queue)
 
 **Progress:**
 ```
@@ -24,11 +24,11 @@ Phase 3    [████████████████] VAT Compliance    
 Phase 4    [████████████████] Corporate Tax              COMPLETE (9/9)
 Phase 5    [████████████████] WPS Payroll                COMPLETE (7/7)
 Phase 6    [████████████████] E-Invoice Core             COMPLETE (8/8 plans)
-Phase 7    [████████████        ] E-Invoice Transmission 6/10 plans (Providers complete)
+Phase 7    [██████████████      ] E-Invoice Transmission 7/10 plans (Queue complete)
 Phase 8    [                    ] Verification Portal    0/9 requirements
 Phase 9    [                    ] Standalone Package     0/4 requirements
-           |████████████████████████████████████░░░░░░░|
-Overall: 57/71 requirements (~80%)
+           |█████████████████████████████████████░░░░░░|
+Overall: 58/71 requirements (~82%)
 ```
 
 ---
@@ -37,8 +37,8 @@ Overall: 57/71 requirements (~80%)
 
 | Metric | Value | Notes |
 |--------|-------|-------|
-| Plans completed | 57+ | 01-01 to 02-04, 02.5-*, 03-01 to 03-10, 04-01 to 04-09, 05-01 to 05-07, 06-01 to 06-08, 07-01 to 07-06 |
-| Requirements delivered | 57/71 | TENANT-01-05, CTRL-01-04, ACCT-01-12, VAT-01-10, CT-01 to CT-09, WPS-01 to WPS-07, EINV-01 to EINV-06 |
+| Plans completed | 58+ | 01-01 to 02-04, 02.5-*, 03-01 to 03-10, 04-01 to 04-09, 05-01 to 05-07, 06-01 to 06-08, 07-01 to 07-07 |
+| Requirements delivered | 58/71 | TENANT-01-05, CTRL-01-04, ACCT-01-12, VAT-01-10, CT-01 to CT-09, WPS-01 to WPS-07, EINV-01 to EINV-07 |
 | Phases completed | 7/10 | Phases 1, 2, 2.5, 3, 4, 5, 6 complete; Phase 7 in progress |
 | Blockers encountered | 0 | - |
 | Decisions made | 40+ | See Key Decisions table |
@@ -174,6 +174,10 @@ Overall: 57/71 requirements (~80%)
 | Provider caching in ProviderFactoryService | Avoid recreating providers and re-authenticating on every transmission | 2026-01-25 |
 | Sandbox always returns CLEARED | FTA sandbox validates immediately; SB- prefix distinguishes sandbox clearances | 2026-01-25 |
 | ASP cancel via DELETE endpoint | Common pattern for ASP APIs; not all ASPs support cancellation | 2026-01-25 |
+| BullMQ with dynamic import | Lazy load bullmq and ioredis to avoid test import issues; mock injection supported | 2026-01-25 |
+| 1-hour duplicate detection window | Prevent re-queueing same archiveId within 1 hour using in-memory Map | 2026-01-25 |
+| Direct Prisma in job processor | MlsHandlerService requires DI; job processor updates database directly | 2026-01-25 |
+| 4x exponential backoff multiplier | 1s->4s->16s retry delays prevent thundering herd on DCTCE/ASP | 2026-01-25 |
 
 ### Technical Notes
 
@@ -240,41 +244,41 @@ None currently.
 ### Last Session
 
 **Date:** 2026-01-25
-**Completed:** Phase 7 Plan 05 (Transmission Providers)
+**Completed:** Phase 7 Plan 07 (Transmission Queue)
 **Activity:**
-- Executed Plan 07-05: Transmission Provider Implementations
-- Created ITransmissionProvider interface and BaseTransmissionProvider abstract class
-- Implemented DctceDirectProvider with OAuth 2.0 authentication
-- Implemented SandboxProvider for FTA sandbox testing
-- Implemented AspProvider with API key authentication
-- Created ProviderFactoryService for provider instance management
-- Total: 2,040 lines of provider code
+- Executed Plan 07-07: Transmission Queue Infrastructure
+- Created queue.types.ts with TransmissionJobData, TransmissionJobResult, RetryConfig
+- Implemented TransmissionQueueService with BullMQ Queue and Redis backend
+- Implemented TransmissionWorkerService with BullMQ Worker (concurrency: 5)
+- Created einvoice-transmission.job.ts job processor with progress tracking
+- Installed bullmq, ioredis, @types/ioredis dependencies
+- Total: ~1,880 lines of queue code
 
 ### Context for Next Session
 
-1. **Phase 7 IN PROGRESS** - 6/10 plans complete (07-01, 07-02, 07-03, 07-04, 07-05, 07-06)
-2. **Next Plan:** 07-07 (Transmission Worker)
-3. **Key Deliverables (07-05):**
-   - transmission-provider.interface.ts (284 lines) - Interface + base class
-   - dctce-direct.provider.ts (508 lines) - DCTCE with OAuth 2.0
-   - sandbox.provider.ts (370 lines) - FTA sandbox provider
-   - asp.provider.ts (573 lines) - ASP routing provider
-   - provider-factory.service.ts (276 lines) - Factory + caching
-   - index.ts (29 lines) - Module exports
+1. **Phase 7 IN PROGRESS** - 7/10 plans complete (07-01, 07-02, 07-03, 07-04, 07-05, 07-06, 07-07)
+2. **Next Plan:** 07-08 (Transmission Orchestration)
+3. **Key Deliverables (07-07):**
+   - queue.types.ts (523 lines) - Job data, result, retry config, queue stats
+   - transmission-queue.service.ts (730 lines) - Queue management with deduplication
+   - transmission-worker.service.ts (290 lines) - Worker with exponential backoff
+   - einvoice-transmission.job.ts (340 lines) - Job processor with progress stages
+   - Dependencies: bullmq, ioredis
 
 ### Files Modified This Session
 
-**Created (Phase 7 Plan 05):**
-- `web-erp-app/backend/src/services/einvoice/providers/transmission-provider.interface.ts`
-- `web-erp-app/backend/src/services/einvoice/providers/dctce-direct.provider.ts`
-- `web-erp-app/backend/src/services/einvoice/providers/sandbox.provider.ts`
-- `web-erp-app/backend/src/services/einvoice/providers/asp.provider.ts`
-- `web-erp-app/backend/src/services/einvoice/providers/provider-factory.service.ts`
-- `web-erp-app/backend/src/services/einvoice/providers/index.ts`
-- `.planning/phases/07-e-invoicing-transmission/07-05-SUMMARY.md`
+**Created (Phase 7 Plan 07):**
+- `web-erp-app/backend/src/services/einvoice/queue/queue.types.ts`
+- `web-erp-app/backend/src/services/einvoice/queue/transmission-queue.service.ts`
+- `web-erp-app/backend/src/services/einvoice/queue/transmission-worker.service.ts`
+- `web-erp-app/backend/src/services/einvoice/queue/index.ts`
+- `web-erp-app/backend/src/jobs/einvoice-transmission.job.ts`
+- `.planning/phases/07-e-invoicing-transmission/07-07-SUMMARY.md`
 
 **Modified:**
-- `web-erp-app/backend/src/config/types.ts`
+- `web-erp-app/backend/src/config/types.ts` (+2 DI symbols)
+- `web-erp-app/backend/src/services/einvoice/index.ts` (+queue export)
+- `web-erp-app/backend/package.json` (+3 dependencies)
 - `.planning/STATE.md`
 
 ---
@@ -282,7 +286,7 @@ None currently.
 ## Quick Reference
 
 **Current Phase:** 7 - E-Invoice Transmission (IN PROGRESS)
-**Next Action:** Execute Plan 07-07 (Transmission Worker Service)
+**Next Action:** Execute Plan 07-08 (Transmission Orchestration)
 **Critical Deadline:** July 2026 (e-invoicing pilot)
 **Total Scope:** 71 requirements, 10 phases
 
