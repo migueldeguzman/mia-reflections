@@ -11,9 +11,9 @@
 ## Current Position
 
 **Phase:** 7 of 10 (E-Invoice Transmission) - IN PROGRESS
-**Plan:** 4 of 10 complete (07-01, 07-02, 07-03, 07-04)
+**Plan:** 5 of 10 complete (07-01, 07-02, 07-03, 07-04, 07-06)
 **Status:** In progress
-**Last activity:** 2026-01-25 - Completed 07-04-PLAN.md (TDD Builder Service)
+**Last activity:** 2026-01-25 - Completed 07-06-PLAN.md (MLS Handler Service)
 
 **Progress:**
 ```
@@ -24,7 +24,7 @@ Phase 3    [████████████████] VAT Compliance    
 Phase 4    [████████████████] Corporate Tax              COMPLETE (9/9)
 Phase 5    [████████████████] WPS Payroll                COMPLETE (7/7)
 Phase 6    [████████████████] E-Invoice Core             COMPLETE (8/8 plans)
-Phase 7    [████████            ] E-Invoice Transmission 4/10 plans (TDD builder complete)
+Phase 7    [██████████          ] E-Invoice Transmission 5/10 plans (MLS handler complete)
 Phase 8    [                    ] Verification Portal    0/9 requirements
 Phase 9    [                    ] Standalone Package     0/4 requirements
            |████████████████████████████████░░░░░░░░░░░|
@@ -37,7 +37,7 @@ Overall: 56/71 requirements (~79%)
 
 | Metric | Value | Notes |
 |--------|-------|-------|
-| Plans completed | 55+ | 01-01 to 02-04, 02.5-*, 03-01 to 03-10, 04-01 to 04-09, 05-01 to 05-07, 06-01 to 06-08, 07-01 to 07-04 |
+| Plans completed | 56+ | 01-01 to 02-04, 02.5-*, 03-01 to 03-10, 04-01 to 04-09, 05-01 to 05-07, 06-01 to 06-08, 07-01 to 07-04, 07-06 |
 | Requirements delivered | 56/71 | TENANT-01-05, CTRL-01-04, ACCT-01-12, VAT-01-10, CT-01 to CT-09, WPS-01 to WPS-07, EINV-01 to EINV-05 |
 | Phases completed | 7/10 | Phases 1, 2, 2.5, 3, 4, 5, 6 complete; Phase 7 in progress |
 | Blockers encountered | 0 | - |
@@ -166,6 +166,9 @@ Overall: 56/71 requirements (~79%)
 | fast-xml-parser with removeNSPrefix | Removes XML namespace prefixes for easier PINT-AE field access | 2026-01-25 |
 | TddBuildResult pattern | Return success/tdd/errors/warnings for graceful partial success handling | 2026-01-25 |
 | TRN validation regex | /^100\d{12}$/ ensures 15 digits starting with 100 per UAE FTA | 2026-01-25 |
+| Error storage in JSON field | Store mapped errors in transmission errorDetails JSON field for simplicity | 2026-01-25 |
+| XPath field extraction priority | Check supplier/buyer context first, then specific elements, then generic | 2026-01-25 |
+| Default notification config | notifyOnRejection=true, notifyOnFailure=true, notifyOnClearance=false | 2026-01-25 |
 
 ### Technical Notes
 
@@ -232,35 +235,36 @@ None currently.
 ### Last Session
 
 **Date:** 2026-01-25
-**Completed:** Phase 7 Plan 04 (TDD Builder Service)
+**Completed:** Phase 7 Plan 06 (MLS Handler Service)
 **Activity:**
-- Executed Plan 07-04: Tax Data Dictionary Builder Service
-- Created TDD type definitions (403 lines) with enums, interfaces, XPath mappings
-- Created TddBuilderService (777 lines) for PINT-AE XML extraction
-- Implemented TRN validation (/^100\d{12}$/)
-- Implemented tax category detection (S, Z, E, O, AE)
-- Implemented transaction classification (STANDARD, REVERSE_CHARGE, EXEMPT, etc.)
-- Created 34 unit tests covering extraction, validation, classification
+- Executed Plan 07-06: MLS Handler Service for DCTCE responses
+- Verified MLS type definitions (366 lines) with status codes, mappings
+- Verified ErrorMapperService (483 lines) for PINT-AE/PEPPOL error mapping
+- Verified MlsHandlerService (573 lines) for response handling and notifications
+- Created 65 unit tests covering status mapping, error mapping, notifications
 - All tests passing
 
 ### Context for Next Session
 
-1. **Phase 7 IN PROGRESS** - 4/10 plans complete (07-01, 07-02, 07-03, 07-04)
-2. **Next Plan:** 07-05 (MLS Handler Service)
-3. **Key Deliverables (07-04):**
-   - tdd.types.ts (403 lines) - TaxDataDocument, enums, XPath mappings
-   - tdd-builder.service.ts (777 lines) - XML parsing, field extraction
-   - tdd-builder.service.test.ts (830 lines) - 34 unit tests
-   - TRN validation, tax category detection, JSON serialization
+1. **Phase 7 IN PROGRESS** - 5/10 plans complete (07-01, 07-02, 07-03, 07-04, 07-06)
+2. **Next Plan:** 07-05 (ASP Provider Services) or 07-07 (Transmission Worker)
+3. **Key Deliverables (07-06):**
+   - mls.types.ts (366 lines) - MlsStatusCode, MLS_TO_STATUS_MAP, interfaces
+   - error-mapper.service.ts (483 lines) - PINT-AE/PEPPOL error code mapping
+   - mls-handler.service.ts (573 lines) - Response handling, notifications
+   - mls-handler.service.test.ts (871 lines) - 65 unit tests
 
 ### Files Modified This Session
 
-**Created (Phase 7 Plan 04):**
-- `web-erp-app/backend/src/services/einvoice/tdd/tdd.types.ts`
-- `web-erp-app/backend/src/services/einvoice/tdd/tdd-builder.service.ts`
-- `web-erp-app/backend/src/services/einvoice/tdd/index.ts`
-- `web-erp-app/backend/src/services/einvoice/tdd/__tests__/tdd-builder.service.test.ts`
-- `.planning/phases/07-e-invoicing-transmission/07-04-SUMMARY.md`
+**Created (Phase 7 Plan 06):**
+- `web-erp-app/backend/src/services/einvoice/mls/__tests__/mls-handler.service.test.ts`
+- `.planning/phases/07-e-invoicing-transmission/07-06-SUMMARY.md`
+
+**Verified (already existed):**
+- `web-erp-app/backend/src/services/einvoice/mls/mls.types.ts`
+- `web-erp-app/backend/src/services/einvoice/mls/error-mapper.service.ts`
+- `web-erp-app/backend/src/services/einvoice/mls/mls-handler.service.ts`
+- `web-erp-app/backend/src/services/einvoice/mls/index.ts`
 
 **Modified:**
 - `.planning/STATE.md`
@@ -270,7 +274,7 @@ None currently.
 ## Quick Reference
 
 **Current Phase:** 7 - E-Invoice Transmission (IN PROGRESS)
-**Next Action:** Execute Plan 07-04 (Transmission Queue Service)
+**Next Action:** Execute Plan 07-05 (ASP Provider Services) or 07-07 (Transmission Worker)
 **Critical Deadline:** July 2026 (e-invoicing pilot)
 **Total Scope:** 71 requirements, 10 phases
 
