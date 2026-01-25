@@ -11,9 +11,9 @@
 ## Current Position
 
 **Phase:** 8 of 10 (Compliance Verification Portal) - IN PROGRESS
-**Plan:** 4 of 8 complete (08-01, 08-02, 08-03, 08-04)
+**Plan:** 6 of 8 complete (08-01 to 08-06)
 **Status:** In progress
-**Last activity:** 2026-01-25 - Completed 08-03-PLAN.md (ComplianceChecklistService)
+**Last activity:** 2026-01-25 - Completed 08-06-PLAN.md (ComplianceSignOffService)
 
 **Progress:**
 ```
@@ -25,10 +25,10 @@ Phase 4    [████████████████] Corporate Tax     
 Phase 5    [████████████████] WPS Payroll                COMPLETE (7/7)
 Phase 6    [████████████████] E-Invoice Core             COMPLETE (8/8 plans)
 Phase 7    [████████████████] E-Invoice Transmission     COMPLETE (10/10 plans)
-Phase 8    [████████            ] Verification Portal    4/8 plans (08-01 to 08-04)
+Phase 8    [████████████        ] Verification Portal    6/8 plans (08-01 to 08-06)
 Phase 9    [                    ] Standalone Package     0/4 requirements
            |██████████████████████████████████████████░░|
-Overall: 65/71 requirements (~91%)
+Overall: 67/71 requirements (~94%)
 ```
 
 ---
@@ -37,8 +37,8 @@ Overall: 65/71 requirements (~91%)
 
 | Metric | Value | Notes |
 |--------|-------|-------|
-| Plans completed | 65+ | 01-01 to 02-04, 02.5-*, 03-01 to 03-10, 04-01 to 04-09, 05-01 to 05-07, 06-01 to 06-08, 07-01 to 07-10, 08-01 to 08-04 |
-| Requirements delivered | 65/71 | TENANT-01-05, CTRL-01-04, ACCT-01-12, VAT-01-10, CT-01 to CT-09, WPS-01 to WPS-07, EINV-01 to EINV-10, VERIFY-01 to VERIFY-05, VERIFY-07 (partial) |
+| Plans completed | 67+ | 01-01 to 02-04, 02.5-*, 03-01 to 03-10, 04-01 to 04-09, 05-01 to 05-07, 06-01 to 06-08, 07-01 to 07-10, 08-01 to 08-06 |
+| Requirements delivered | 67/71 | TENANT-01-05, CTRL-01-04, ACCT-01-12, VAT-01-10, CT-01 to CT-09, WPS-01 to WPS-07, EINV-01 to EINV-10, VERIFY-01 to VERIFY-09 |
 | Phases completed | 7/10 | Phases 1, 2, 2.5, 3, 4, 5, 6, 7 complete; Phase 8 in progress |
 | Blockers encountered | 0 | - |
 | Decisions made | 40+ | See Key Decisions table |
@@ -258,31 +258,32 @@ None currently.
 ### Last Session
 
 **Date:** 2026-01-25
-**Completed:** Phase 8 Plan 03 (ComplianceChecklistService)
+**Completed:** Phase 8 Plan 06 (ComplianceSignOffService)
 **Activity:**
-- Created ComplianceChecklistService (452 lines) implementing VERIFY-02 to VERIFY-05
-- 32 compliance checks across 4 domains (8 each)
-- VAT checks: TRN, period, filing frequency, reverse charge, invoice sequence
-- CT checks: fiscal year, SBR eligibility, chart mapping, transfer pricing
-- WPS checks: agent config, person codes, IBAN, payroll cycle, MOL ID
-- E-Invoice checks: credentials, transmission mode, archive, queue health
-- Check results stored in compliance_check_runs for historical tracking
-- Each check has severity (CRITICAL/WARNING/INFO) and remediation guidance
+- Implemented ComplianceSignOffService (895 lines) for VERIFY-08 and VERIFY-09
+- Sign-off workflow: submitForSignOff(), approveSignOff(), rejectSignOff()
+- Approval history: getApprovalHistory() with domain/status/date filters
+- Immutable snapshots of checklist and preview at submission time
+- Role-based authorization via APPROVER_ROLES list
+- Self-approval blocked for separation of duties
+- Audit trail entries for tamper-proof record keeping
+- Updated barrel export with ComplianceSignOffService and related types
 
 ### Context for Next Session
 
-1. **Phase 8 IN PROGRESS** - 4/8 plans complete (08-01, 08-02, 08-03, 08-04)
-2. **Next Plans:** 08-05 (Sign-off Service), 08-06 (Sandbox Testing), 08-07 (Controller)
-3. **Key Deliverables (08-03):**
-   - ComplianceChecklistService with runChecklist() for all 4 domains
-   - 32 check definitions with severity and remediation guidance
+1. **Phase 8 IN PROGRESS** - 6/8 plans complete (08-01 to 08-06)
+2. **Next Plans:** 08-07 (CompliancePortalController), 08-08 (Integration tests)
+3. **Key Deliverables (08-06):**
+   - ComplianceSignOffService with sign-off workflow and approval history
+   - VERIFY-08 (Compliance sign-off workflow) complete
+   - VERIFY-09 (Approval history tracking) complete
    - Historical tracking in compliance_check_runs table
 
 ### Files Modified This Session
 
-**Created (Phase 8 Plan 04):**
-- `web-erp-app/backend/src/services/compliance-portal/compliance-preview.service.ts` (1006 lines)
-- `.planning/phases/08-compliance-verification-portal/08-04-SUMMARY.md`
+**Created (Phase 8 Plan 06):**
+- `web-erp-app/backend/src/services/compliance-portal/compliance-signoff.service.ts` (895 lines)
+- `.planning/phases/08-compliance-verification-portal/08-06-SUMMARY.md`
 
 **Modified:**
 - `web-erp-app/backend/src/services/compliance-portal/index.ts`
@@ -293,7 +294,7 @@ None currently.
 ## Quick Reference
 
 **Current Phase:** 8 - Compliance Verification Portal (IN PROGRESS)
-**Next Action:** Execute 08-05 - ComplianceSandboxService (or 08-06, 08-07)
+**Next Action:** Execute 08-07 - CompliancePortalController (or 08-08)
 **Critical Deadline:** July 2026 (e-invoicing pilot)
 **Total Scope:** 71 requirements, 10 phases
 
