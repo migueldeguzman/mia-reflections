@@ -11,9 +11,9 @@
 ## Current Position
 
 **Phase:** 8 of 10 (Compliance Verification Portal) - IN PROGRESS
-**Plan:** 3 of 8 complete (08-01, 08-02, 08-04)
+**Plan:** 4 of 8 complete (08-01, 08-02, 08-03, 08-04)
 **Status:** In progress
-**Last activity:** 2026-01-25 - Completed 08-04-PLAN.md (CompliancePreviewService)
+**Last activity:** 2026-01-25 - Completed 08-03-PLAN.md (ComplianceChecklistService)
 
 **Progress:**
 ```
@@ -25,10 +25,10 @@ Phase 4    [████████████████] Corporate Tax     
 Phase 5    [████████████████] WPS Payroll                COMPLETE (7/7)
 Phase 6    [████████████████] E-Invoice Core             COMPLETE (8/8 plans)
 Phase 7    [████████████████] E-Invoice Transmission     COMPLETE (10/10 plans)
-Phase 8    [██████              ] Verification Portal    3/8 plans (08-01, 08-02, 08-04)
+Phase 8    [████████            ] Verification Portal    4/8 plans (08-01 to 08-04)
 Phase 9    [                    ] Standalone Package     0/4 requirements
            |██████████████████████████████████████████░░|
-Overall: 64/71 requirements (~90%)
+Overall: 65/71 requirements (~91%)
 ```
 
 ---
@@ -37,8 +37,8 @@ Overall: 64/71 requirements (~90%)
 
 | Metric | Value | Notes |
 |--------|-------|-------|
-| Plans completed | 64+ | 01-01 to 02-04, 02.5-*, 03-01 to 03-10, 04-01 to 04-09, 05-01 to 05-07, 06-01 to 06-08, 07-01 to 07-10, 08-01, 08-02, 08-04 |
-| Requirements delivered | 64/71 | TENANT-01-05, CTRL-01-04, ACCT-01-12, VAT-01-10, CT-01 to CT-09, WPS-01 to WPS-07, EINV-01 to EINV-10, VERIFY-01, VERIFY-07 (partial) |
+| Plans completed | 65+ | 01-01 to 02-04, 02.5-*, 03-01 to 03-10, 04-01 to 04-09, 05-01 to 05-07, 06-01 to 06-08, 07-01 to 07-10, 08-01 to 08-04 |
+| Requirements delivered | 65/71 | TENANT-01-05, CTRL-01-04, ACCT-01-12, VAT-01-10, CT-01 to CT-09, WPS-01 to WPS-07, EINV-01 to EINV-10, VERIFY-01 to VERIFY-05, VERIFY-07 (partial) |
 | Phases completed | 7/10 | Phases 1, 2, 2.5, 3, 4, 5, 6, 7 complete; Phase 8 in progress |
 | Blockers encountered | 0 | - |
 | Decisions made | 40+ | See Key Decisions table |
@@ -189,6 +189,9 @@ Overall: 64/71 requirements (~90%)
 | IBAN masking in WPS preview | Show only last 4 digits for security | 2026-01-25 |
 | XML truncation at 5000 chars | Balance content visibility and performance in e-invoice preview | 2026-01-25 |
 | Three validation severity levels | ERROR/WARNING/INFO matches FTA patterns for actionable guidance | 2026-01-25 |
+| Sequential check execution | Run checks sequentially to avoid database contention | 2026-01-25 |
+| 8 checks per domain | Comprehensive coverage without overwhelming users (32 total) | 2026-01-25 |
+| Non-fatal history storage | Check run storage errors logged but don't fail the validation run | 2026-01-25 |
 
 ### Technical Notes
 
@@ -255,25 +258,25 @@ None currently.
 ### Last Session
 
 **Date:** 2026-01-25
-**Completed:** Phase 8 Plan 04 (CompliancePreviewService)
+**Completed:** Phase 8 Plan 03 (ComplianceChecklistService)
 **Activity:**
-- Created CompliancePreviewService (1006 lines) implementing VERIFY-07
-- VAT Form 201 preview with all 14 boxes
-- CT Return preview with accounting income to tax due calculation
-- WPS SIF preview with Person Codes and masked IBANs
-- E-Invoice PINT-AE preview with expandable XML
-- Validation with ERROR/WARNING/INFO severity levels
-- Updated barrel export with new service
+- Created ComplianceChecklistService (452 lines) implementing VERIFY-02 to VERIFY-05
+- 32 compliance checks across 4 domains (8 each)
+- VAT checks: TRN, period, filing frequency, reverse charge, invoice sequence
+- CT checks: fiscal year, SBR eligibility, chart mapping, transfer pricing
+- WPS checks: agent config, person codes, IBAN, payroll cycle, MOL ID
+- E-Invoice checks: credentials, transmission mode, archive, queue health
+- Check results stored in compliance_check_runs for historical tracking
+- Each check has severity (CRITICAL/WARNING/INFO) and remediation guidance
 
 ### Context for Next Session
 
-1. **Phase 8 IN PROGRESS** - 3/8 plans complete (08-01, 08-02, 08-04)
-2. **08-03 being executed in parallel** - ComplianceChecklistService
-3. **Next Plans:** 08-05 (Sandbox), 08-06 (Sign-off), 08-07 (Controller)
-4. **Key Deliverables (08-04):**
-   - CompliancePreviewService with generatePreview() for all 4 domains
-   - HTML rendering with inline styles for portability
-   - Validation messages for submission readiness
+1. **Phase 8 IN PROGRESS** - 4/8 plans complete (08-01, 08-02, 08-03, 08-04)
+2. **Next Plans:** 08-05 (Sign-off Service), 08-06 (Sandbox Testing), 08-07 (Controller)
+3. **Key Deliverables (08-03):**
+   - ComplianceChecklistService with runChecklist() for all 4 domains
+   - 32 check definitions with severity and remediation guidance
+   - Historical tracking in compliance_check_runs table
 
 ### Files Modified This Session
 
