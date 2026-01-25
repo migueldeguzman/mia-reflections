@@ -11,9 +11,9 @@
 ## Current Position
 
 **Phase:** 7 of 10 (E-Invoice Transmission) - IN PROGRESS
-**Plan:** 5 of 10 complete (07-01, 07-02, 07-03, 07-04, 07-06)
+**Plan:** 6 of 10 complete (07-01, 07-02, 07-03, 07-04, 07-05, 07-06)
 **Status:** In progress
-**Last activity:** 2026-01-25 - Completed 07-06-PLAN.md (MLS Handler Service)
+**Last activity:** 2026-01-25 - Completed 07-05-PLAN.md (Transmission Providers)
 
 **Progress:**
 ```
@@ -24,11 +24,11 @@ Phase 3    [████████████████] VAT Compliance    
 Phase 4    [████████████████] Corporate Tax              COMPLETE (9/9)
 Phase 5    [████████████████] WPS Payroll                COMPLETE (7/7)
 Phase 6    [████████████████] E-Invoice Core             COMPLETE (8/8 plans)
-Phase 7    [██████████          ] E-Invoice Transmission 5/10 plans (MLS handler complete)
+Phase 7    [████████████        ] E-Invoice Transmission 6/10 plans (Providers complete)
 Phase 8    [                    ] Verification Portal    0/9 requirements
 Phase 9    [                    ] Standalone Package     0/4 requirements
-           |████████████████████████████████░░░░░░░░░░░|
-Overall: 56/71 requirements (~79%)
+           |████████████████████████████████████░░░░░░░|
+Overall: 57/71 requirements (~80%)
 ```
 
 ---
@@ -37,8 +37,8 @@ Overall: 56/71 requirements (~79%)
 
 | Metric | Value | Notes |
 |--------|-------|-------|
-| Plans completed | 56+ | 01-01 to 02-04, 02.5-*, 03-01 to 03-10, 04-01 to 04-09, 05-01 to 05-07, 06-01 to 06-08, 07-01 to 07-04, 07-06 |
-| Requirements delivered | 56/71 | TENANT-01-05, CTRL-01-04, ACCT-01-12, VAT-01-10, CT-01 to CT-09, WPS-01 to WPS-07, EINV-01 to EINV-05 |
+| Plans completed | 57+ | 01-01 to 02-04, 02.5-*, 03-01 to 03-10, 04-01 to 04-09, 05-01 to 05-07, 06-01 to 06-08, 07-01 to 07-06 |
+| Requirements delivered | 57/71 | TENANT-01-05, CTRL-01-04, ACCT-01-12, VAT-01-10, CT-01 to CT-09, WPS-01 to WPS-07, EINV-01 to EINV-06 |
 | Phases completed | 7/10 | Phases 1, 2, 2.5, 3, 4, 5, 6 complete; Phase 7 in progress |
 | Blockers encountered | 0 | - |
 | Decisions made | 40+ | See Key Decisions table |
@@ -169,6 +169,11 @@ Overall: 56/71 requirements (~79%)
 | Error storage in JSON field | Store mapped errors in transmission errorDetails JSON field for simplicity | 2026-01-25 |
 | XPath field extraction priority | Check supplier/buyer context first, then specific elements, then generic | 2026-01-25 |
 | Default notification config | notifyOnRejection=true, notifyOnFailure=true, notifyOnClearance=false | 2026-01-25 |
+| Provider interface with BaseTransmissionProvider | Common utilities (transmissionRef, error parsing) shared across providers | 2026-01-25 |
+| Lazy initialization for providers | Credentials loaded on first use, not at construction time | 2026-01-25 |
+| Provider caching in ProviderFactoryService | Avoid recreating providers and re-authenticating on every transmission | 2026-01-25 |
+| Sandbox always returns CLEARED | FTA sandbox validates immediately; SB- prefix distinguishes sandbox clearances | 2026-01-25 |
+| ASP cancel via DELETE endpoint | Common pattern for ASP APIs; not all ASPs support cancellation | 2026-01-25 |
 
 ### Technical Notes
 
@@ -235,38 +240,41 @@ None currently.
 ### Last Session
 
 **Date:** 2026-01-25
-**Completed:** Phase 7 Plan 06 (MLS Handler Service)
+**Completed:** Phase 7 Plan 05 (Transmission Providers)
 **Activity:**
-- Executed Plan 07-06: MLS Handler Service for DCTCE responses
-- Verified MLS type definitions (366 lines) with status codes, mappings
-- Verified ErrorMapperService (483 lines) for PINT-AE/PEPPOL error mapping
-- Verified MlsHandlerService (573 lines) for response handling and notifications
-- Created 65 unit tests covering status mapping, error mapping, notifications
-- All tests passing
+- Executed Plan 07-05: Transmission Provider Implementations
+- Created ITransmissionProvider interface and BaseTransmissionProvider abstract class
+- Implemented DctceDirectProvider with OAuth 2.0 authentication
+- Implemented SandboxProvider for FTA sandbox testing
+- Implemented AspProvider with API key authentication
+- Created ProviderFactoryService for provider instance management
+- Total: 2,040 lines of provider code
 
 ### Context for Next Session
 
-1. **Phase 7 IN PROGRESS** - 5/10 plans complete (07-01, 07-02, 07-03, 07-04, 07-06)
-2. **Next Plan:** 07-05 (ASP Provider Services) or 07-07 (Transmission Worker)
-3. **Key Deliverables (07-06):**
-   - mls.types.ts (366 lines) - MlsStatusCode, MLS_TO_STATUS_MAP, interfaces
-   - error-mapper.service.ts (483 lines) - PINT-AE/PEPPOL error code mapping
-   - mls-handler.service.ts (573 lines) - Response handling, notifications
-   - mls-handler.service.test.ts (871 lines) - 65 unit tests
+1. **Phase 7 IN PROGRESS** - 6/10 plans complete (07-01, 07-02, 07-03, 07-04, 07-05, 07-06)
+2. **Next Plan:** 07-07 (Transmission Worker)
+3. **Key Deliverables (07-05):**
+   - transmission-provider.interface.ts (284 lines) - Interface + base class
+   - dctce-direct.provider.ts (508 lines) - DCTCE with OAuth 2.0
+   - sandbox.provider.ts (370 lines) - FTA sandbox provider
+   - asp.provider.ts (573 lines) - ASP routing provider
+   - provider-factory.service.ts (276 lines) - Factory + caching
+   - index.ts (29 lines) - Module exports
 
 ### Files Modified This Session
 
-**Created (Phase 7 Plan 06):**
-- `web-erp-app/backend/src/services/einvoice/mls/__tests__/mls-handler.service.test.ts`
-- `.planning/phases/07-e-invoicing-transmission/07-06-SUMMARY.md`
-
-**Verified (already existed):**
-- `web-erp-app/backend/src/services/einvoice/mls/mls.types.ts`
-- `web-erp-app/backend/src/services/einvoice/mls/error-mapper.service.ts`
-- `web-erp-app/backend/src/services/einvoice/mls/mls-handler.service.ts`
-- `web-erp-app/backend/src/services/einvoice/mls/index.ts`
+**Created (Phase 7 Plan 05):**
+- `web-erp-app/backend/src/services/einvoice/providers/transmission-provider.interface.ts`
+- `web-erp-app/backend/src/services/einvoice/providers/dctce-direct.provider.ts`
+- `web-erp-app/backend/src/services/einvoice/providers/sandbox.provider.ts`
+- `web-erp-app/backend/src/services/einvoice/providers/asp.provider.ts`
+- `web-erp-app/backend/src/services/einvoice/providers/provider-factory.service.ts`
+- `web-erp-app/backend/src/services/einvoice/providers/index.ts`
+- `.planning/phases/07-e-invoicing-transmission/07-05-SUMMARY.md`
 
 **Modified:**
+- `web-erp-app/backend/src/config/types.ts`
 - `.planning/STATE.md`
 
 ---
@@ -274,7 +282,7 @@ None currently.
 ## Quick Reference
 
 **Current Phase:** 7 - E-Invoice Transmission (IN PROGRESS)
-**Next Action:** Execute Plan 07-05 (ASP Provider Services) or 07-07 (Transmission Worker)
+**Next Action:** Execute Plan 07-07 (Transmission Worker Service)
 **Critical Deadline:** July 2026 (e-invoicing pilot)
 **Total Scope:** 71 requirements, 10 phases
 
