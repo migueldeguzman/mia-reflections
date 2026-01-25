@@ -1,15 +1,15 @@
 ---
-phase: 07-e-invoicing-transmission
-plan: 02
-subsystem: access-control
-tags: [permissions, rbac, mfa, sod, middleware, seed]
+phase: "07"
+plan: "02"
+subsystem: e-invoice-transmission
+tags: [permissions, rbac, mfa, sod, uae-compliance]
 dependency-graph:
-  requires: [07-01]
-  provides: [EINV-07-PERMISSIONS]
+  requires: [06-08]
+  provides: [transmission-permissions, transmission-middleware, transmission-roles]
   affects: [07-03, 07-04, 07-05]
 tech-stack:
   added: []
-  patterns: [permission-middleware, role-bundles, sod-detection, mfa-gating]
+  patterns: [pack-role-permissions, sod-conflicts, mfa-requirements]
 key-files:
   created:
     - web-erp-app/backend/src/types/einvoice-transmission-permissions.ts
@@ -17,158 +17,122 @@ key-files:
     - web-erp-app/backend/prisma/seeds/einvoice-transmission-permissions.seed.ts
   modified: []
 decisions:
-  - "22 permissions across 7 categories for granular access control"
-  - "6 role bundles following separation of duties principle"
-  - "4 SoD conflict rules preventing dangerous permission combinations"
-  - "4 MFA-required operations for sensitive actions"
+  - id: "07-02-D1"
+    decision: "22 permissions across 7 categories matching FTA e-invoicing workflow"
+    rationale: "Granular control over queue, transmission, credentials, config, export, audit, and monitoring"
+  - id: "07-02-D2"
+    decision: "4 SoD conflicts: generate/production, credentials/production, mode/bulk, config/audit"
+    rationale: "Prevent self-approval, credential misuse, unauthorized bulk, and evidence tampering"
+  - id: "07-02-D3"
+    decision: "MFA for credentials:manage, mode:switch, transmit:production, transmit:bulk"
+    rationale: "High-impact operations require additional authentication per superuser framework"
 metrics:
-  duration: "~15 minutes"
+  duration: "15 minutes"
   completed: "2026-01-25"
 ---
 
-# Phase 7 Plan 02: E-Invoice Transmission Permissions Summary
+# Phase 07 Plan 02: E-Invoice Transmission Permissions Summary
 
-**One-liner:** 22 granular permissions, 6 role bundles, SoD detection, and MFA gating for transmission access control.
+22 granular permissions, 6 role bundles, 4 SoD conflicts, 4 MFA operations for FTA e-invoicing compliance.
 
-## What Was Done
+## What Was Built
 
-### Task 1: Transmission Permissions Constants (668 lines)
+### 1. Transmission Permission Constants (einvoice-transmission-permissions.ts)
 
-Created comprehensive permission system in `einvoice-transmission-permissions.ts`:
+**22 permissions across 7 categories:**
 
-**22 Permissions across 7 Categories:**
+| Category | Permissions |
+|----------|-------------|
+| Queue Management | queue:view, queue:submit, queue:retry, queue:cancel |
+| Transmission Operations | transmit:sandbox, transmit:production, transmit:bulk |
+| Credential Management | credentials:view, credentials:manage |
+| Configuration | config:view, config:edit, mode:switch |
+| Export | export:xml, export:json, export:bulk |
+| Audit | audit:view, audit:export |
+| Status & Monitoring | status:view, status:export, connection:test, dashboard:view, notifications:manage |
 
-| Category | Permissions | Count |
-|----------|------------|-------|
-| Queue Management | queue:view, queue:submit, queue:retry, queue:cancel | 4 |
-| Transmission Operations | transmit:sandbox, transmit:production, transmit:bulk | 3 |
-| Credential Management | credentials:view, credentials:manage | 2 |
-| Configuration | config:view, config:edit, mode:switch | 3 |
-| Export | export:xml, export:json, export:bulk | 3 |
-| Audit | audit:view, audit:export | 2 |
-| Status & Monitoring | status:view, status:export, connection:test, dashboard:view, notifications:manage | 5 |
+**6 role bundles:**
 
-**6 Role Bundles:**
+| Role | Description | Permission Count |
+|------|-------------|------------------|
+| EINVOICE_CLERK | Basic queue and status viewing | 6 |
+| EINVOICE_OPERATOR | Sandbox submission, retry operations | 11 |
+| EINVOICE_MANAGER | Full transmission except credentials | 18 |
+| FINANCE_ADMIN | Full access including credentials | 22 |
+| CFO | Full access (approves mode switch) | 22 |
+| AUDITOR | Read-only audit access | 10 |
 
-| Role | Permissions | Purpose |
-|------|-------------|---------|
-| EINVOICE_CLERK | 6 | Basic viewing |
-| EINVOICE_OPERATOR | 11 | Sandbox submission, retry |
-| EINVOICE_MANAGER | 18 | Full transmission (no credentials) |
-| FINANCE_ADMIN | 22 | Full access |
-| CFO | 22 | Full access |
-| AUDITOR | 10 | Read-only |
+**4 SoD conflict rules:**
+1. Invoice creation vs. production submission (prevent self-approval)
+2. Credentials management vs. production transmission (prevent credential misuse)
+3. Mode switching vs. bulk operations (prevent unauthorized bulk production)
+4. Config editing vs. audit export (prevent evidence tampering)
 
-**4 SoD Conflict Rules:**
+**4 MFA-required operations:**
+1. credentials:manage
+2. mode:switch
+3. transmit:production (first time)
+4. transmit:bulk
 
-1. Invoice creation + production submission (ERROR)
-2. Credential management + production submission (ERROR)
-3. Mode switch + bulk operations (ERROR)
-4. Configuration edit + audit export (WARNING)
-
-**4 MFA-Required Operations:**
-
-1. `credentials:manage` - ASP/DCTCE credential configuration
-2. `mode:switch` - Sandbox/production mode switch
-3. `transmit:production` - Production submission
-4. `transmit:bulk` - Bulk transmission
-
-### Task 2: Permission Middleware (470 lines)
-
-Created `einvoice-transmission.middleware.ts` with:
+### 2. Transmission Permission Middleware (einvoice-transmission.middleware.ts)
 
 - `requireEInvoiceTransmissionPermission(permission)` - Single permission check
-- `requireAnyTransmissionPermission(permissions[])` - OR logic check
-- `requireAllTransmissionPermissions(permissions[])` - AND logic check
+- `requireAnyTransmissionPermission(permissions[])` - OR logic
+- `requireAllTransmissionPermissions(permissions[])` - AND logic
 - `requireMfaForTransmission(permission)` - MFA verification
-- `checkSodConflictsMiddleware` - SoD validation for role assignment
-- `checkUaeCompliancePackageValid()` - Package validity check
-- Security logging for all denied access attempts
+- `checkSodConflictsMiddleware` - SoD validation on permission assignment
+- `checkUaeCompliancePackageValid(companyId)` - Package validity check
 
-### Task 3: Permissions Seed Script (300 lines)
+### 3. Transmission Permissions Seed (einvoice-transmission-permissions.seed.ts)
 
-Created `einvoice-transmission-permissions.seed.ts` with:
-
-- `seedEInvoiceTransmissionPermissions()` - Seeds all 22 permissions
+- `seedEInvoiceTransmissionPermissions()` - Seeds 22 permissions to UAE_COMPLIANCE
 - `seedTransmissionRoles(companyId)` - Creates 3 role bundles for company
-- `verifyTransmissionPermissions()` - Validates seeding
-- `getTransmissionPermissionStats()` - Statistics for monitoring
-- Links to UAE_COMPLIANCE package
-- Uses EINVOICE_TRANSMISSION module for grouping
-
-## Technical Details
-
-### Permission Format
-
-```typescript
-// Pattern: einvoicing:{resource}:{action}
-EINVOICE_TRANSMISSION_PERMISSIONS.QUEUE_VIEW = 'einvoicing:queue:view'
-EINVOICE_TRANSMISSION_PERMISSIONS.TRANSMIT_PRODUCTION = 'einvoicing:transmit:production'
-```
-
-### Middleware Usage
-
-```typescript
-import {
-  requireEInvoiceTransmissionPermission,
-  requireMfaForTransmission,
-  EINVOICE_TRANSMISSION_PERMISSIONS
-} from '../middleware/einvoice-transmission.middleware';
-
-router.post('/queue/submit',
-  authenticateJWT,
-  requireEInvoiceTransmissionPermission(EINVOICE_TRANSMISSION_PERMISSIONS.QUEUE_SUBMIT),
-  controller.submitToQueue
-);
-
-router.post('/transmit/production',
-  authenticateJWT,
-  requireEInvoiceTransmissionPermission(EINVOICE_TRANSMISSION_PERMISSIONS.TRANSMIT_PRODUCTION),
-  requireMfaForTransmission(EINVOICE_TRANSMISSION_PERMISSIONS.TRANSMIT_PRODUCTION),
-  controller.transmitProduction
-);
-```
-
-### SoD Check Usage
-
-```typescript
-import { checkSodConflicts } from '../types/einvoice-transmission-permissions';
-
-const userPermissions = ['einvoice:generate:create', 'einvoicing:transmit:production'];
-const { hasConflicts, conflicts } = checkSodConflicts(userPermissions);
-// hasConflicts = true (ERROR severity)
-```
-
-## Verification Results
-
-| Check | Status |
-|-------|--------|
-| TypeScript compilation | PASS |
-| 22 permissions defined | PASS |
-| 6 role bundles defined | PASS |
-| 4 SoD conflicts defined | PASS |
-| 4 MFA operations defined | PASS |
-| Middleware exports correct | PASS |
-| Seed script exports correct | PASS |
-| min_lines >= 300 | PASS (668 lines) |
+- `verifyTransmissionPermissions()` - Verification function
+- `getTransmissionPermissionStats()` - Statistics function
+- Idempotent upsert pattern
 
 ## Commits
 
-| Task | Commit | Files |
-|------|--------|-------|
-| 1 | adbe05c | einvoice-transmission-permissions.ts |
-| 2 | a42a5ef | einvoice-transmission.middleware.ts |
-| 3 | 4f5d7ed | einvoice-transmission-permissions.seed.ts |
+| Commit | Description | Files |
+|--------|-------------|-------|
+| c20a490 | Permission constants with 22 permissions, 6 roles, SoD, MFA | einvoice-transmission-permissions.ts |
+| eb0aad8 | Permission middleware with MFA and SoD checks | einvoice-transmission.middleware.ts |
+| 7835f0f | Permissions seed with role bundles | einvoice-transmission-permissions.seed.ts |
 
 ## Deviations from Plan
 
 None - plan executed exactly as written.
 
+## Success Criteria Verification
+
+| Criterion | Status |
+|-----------|--------|
+| 22 granular permissions across 7 categories | PASS |
+| 6 role bundles map to organizational roles | PASS |
+| 4 SoD conflicts prevent dangerous combinations | PASS |
+| MFA for credentials, mode, production, bulk | PASS |
+| Middleware integrates with pack-role system | PASS |
+| UAE_COMPLIANCE package validity check | PASS |
+| Seed script is idempotent | PASS |
+| All permissions have metadata | PASS |
+
+## Key Decisions Made
+
+1. **Permission naming**: `einvoicing:{resource}:{action}` format for consistency
+2. **SoD severity levels**: ERROR (block) vs WARNING (log and allow)
+3. **MFA integration**: Via X-MFA-Token header, development mode bypasses
+4. **Package check**: UAE_COMPLIANCE must be active and not expired
+
+## Technical Notes
+
+- Raw SQL queries used for permission checks (performance)
+- Prisma upsert used for idempotent seeding
+- All middleware functions return properly for TypeScript strict mode
+- Logger integration for security event tracking
+
 ## Next Phase Readiness
 
-**Blockers:** None
-
-**Ready for:**
-- 07-03: ASP Provider Interface (uses permissions for credential management)
-- 07-04: Transmission Queue Service (uses queue permissions)
-- 07-05: Status Tracking (uses status permissions)
+Ready for 07-03 (Queue Infrastructure). The permission system provides:
+- `einvoicing:queue:*` permissions for queue operations
+- `requireEInvoiceTransmissionPermission` middleware for route protection
+- Role bundles for operator/manager access patterns
