@@ -10,10 +10,10 @@
 
 ## Current Position
 
-**Phase:** 8 of 10 (Compliance Verification Portal) - IN PROGRESS
-**Plan:** 6 of 8 complete (08-01 to 08-06)
-**Status:** In progress
-**Last activity:** 2026-01-25 - Completed 08-06-PLAN.md (ComplianceSignOffService)
+**Phase:** 8 of 10 (Compliance Verification Portal) - COMPLETE
+**Plan:** 8 of 8 complete (08-01 to 08-08)
+**Status:** Phase 8 complete
+**Last activity:** 2026-01-25 - Completed 08-08-PLAN.md (Unit tests and permissions)
 
 **Progress:**
 ```
@@ -25,10 +25,10 @@ Phase 4    [████████████████] Corporate Tax     
 Phase 5    [████████████████] WPS Payroll                COMPLETE (7/7)
 Phase 6    [████████████████] E-Invoice Core             COMPLETE (8/8 plans)
 Phase 7    [████████████████] E-Invoice Transmission     COMPLETE (10/10 plans)
-Phase 8    [████████████        ] Verification Portal    6/8 plans (08-01 to 08-06)
+Phase 8    [████████████████] Verification Portal        COMPLETE (8/8 plans)
 Phase 9    [                    ] Standalone Package     0/4 requirements
-           |██████████████████████████████████████████░░|
-Overall: 67/71 requirements (~94%)
+           |████████████████████████████████████████████|
+Overall: 69/71 requirements (~97%)
 ```
 
 ---
@@ -37,9 +37,9 @@ Overall: 67/71 requirements (~94%)
 
 | Metric | Value | Notes |
 |--------|-------|-------|
-| Plans completed | 67+ | 01-01 to 02-04, 02.5-*, 03-01 to 03-10, 04-01 to 04-09, 05-01 to 05-07, 06-01 to 06-08, 07-01 to 07-10, 08-01 to 08-06 |
-| Requirements delivered | 67/71 | TENANT-01-05, CTRL-01-04, ACCT-01-12, VAT-01-10, CT-01 to CT-09, WPS-01 to WPS-07, EINV-01 to EINV-10, VERIFY-01 to VERIFY-09 |
-| Phases completed | 7/10 | Phases 1, 2, 2.5, 3, 4, 5, 6, 7 complete; Phase 8 in progress |
+| Plans completed | 69+ | 01-01 to 02-04, 02.5-*, 03-01 to 03-10, 04-01 to 04-09, 05-01 to 05-07, 06-01 to 06-08, 07-01 to 07-10, 08-01 to 08-08 |
+| Requirements delivered | 69/71 | TENANT-01-05, CTRL-01-04, ACCT-01-12, VAT-01-10, CT-01 to CT-09, WPS-01 to WPS-07, EINV-01 to EINV-10, VERIFY-01 to VERIFY-10 |
+| Phases completed | 8/10 | Phases 1, 2, 2.5, 3, 4, 5, 6, 7, 8 complete; Phase 9 pending |
 | Blockers encountered | 0 | - |
 | Decisions made | 40+ | See Key Decisions table |
 
@@ -98,6 +98,8 @@ Overall: 67/71 requirements (~94%)
 | Inline decimal helpers in CtAdjustmentService | No decimal-math utility exists; toDecimal/roundCurrency inline | 2026-01-24 |
 | Conservative capital gains exemption default | Capital gains require manual verification for participation exemption | 2026-01-24 |
 | Related party excess from TP table | Uses related_party_transactions.adjustmentAmount for arm's length failures | 2026-01-24 |
+| 3 progressive compliance role bundles | VIEWER < OFFICER < MANAGER for clear separation of duties | 2026-01-25 |
+| Colon-separated permission naming | compliance:{resource}:{action} for hierarchical grouping | 2026-01-25 |
 | Raw SQL for GL aggregation | Prisma aggregate with complex joins unreliable; raw SQL more predictable | 2026-01-24 |
 | Decoupled CT services | CtCalculationService uses fallback implementations until dependencies integrated | 2026-01-24 |
 | QFZP simplified to false | Schema doesn't have freeZoneStatus field; requires schema extension | 2026-01-24 |
@@ -258,43 +260,44 @@ None currently.
 ### Last Session
 
 **Date:** 2026-01-25
-**Completed:** Phase 8 Plan 06 (ComplianceSignOffService)
+**Completed:** Phase 8 Plan 08 (Unit Tests and Permission Seed)
 **Activity:**
-- Implemented ComplianceSignOffService (895 lines) for VERIFY-08 and VERIFY-09
-- Sign-off workflow: submitForSignOff(), approveSignOff(), rejectSignOff()
-- Approval history: getApprovalHistory() with domain/status/date filters
-- Immutable snapshots of checklist and preview at submission time
-- Role-based authorization via APPROVER_ROLES list
-- Self-approval blocked for separation of duties
-- Audit trail entries for tamper-proof record keeping
-- Updated barrel export with ComplianceSignOffService and related types
+- Created 93 unit tests for compliance portal services (1,641 lines total)
+- CompliancePortalService tests: Status aggregation, caching, company isolation
+- ComplianceChecklistService tests: Check definitions, execution, history
+- ComplianceSignOffService tests: Submit, approve, reject workflows
+- Created compliance-portal-permissions.seed.ts with 9 permissions
+- Defined 3 role bundles: COMPLIANCE_VIEWER, COMPLIANCE_OFFICER, COMPLIANCE_MANAGER
+- All tests passing, Phase 8 COMPLETE
 
 ### Context for Next Session
 
-1. **Phase 8 IN PROGRESS** - 6/8 plans complete (08-01 to 08-06)
-2. **Next Plans:** 08-07 (CompliancePortalController), 08-08 (Integration tests)
-3. **Key Deliverables (08-06):**
-   - ComplianceSignOffService with sign-off workflow and approval history
-   - VERIFY-08 (Compliance sign-off workflow) complete
-   - VERIFY-09 (Approval history tracking) complete
-   - Historical tracking in compliance_check_runs table
+1. **Phase 8 COMPLETE** - All 8 plans executed (08-01 to 08-08)
+2. **Next Phase:** Phase 9 - Standalone Package (4 requirements)
+3. **Key Deliverables (08-08):**
+   - 93 unit tests with comprehensive service coverage
+   - 9 compliance portal permissions created
+   - 3 role bundles for progressive access levels
+   - VERIFY-10 (Unit test coverage) complete
 
 ### Files Modified This Session
 
-**Created (Phase 8 Plan 06):**
-- `web-erp-app/backend/src/services/compliance-portal/compliance-signoff.service.ts` (895 lines)
-- `.planning/phases/08-compliance-verification-portal/08-06-SUMMARY.md`
+**Created (Phase 8 Plan 08):**
+- `web-erp-app/backend/src/services/compliance-portal/__tests__/compliance-portal.service.test.ts` (472 lines)
+- `web-erp-app/backend/src/services/compliance-portal/__tests__/compliance-checklist.service.test.ts` (482 lines)
+- `web-erp-app/backend/src/services/compliance-portal/__tests__/compliance-signoff.service.test.ts` (687 lines)
+- `web-erp-app/backend/prisma/seeds/compliance-portal-permissions.seed.ts` (389 lines)
+- `.planning/phases/08-compliance-verification-portal/08-08-SUMMARY.md`
 
 **Modified:**
-- `web-erp-app/backend/src/services/compliance-portal/index.ts`
 - `.planning/STATE.md`
 
 ---
 
 ## Quick Reference
 
-**Current Phase:** 8 - Compliance Verification Portal (IN PROGRESS)
-**Next Action:** Execute 08-07 - CompliancePortalController (or 08-08)
+**Current Phase:** 8 - Compliance Verification Portal (COMPLETE)
+**Next Action:** Begin Phase 9 - Standalone Package
 **Critical Deadline:** July 2026 (e-invoicing pilot)
 **Total Scope:** 71 requirements, 10 phases
 
