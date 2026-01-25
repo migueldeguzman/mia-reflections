@@ -11,9 +11,9 @@
 ## Current Position
 
 **Phase:** 8 of 10 (Compliance Verification Portal) - IN PROGRESS
-**Plan:** 2 of 8 complete (08-01 through 08-02)
+**Plan:** 3 of 8 complete (08-01, 08-02, 08-04)
 **Status:** In progress
-**Last activity:** 2026-01-25 - Completed 08-02-PLAN.md (CompliancePortalService)
+**Last activity:** 2026-01-25 - Completed 08-04-PLAN.md (CompliancePreviewService)
 
 **Progress:**
 ```
@@ -25,10 +25,10 @@ Phase 4    [████████████████] Corporate Tax     
 Phase 5    [████████████████] WPS Payroll                COMPLETE (7/7)
 Phase 6    [████████████████] E-Invoice Core             COMPLETE (8/8 plans)
 Phase 7    [████████████████] E-Invoice Transmission     COMPLETE (10/10 plans)
-Phase 8    [████                ] Verification Portal    2/8 plans (08-01, 08-02)
+Phase 8    [██████              ] Verification Portal    3/8 plans (08-01, 08-02, 08-04)
 Phase 9    [                    ] Standalone Package     0/4 requirements
            |██████████████████████████████████████████░░|
-Overall: 63/71 requirements (~89%)
+Overall: 64/71 requirements (~90%)
 ```
 
 ---
@@ -37,8 +37,8 @@ Overall: 63/71 requirements (~89%)
 
 | Metric | Value | Notes |
 |--------|-------|-------|
-| Plans completed | 63+ | 01-01 to 02-04, 02.5-*, 03-01 to 03-10, 04-01 to 04-09, 05-01 to 05-07, 06-01 to 06-08, 07-01 to 07-10, 08-01 to 08-02 |
-| Requirements delivered | 63/71 | TENANT-01-05, CTRL-01-04, ACCT-01-12, VAT-01-10, CT-01 to CT-09, WPS-01 to WPS-07, EINV-01 to EINV-10, VERIFY-01 (partial) |
+| Plans completed | 64+ | 01-01 to 02-04, 02.5-*, 03-01 to 03-10, 04-01 to 04-09, 05-01 to 05-07, 06-01 to 06-08, 07-01 to 07-10, 08-01, 08-02, 08-04 |
+| Requirements delivered | 64/71 | TENANT-01-05, CTRL-01-04, ACCT-01-12, VAT-01-10, CT-01 to CT-09, WPS-01 to WPS-07, EINV-01 to EINV-10, VERIFY-01, VERIFY-07 (partial) |
 | Phases completed | 7/10 | Phases 1, 2, 2.5, 3, 4, 5, 6, 7 complete; Phase 8 in progress |
 | Blockers encountered | 0 | - |
 | Decisions made | 40+ | See Key Decisions table |
@@ -185,6 +185,10 @@ Overall: 63/71 requirements (~89%)
 | 5-minute compliance cache TTL | Balance between freshness and performance; manual refresh supported | 2026-01-25 |
 | Parallel domain status checking | Promise.all() for 4 domain checks improves dashboard load time | 2026-01-25 |
 | Placeholder domain checks | Basic data existence checks until ComplianceChecklistService (08-03) | 2026-01-25 |
+| Preview HTML inline styles | Portable preview rendering without CSS dependencies | 2026-01-25 |
+| IBAN masking in WPS preview | Show only last 4 digits for security | 2026-01-25 |
+| XML truncation at 5000 chars | Balance content visibility and performance in e-invoice preview | 2026-01-25 |
+| Three validation severity levels | ERROR/WARNING/INFO matches FTA patterns for actionable guidance | 2026-01-25 |
 
 ### Technical Notes
 
@@ -251,34 +255,34 @@ None currently.
 ### Last Session
 
 **Date:** 2026-01-25
-**Completed:** Phase 8 Plan 01 (Re-execution: Database Schema and Types)
+**Completed:** Phase 8 Plan 04 (CompliancePreviewService)
 **Activity:**
-- Re-executed Plan 08-01: Database Schema and TypeScript Types
-- Added compliance_sign_offs and compliance_check_runs models to Prisma schema
-- Created migration 20260125100000_add_compliance_portal
-- Applied migration to database (tables created)
-- Created comprehensive TypeScript types (440 lines)
-- Regenerated Prisma client with new models
+- Created CompliancePreviewService (1006 lines) implementing VERIFY-07
+- VAT Form 201 preview with all 14 boxes
+- CT Return preview with accounting income to tax due calculation
+- WPS SIF preview with Person Codes and masked IBANs
+- E-Invoice PINT-AE preview with expandable XML
+- Validation with ERROR/WARNING/INFO severity levels
+- Updated barrel export with new service
 
 ### Context for Next Session
 
-1. **Phase 8 IN PROGRESS** - 2/8 plans complete (08-01, 08-02)
-2. **Next Plan:** 08-03 - ComplianceChecklistService
-3. **Key Deliverables (08-01):**
-   - compliance_sign_offs table - Immutable sign-off records
-   - compliance_check_runs table - Historical check run tracking
-   - compliance-portal.types.ts (440 lines) - Comprehensive TypeScript types
-4. **Note:** Database tables and types ready for service implementation
+1. **Phase 8 IN PROGRESS** - 3/8 plans complete (08-01, 08-02, 08-04)
+2. **08-03 being executed in parallel** - ComplianceChecklistService
+3. **Next Plans:** 08-05 (Sandbox), 08-06 (Sign-off), 08-07 (Controller)
+4. **Key Deliverables (08-04):**
+   - CompliancePreviewService with generatePreview() for all 4 domains
+   - HTML rendering with inline styles for portability
+   - Validation messages for submission readiness
 
 ### Files Modified This Session
 
-**Created (Phase 8 Plan 01):**
-- `web-erp-app/backend/prisma/migrations/20260125100000_add_compliance_portal/migration.sql`
-- `web-erp-app/backend/src/types/compliance-portal.types.ts`
-- `.planning/phases/08-compliance-verification-portal/08-01-SUMMARY.md`
+**Created (Phase 8 Plan 04):**
+- `web-erp-app/backend/src/services/compliance-portal/compliance-preview.service.ts` (1006 lines)
+- `.planning/phases/08-compliance-verification-portal/08-04-SUMMARY.md`
 
 **Modified:**
-- `web-erp-app/backend/prisma/schema.prisma`
+- `web-erp-app/backend/src/services/compliance-portal/index.ts`
 - `.planning/STATE.md`
 
 ---
@@ -286,7 +290,7 @@ None currently.
 ## Quick Reference
 
 **Current Phase:** 8 - Compliance Verification Portal (IN PROGRESS)
-**Next Action:** Execute 08-03 - ComplianceChecklistService
+**Next Action:** Execute 08-05 - ComplianceSandboxService (or 08-06, 08-07)
 **Critical Deadline:** July 2026 (e-invoicing pilot)
 **Total Scope:** 71 requirements, 10 phases
 
