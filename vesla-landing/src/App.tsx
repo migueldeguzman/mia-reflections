@@ -99,6 +99,7 @@ export default function App() {
               <a href="#features" className="text-gray-600 hover:text-gray-900 transition">Features</a>
               <a href="#modules" className="text-gray-600 hover:text-gray-900 transition">Modules</a>
               <a href="#integrations" className="text-gray-600 hover:text-gray-900 transition">Integrations</a>
+              <a href="#blog" className="text-gray-600 hover:text-gray-900 transition">Blog</a>
               <a href="#pricing" className="text-gray-600 hover:text-gray-900 transition">Pricing</a>
               <a 
                 href={`${ERP_URL}/login`}
@@ -120,6 +121,7 @@ export default function App() {
               <a href="#features" className="text-gray-600">Features</a>
               <a href="#modules" className="text-gray-600">Modules</a>
               <a href="#integrations" className="text-gray-600">Integrations</a>
+              <a href="#blog" className="text-gray-600">Blog</a>
               <a href="#pricing" className="text-gray-600">Pricing</a>
               <a href={`${ERP_URL}/login`} className="px-5 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg text-center">
                 Login
@@ -398,8 +400,53 @@ export default function App() {
         </div>
       </section>
 
+      {/* Blog Section - Module Deep Dives */}
+      <section id="blog" className="py-20 px-4">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Learn More About Each Module
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Discover how each Vesla ERP module can transform your business operations.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {modules.map((module) => {
+              const colors = colorClasses[module.color];
+              const Icon = module.icon;
+              return (
+                <article 
+                  key={module.id}
+                  className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all group"
+                >
+                  <div className={`h-32 bg-gradient-to-br ${colors.bg} flex items-center justify-center`}>
+                    <Icon className="w-16 h-16 text-white/80" />
+                  </div>
+                  <div className="p-6">
+                    <span className={`text-xs font-semibold ${colors.text} uppercase tracking-wider`}>{module.name} Pack</span>
+                    <h3 className={`text-xl font-bold text-gray-900 mt-2 mb-3 group-hover:${colors.text} transition-colors`}>
+                      {module.title}
+                    </h3>
+                    <p className="text-gray-600 text-sm mb-4">
+                      {module.description}
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {module.tags.map((tag) => (
+                        <span key={tag} className={`px-2 py-1 ${colors.light} text-xs rounded-full`}>{tag}</span>
+                      ))}
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
       {/* Testimonials */}
-      <section className="py-20 px-4">
+      <section className="py-20 px-4 bg-gray-50">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Trusted by Industry Leaders</h2>
