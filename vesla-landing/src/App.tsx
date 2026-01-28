@@ -3,10 +3,37 @@ import {
   Car, DollarSign, Shield, Users, Building2, Truck, TrendingUp, 
   ShoppingCart, Menu, X, Check, Star, ArrowRight, Mail, Phone, MapPin, Wrench,
   Zap, Globe, Package, Play, Clock, ChevronRight, Sparkles, CheckCircle, Home,
-  BarChart3
+  BarChart3, BookOpen
 } from 'lucide-react';
 
 const ERP_URL = 'https://demo.vesla.ae';
+const API_URL = `${ERP_URL}/api`;
+
+// Blog post type from API
+interface BlogPost {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string | null;
+  coverImage: string | null;
+  coverColor: string | null;
+  tags: string[];
+  readingTime: number | null;
+  publishedAt: string | null;
+  isFeatured: boolean;
+  erpModule: string | null;
+  authorName: string | null;
+  category: {
+    id: string;
+    name: string;
+    slug: string;
+    color: string | null;
+  } | null;
+  author: {
+    firstName: string;
+    lastName: string;
+  } | null;
+}
 
 // Animated counter hook
 const useCounter = (end: number, duration: number = 2000) => {
@@ -77,8 +104,32 @@ const integrations = [
   'UAE Pass', 'TARS', 'WPS', 'VAT Filing', 'Banks', 'Insurance', 'RTA', 'Salik'
 ];
 
+// Hook to fetch blog posts
+const useBlogPosts = () => {
+  const [posts, setPosts] = useState<BlogPost[]>([]);
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const response = await fetch(`${API_URL}/blog/posts?limit=12`);
+        if (response.ok) {
+          const data = await response.json();
+          setPosts(data.data || []);
+        }
+      } catch {
+        // Blog API not available, will use static content
+      }
+    };
+
+    fetchPosts();
+  }, []);
+
+  return { posts };
+};
+
 export default function App() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { posts: blogPosts } = useBlogPosts();
 
   return (
     <div className="min-h-screen bg-white">
@@ -400,48 +451,125 @@ export default function App() {
         </div>
       </section>
 
-      {/* Blog Section - Module Deep Dives */}
+      {/* Blog Section - Live Blog Posts or Module Deep Dives */}
       <section id="blog" className="py-20 px-4">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Learn More About Each Module
+              {blogPosts.length > 0 ? 'Latest from Our Blog' : 'Learn More About Each Module'}
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Discover how each Vesla ERP module can transform your business operations.
+              {blogPosts.length > 0 
+                ? 'Insights, tutorials, and updates from the Vesla team.'
+                : 'Discover how each Vesla ERP module can transform your business operations.'}
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {modules.map((module) => {
-              const colors = colorClasses[module.color];
-              const Icon = module.icon;
-              return (
-                <article 
-                  key={module.id}
-                  className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all group"
-                >
-                  <div className={`h-32 bg-gradient-to-br ${colors.bg} flex items-center justify-center`}>
-                    <Icon className="w-16 h-16 text-white/80" />
-                  </div>
-                  <div className="p-6">
-                    <span className={`text-xs font-semibold ${colors.text} uppercase tracking-wider`}>{module.name} Pack</span>
-                    <h3 className={`text-xl font-bold text-gray-900 mt-2 mb-3 group-hover:${colors.text} transition-colors`}>
-                      {module.title}
-                    </h3>
-                    <p className="text-gray-600 text-sm mb-4">
-                      {module.description}
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      {module.tags.map((tag) => (
-                        <span key={tag} className={`px-2 py-1 ${colors.light} text-xs rounded-full`}>{tag}</span>
-                      ))}
+          {/* Live Blog Posts */}
+          {blogPosts.length > 0 ? (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {blogPosts.map((post) => {
+                const moduleColor = post.erpModule ? (colorClasses[modules.find(m => m.id === post.erpModule)?.color || 'blue']) : colorClasses.blue;
+                return (
+                  <a 
+                    key={post.id}
+                    href={`${ERP_URL}/blog/${post.slug}`}
+                    className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all group"
+                  >
+                    {post.coverImage ? (
+                      <div className="h-48 overflow-hidden">
+                        <img 
+                          src={post.coverImage} 
+                          alt={post.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                        />
+                      </div>
+                    ) : (
+                      <div className={`h-32 bg-gradient-to-br ${moduleColor.bg} flex items-center justify-center`}>
+                        <BookOpen className="w-12 h-12 text-white/80" />
+                      </div>
+                    )}
+                    <div className="p-6">
+                      {post.category && (
+                        <span className={`text-xs font-semibold ${moduleColor.text} uppercase tracking-wider`}>
+                          {post.category.name}
+                        </span>
+                      )}
+                      <h3 className="text-xl font-bold text-gray-900 mt-2 mb-3 group-hover:text-blue-600 transition-colors line-clamp-2">
+                        {post.title}
+                      </h3>
+                      {post.excerpt && (
+                        <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                          {post.excerpt}
+                        </p>
+                      )}
+                      <div className="flex items-center justify-between text-sm text-gray-500">
+                        <span className="flex items-center gap-1">
+                          <Clock className="w-4 h-4" />
+                          {post.readingTime || 3} min read
+                        </span>
+                        {post.publishedAt && (
+                          <span>{new Date(post.publishedAt).toLocaleDateString()}</span>
+                        )}
+                      </div>
+                      {post.tags.length > 0 && (
+                        <div className="flex flex-wrap gap-2 mt-4">
+                          {post.tags.slice(0, 3).map((tag) => (
+                            <span key={tag} className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">{tag}</span>
+                          ))}
+                        </div>
+                      )}
                     </div>
-                  </div>
-                </article>
-              );
-            })}
-          </div>
+                  </a>
+                );
+              })}
+            </div>
+          ) : (
+            /* Fallback: Module Cards */
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {modules.map((module) => {
+                const colors = colorClasses[module.color];
+                const Icon = module.icon;
+                return (
+                  <article 
+                    key={module.id}
+                    className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all group"
+                  >
+                    <div className={`h-32 bg-gradient-to-br ${colors.bg} flex items-center justify-center`}>
+                      <Icon className="w-16 h-16 text-white/80" />
+                    </div>
+                    <div className="p-6">
+                      <span className={`text-xs font-semibold ${colors.text} uppercase tracking-wider`}>{module.name} Pack</span>
+                      <h3 className={`text-xl font-bold text-gray-900 mt-2 mb-3 group-hover:${colors.text} transition-colors`}>
+                        {module.title}
+                      </h3>
+                      <p className="text-gray-600 text-sm mb-4">
+                        {module.description}
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {module.tags.map((tag) => (
+                          <span key={tag} className={`px-2 py-1 ${colors.light} text-xs rounded-full`}>{tag}</span>
+                        ))}
+                      </div>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          )}
+
+          {/* View All Blog Link */}
+          {blogPosts.length > 0 && (
+            <div className="text-center mt-12">
+              <a 
+                href={`${ERP_URL}/blog`}
+                className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold hover:shadow-lg transition-all"
+              >
+                View All Posts
+                <ArrowRight className="w-4 h-4" />
+              </a>
+            </div>
+          )}
         </div>
       </section>
 
